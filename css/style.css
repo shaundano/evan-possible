@@ -1,30 +1,55 @@
-html, body { margin: 0; height: 100%; background: #111; overflow: hidden; font-family: "Comic Sans MS", Arial, sans-serif; }
-/* fixed 550x400 stage, scaled by --s from engine.js */
+@font-face { font-family: Akbar; src: url(../assets/fonts/Akbar.ttf); } /* hand-drawn TIQ font; coordinates below are 550x400 stage px measured from the TIQ1 reference */
+html, body { margin: 0; height: 100%; background: #111; overflow: hidden; font-family: Akbar, "Comic Sans MS", sans-serif; }
 #stage { position: absolute; left: 50%; top: 50%; width: 550px; height: 400px; background: #fff; overflow: hidden;
-  transform: translate(-50%, -50%) scale(var(--s, 1)); user-select: none; }
-#stage button { font: inherit; cursor: pointer; }
-.hud { position: absolute; top: 0; left: 0; right: 0; height: 32px; display: flex; align-items: center; gap: 14px; padding: 0 10px; background: #ddd; font-size: 16px; box-sizing: border-box; }
-.play { position: absolute; top: 32px; left: 0; right: 0; bottom: 0; padding: 12px; }
-.q { font-size: 22px; text-align: center; margin-bottom: 12px; }
-.over { position: absolute; inset: 0; background: rgba(0, 0, 0, .85); color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; text-align: center; padding: 20px; font-size: 26px; z-index: 10; }
+  transform: translate(-50%, -50%) scale(var(--s, 1)); user-select: none; word-spacing: .5em; letter-spacing: .01em; }
+#stage button { font: inherit; word-spacing: inherit; letter-spacing: inherit; cursor: pointer; padding: 0; }
+.play { position: absolute; inset: 0; }
+.area { position: absolute; left: 0; top: 32px; right: 0; bottom: 0; } /* custom levels draw here */
+.q { position: absolute; left: 100px; top: 22px; width: 384px; height: 106px; display: flex; align-items: center; justify-content: center; text-align: center; color: #281efb; font-size: 46px; line-height: 1.15; text-transform: uppercase; }
+.q .qt { display: block; width: 100%; overflow-wrap: anywhere; transform: scaleY(1.14); }
+.hot { cursor: pointer; }
+/* answer grid: 2x2 pink boxes, blue border, wire pegs on the outer edge (box = 236x83) */
+.grid { position: absolute; left: 32px; top: 158px; display: grid; grid-template-columns: 236px 236px; grid-auto-rows: 83px; gap: 6px 15px; }
+.dense .grid { top: 134px; grid-auto-rows: 100px; }
+.dense .q { height: 90px; top: 14px; font-size: 38px; }
+.many .grid { top: 132px; grid-auto-rows: 52px; }
+.withpic .grid { left: 200px; top: 132px; grid-template-columns: 318px; grid-auto-rows: 50px; gap: 6px; }
+.pic { position: absolute; left: 16px; top: 134px; width: 170px; height: 204px; object-fit: contain; }
+.ans, .btn { position: relative; box-sizing: border-box; border: 6px solid #281efb; border-radius: 3px; background: #f8caff; color: #000; padding: 3px 8px;
+  display: flex; align-items: center; justify-content: center; text-align: center; text-transform: uppercase; font-size: 28px; line-height: 1.1; }
+.ans:hover, .btn:hover { background: radial-gradient(circle, #fff176 0%, #ffb02e 100%); }
+.ans .t { display: block; width: 100%; overflow-wrap: anywhere; }
+.ans.l::before, .ans.r::after { content: ""; position: absolute; top: calc(50% - 31px); width: 103px; height: 61px; background: url(../assets/img/pegs.svg) no-repeat; background-size: 100% 100%; pointer-events: none; }
+.ans.l::before { left: -104px; }
+.ans.r::after { right: -104px; transform: scaleX(-1); }
+.input { position: absolute; left: 100px; top: 175px; width: 350px; height: 50px; box-sizing: border-box; text-align: center; font: 28px Akbar; text-transform: uppercase; background: #f8caff; border: 6px solid #281efb; border-radius: 3px; outline: none; user-select: text; -webkit-user-select: text; }
+.play .btn { position: absolute; left: 205px; top: 250px; width: 140px; height: 52px; font-size: 28px; }
+/* HUD: question number circle, lives, skip arrows */
+.hud { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
+.qnum { position: absolute; left: 6px; top: 12px; width: 76px; height: 84px; }
+.qnum svg { position: absolute; inset: 0; }
+.qnum span { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #ff1a1a; font-size: 46px; padding-top: 4px; }
+.lives { position: absolute; left: 14px; top: 349px; height: 41px; display: flex; align-items: flex-start; }
+.lives img { width: 128px; height: 41px; }
+.lives .n { margin: -2px 0 0 8px; font-size: 50px; line-height: 1; color: #49ee3c; -webkit-text-stroke: 3.5px #1aa00e; paint-order: stroke fill; }
+.skips { position: absolute; right: 2px; top: 356px; display: flex; gap: 3.6px; pointer-events: auto; }
+.skips button { width: 38px; height: 35px; border: 0; background: url(../assets/img/skip-grey.svg) no-repeat; background-size: 100% 100%; }
+.skips button:hover { filter: brightness(.85); }
+.bomb { position: absolute; right: 10px; top: 8px; font-size: 26px; color: #ff1a1a; }
+/* message screens */
+.over { position: absolute; inset: 0; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
 .over[hidden] { display: none; }
-.skip { margin-left: auto; }
-.ans { display: block; width: 80%; margin: 8px auto; padding: 10px; font-size: 18px; background: #fff; border: 2px solid #333; border-radius: 6px; }
-.ans:hover { background: #ffd; }
-#stage .dense .ans { font-size: 13px; padding: 5px 8px; margin: 5px auto; width: 92%; }
-.dense .q { font-size: 18px; margin-bottom: 6px; }
-.input { display: block; margin: 20px auto 10px; width: 60%; padding: 8px; font-size: 20px; font-family: inherit; text-align: center; user-select: text; -webkit-user-select: text; }
-.play .btn { display: block; margin: 0 auto; padding: 6px 18px; font-size: 18px; }
+.over { background: #000; color: #fff; gap: 20px; padding: 20px; font-size: 30px; }
+.over.wrong { background: #fff; }
+.over .board { box-sizing: border-box; width: 330px; padding: 18px 12px 22px; background: #1d1d1d; border: 6px solid #444; border-radius: 10px; color: #fff; font-size: 46px; line-height: 1.1; text-transform: uppercase; }
+.over .board b { display: block; color: #f00; font-weight: normal; font-size: 62px; }
+.over.gameover { background: #fff; }
+.over.gameover img { height: 380px; }
+.over .btn { position: static; width: auto; padding: 4px 20px; height: 48px; font-size: 28px; }
+.msg { white-space: pre-line; }
 .sprite { position: absolute; cursor: pointer; transition: left .1s, top .1s; }
 .sprite img { width: 100%; height: 100%; }
 .sprite.missing { background: #f9c; border: 2px dashed #c06; font-size: 11px; display: flex; align-items: center; justify-content: center; word-break: break-all; }
-.hot { cursor: pointer; }
-.pic { display: block; margin: 0 auto 8px; max-height: 120px; }
-.withpic { display: grid; grid-template-columns: 200px 1fr; grid-template-rows: auto; align-content: start; column-gap: 10px; }
-.withpic .q { grid-column: 1 / 3; }
-.withpic .pic { grid-column: 1; grid-row: 2 / span 8; width: 100%; max-height: 300px; object-fit: contain; margin: 0; }
-#stage .withpic .ans { grid-column: 2; width: auto; margin: 4px 0; font-size: 14px; padding: 6px 8px; }
-#stage .withpic.dense .ans { font-size: 12px; padding: 4px 6px; margin: 3px 0; }
 .art { position: absolute; display: flex; align-items: center; justify-content: center; font-size: 90px; line-height: 1; }
 .art img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
 .garfield { font-size: 150px; }
@@ -36,12 +61,11 @@ html, body { margin: 0; height: 100%; background: #111; overflow: hidden; font-f
 .badge { position: absolute; top: -8px; left: -8px; min-width: 28px; height: 28px; border-radius: 14px; background: #fc0; border: 2px solid #222; font-size: 18px; text-align: center; line-height: 28px; }
 .badge:empty { display: none; }
 .beat { position: absolute; inset: 0; overflow: hidden; }
-.beat .board { margin: 50px auto 0; width: 300px; padding: 14px; background: #1d4d2f; border: 6px solid #8a5a2b; color: #fff; text-align: center; font-size: 24px; }
-.beat .guy { position: absolute; left: 240px; top: 170px; font-size: 90px; line-height: 1; }
+.beat .board { margin: 100px auto 0; width: 300px; padding: 14px; background: #1d4d2f; border: 6px solid #8a5a2b; color: #fff; text-align: center; font-size: 24px; }
+.beat .guy { position: absolute; left: 240px; top: 190px; font-size: 90px; line-height: 1; }
 .beat .guy.hit { animation: bop .15s; }
-.beat .desk { position: absolute; left: 190px; top: 250px; width: 170px; height: 14px; background: #8a5a2b; border-radius: 4px; }
+.beat .desk { position: absolute; left: 190px; top: 270px; width: 170px; height: 14px; background: #8a5a2b; border-radius: 4px; }
 .beat .count { position: absolute; right: 12px; bottom: 8px; font-size: 22px; }
 .confetti { position: absolute; top: -12px; width: 8px; height: 14px; animation: fall 1.4s linear forwards; }
 @keyframes bop { 50% { transform: translateY(-14px) scale(1.08); } }
 @keyframes fall { to { transform: translateY(380px) rotate(540deg); } }
-.msg { white-space: pre-line; }
