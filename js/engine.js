@@ -37,7 +37,7 @@ function sprite(src, { x = 0, y = 0, w = 64, h = 64 } = {}) {
 
 // level types: (level, stage, game) => render into stage.el
 const types = {
-  choice: (lv, st, game) => boxes(lv.answers, i => i === lv.correct ? game.win() : game.lose()),
+  choice: (lv, st, game) => boxes(lv.answers, i => [].concat(lv.correct).includes(i) ? game.win() : game.lose()),
   type(lv, st, game) {
     const input = el("input", play, "", "input"), submit = () =>
       lv.accept.some(a => a.toLowerCase() === input.value.trim().toLowerCase()) ? game.win() : game.lose();
