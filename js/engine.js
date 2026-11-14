@@ -69,8 +69,8 @@ function screen(msg, label, fn) {
   el("btn", over, label, "button").onclick = () => { over.hidden = true; fn(); };
 }
 
-// play assets/sounds/<name>(.mp3); silently ignored if missing or blocked
-const sound = name => { try { new Audio(`assets/sounds/${name}${name.includes(".") ? "" : ".mp3"}`).play().catch(() => {}); } catch {} };
+// play assets/sounds/<name>(.mp3), or assets/<path> if name has a "/"; silently ignored if missing or blocked
+const sound = name => { try { new Audio(`assets/${name.includes("/") ? "" : "sounds/"}${name}${name.includes(".") ? "" : ".mp3"}`).play().catch(() => {}); } catch {} };
 
 const next = () => { s.i++; load(); };
 
