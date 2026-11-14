@@ -21,14 +21,14 @@ over.hidden = true;
 
 let s, cur, lvSnd; // run state { i, lives, skips }; current level game
 // shrink text until it fits its box
-const fitText = (box, t, max, min) => { for (let f = max; f > min; f--) { t.style.fontSize = f + "px"; if (t.offsetHeight <= box.clientHeight - 6) break; } };
+const fitText = (box, t, max, min = 4) => { for (let f = max; f >= min; f--) { t.style.fontSize = f + "px"; if (t.offsetHeight <= box.clientHeight - 4) break; } };
 const boxes = (answers, fn) => { // 2x2 grid; long answer sets get taller boxes, >4 shrink
   const grid = el("grid", play);
   play.classList.toggle("dense", answers.join("").length > 200);
   play.classList.toggle("many", answers.length > 4);
   answers.forEach((a, i) => {
     const b = el("ans " + (play.classList.contains("withpic") ? "r" : i % 2 ? "r" : "l"), grid, "", "button");
-    b.onclick = () => fn(i); fitText(b, el("t", b, a), 28, 8);
+    b.onclick = () => fn(i); fitText(b, el("t", b, a), 28, 4);
   });
 };
 

@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="160" height="160">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="2" stdDeviation="1" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Torso / School Uniform -->
+  <g id="torso">
+    <!-- Body / Jacket / Shirt -->
+    <path d="M 42 124 C 42 110, 52 104, 68 102 L 92 102 C 108 104, 118 110, 118 124 L 122 160 L 38 160 Z" fill="#2962ff" stroke="#000" stroke-width="3.5" stroke-linejoin="round"/>
+    
+    <!-- White shirt collar under jacket -->
+    <path d="M 64 102 L 80 118 L 96 102 Z" fill="#ffffff" stroke="#000" stroke-width="3"/>
+    
+    <!-- Red school tie -->
+    <path d="M 77 114 L 83 114 L 85 138 L 80 144 L 75 138 Z" fill="#e53935" stroke="#000" stroke-width="2.5" stroke-linejoin="round"/>
+
+    <!-- Backpack straps -->
+    <path d="M 50 106 C 50 118, 52 135, 54 160" fill="none" stroke="#ffb300" stroke-width="4.5" stroke-linecap="round"/>
+    <path d="M 110 106 C 110 118, 108 135, 106 160" fill="none" stroke="#ffb300" stroke-width="4.5" stroke-linecap="round"/>
+  </g>
+
+  <!-- Left Ear -->
+  <g id="left-ear">
+    <ellipse cx="44" cy="72" rx="9" ry="11" fill="#fed8b1" stroke="#000" stroke-width="3.5"/>
+    <path d="M 44 68 C 42 71, 42 74, 45 76" fill="none" stroke="#d49b6a" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+
+  <!-- Right Ear -->
+  <g id="right-ear">
+    <ellipse cx="116" cy="72" rx="9" ry="11" fill="#fed8b1" stroke="#000" stroke-width="3.5"/>
+    <path d="M 116 68 C 118 71, 118 74, 115 76" fill="none" stroke="#d49b6a" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+
+  <!-- Head Base -->
+  <ellipse cx="80" cy="72" rx="38" ry="36" fill="#fed8b1" stroke="#000" stroke-width="3.5"/>
+
+  <!-- Cheeks / Blush -->
+  <circle cx="56" cy="82" r="6" fill="#ff8a80" opacity="0.6"/>
+  <circle cx="104" cy="82" r="6" fill="#ff8a80" opacity="0.6"/>
+
+  <!-- Freckles -->
+  <circle cx="54" cy="77" r="1.2" fill="#b06b3a"/>
+  <circle cx="58" cy="76" r="1.2" fill="#b06b3a"/>
+  <circle cx="56" cy="79" r="1.2" fill="#b06b3a"/>
+  <circle cx="102" cy="77" r="1.2" fill="#b06b3a"/>
+  <circle cx="106" cy="76" r="1.2" fill="#b06b3a"/>
+  <circle cx="104" cy="79" r="1.2" fill="#b06b3a"/>
+
+  <!-- Eyes (Big Cartoon Expressive Eyes) -->
+  <!-- Left Eye -->
+  <ellipse cx="64" cy="66" rx="9" ry="11" fill="#ffffff" stroke="#000" stroke-width="3"/>
+  <ellipse cx="66" cy="66" rx="5" ry="6.5" fill="#212121"/>
+  <circle cx="68" cy="63" r="2.2" fill="#ffffff"/>
+
+  <!-- Right Eye -->
+  <ellipse cx="96" cy="66" rx="9" ry="11" fill="#ffffff" stroke="#000" stroke-width="3"/>
+  <ellipse cx="94" cy="66" rx="5" ry="6.5" fill="#212121"/>
+  <circle cx="96" cy="63" r="2.2" fill="#ffffff"/>
+
+  <!-- Eyebrows (Dynamic / Expressive) -->
+  <path d="M 54 53 C 60 48, 70 51, 74 54" fill="none" stroke="#000" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M 106 53 C 100 48, 90 51, 86 54" fill="none" stroke="#000" stroke-width="3.5" stroke-linecap="round"/>
+
+  <!-- Cute Button Nose -->
+  <path d="M 77 73 C 78 76, 82 76, 83 73" fill="none" stroke="#c07d48" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- Beatboxing Mouth: Fun round open mouth making a beatbox pop / O-face -->
+  <g id="mouth">
+    <!-- Mouth opening -->
+    <path d="M 72 82 C 72 78, 88 78, 88 82 C 90 94, 70 94, 72 82 Z" fill="#6a1b1a" stroke="#000" stroke-width="3" stroke-linejoin="round"/>
+    <!-- Top Teeth -->
+    <path d="M 74 81 Q 80 84 86 81" fill="#ffffff" stroke="#000" stroke-width="1.5"/>
+    <!-- Tongue -->
+    <path d="M 74 88 Q 80 84 86 88 Q 80 93 74 88 Z" fill="#ff5252"/>
+  </g>
+
+  <!-- Hair (Messy Spiky School Kid Hair) -->
+  <path d="M 44 64 C 42 45, 52 35, 68 34 C 72 26, 82 25, 88 32 C 94 24, 108 26, 114 36 C 122 42, 122 55, 118 66 C 114 55, 108 47, 98 46 C 92 46, 88 49, 82 48 C 76 47, 68 44, 58 48 C 50 51, 46 58, 44 64 Z" fill="#8d5b28" stroke="#000" stroke-width="3.5" stroke-linejoin="round"/>
+  <!-- Front Hair Tufts / Bangs -->
+  <path d="M 56 46 C 60 52, 65 56, 68 52 C 72 58, 80 57, 83 50 C 86 56, 95 55, 98 48" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Cool Backwards School Cap -->
+  <g id="cap">
+    <!-- Backwards Cap Brim -->
+    <path d="M 46 42 C 40 38, 30 39, 24 43 C 28 47, 38 48, 48 45 Z" fill="#e53935" stroke="#000" stroke-width="3" stroke-linejoin="round"/>
+    <!-- Cap Dome -->
+    <path d="M 46 44 C 48 24, 62 16, 82 16 C 102 16, 114 24, 116 44 C 104 36, 60 36, 46 44 Z" fill="#d32f2f" stroke="#000" stroke-width="3.5" stroke-linejoin="round"/>
+    <!-- Cap Button on top -->
+    <ellipse cx="82" cy="16" rx="4" ry="2.5" fill="#ffeb3b" stroke="#000" stroke-width="2"/>
+    <!-- Cap eyelets -->
+    <circle cx="64" cy="27" r="1.5" fill="#b71c1c"/>
+    <circle cx="98" cy="27" r="1.5" fill="#b71c1c"/>
+  </g>
+
+  <!-- Beatbox sound-wave / pop particles coming from mouth -->
+  <g id="beat-sparks" opacity="0.9">
+    <path d="M 94 82 L 102 80" stroke="#000" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M 95 87 L 104 90" stroke="#000" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M 66 82 L 58 80" stroke="#000" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M 65 87 L 56 90" stroke="#000" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+</svg>

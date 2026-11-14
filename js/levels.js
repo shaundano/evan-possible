@@ -4,8 +4,14 @@
 
 // art: box with assets/levels/<src>, or the emoji placeholder until the file exists
 const art = (parent, src, emoji, cls, css) => {
-  const d = Object.assign(document.createElement("div"), { className: "art " + cls, textContent: emoji }), img = new Image();
-  if (src) { img.onload = () => d.replaceChildren(img); img.src = "assets/levels/" + src; }
+  const d = Object.assign(document.createElement("div"), { className: "art " + cls });
+  if (src) {
+    const img = Object.assign(new Image(), { src: "assets/levels/" + src });
+    d.append(img);
+    if (emoji) img.onerror = () => { img.remove(); d.textContent = emoji; };
+  } else if (emoji) {
+    d.textContent = emoji;
+  }
   Object.assign(d.style, css); parent.append(d); return d;
 };
 // drag: pointer-drag e inside area (works under the scaled stage); drop(e) on release
@@ -25,10 +31,29 @@ export const levels = [
     answers: ["Philosophy of the World", "Who Are Parents?", "My Pal Foot Foot", "It's Halloween"] },
   { type: "custom", q: "Put the pipe in old Garfield's mouth",
     setup(stage, game) {
-      art(stage.el, "garfield.png", "\u{1F431}", "garfield", { left: "275px", top: "100px", width: "250px", height: "222px" });
-      const mouth = art(stage.el, "", "", "mouth", { left: "318px", top: "124px", width: "48px", height: "36px", background: "none" }); // MOUTH hotspot over the muzzle in garfield.png
-      const pipe = art(stage.el, "pipe.png", "\u{1FA88}", "pipe", { left: "60px", top: "200px", width: "80px", height: "80px" });
-      drag(pipe, stage.el, () => inside(pipe, mouth) && game.win());
+      art(stage.el, "garfield.png", "", "garfield", { left: "275px", top: "100px", width: "250px", height: "222px" });
+      const mouth = art(stage.el, "", "", "mouth", { left: "270px", top: "145px", width: "70px", height: "55px", background: "none" }); // MOUTH hotspot over muzzle
+      const pipe = art(stage.el, "pipe.png", "", "pipe", { left: "60px", top: "200px", width: "80px", height: "80px" });
+      let won = false;
+      const hit = () => {
+        const pr = pipe.getBoundingClientRect(), mr = mouth.getBoundingClientRect();
+        const tipX = pr.left + pr.width * .8, tipY = pr.top + pr.height * .22;
+        const cx = pr.left + pr.width / 2, cy = pr.top + pr.height / 2;
+        const inMouth = (x, y) => x > mr.left && x < mr.right && y > mr.top && y < mr.bottom;
+        return inMouth(tipX, tipY) || inMouth(cx, cy) || inside(pipe, mouth);
+      };
+      drag(pipe, stage.el, () => {
+        if (won || !hit()) return;
+        won = true;
+        pipe.onpointerdown = null;
+        Object.assign(pipe.style, { left: "230px", top: "152px" });
+        for (let i = 0; i < 4; i++) {
+          const puff = Object.assign(document.createElement("div"), { className: "smoke-puff" });
+          Object.assign(puff.style, { left: 252 + (i % 2 * 4 - 2) + "px", top: "188px", animationDelay: i * .25 + "s" });
+          stage.el.append(puff);
+        }
+        setTimeout(game.win, 1500);
+      });
     } },
   { type: "choice", q: "A bear walks into a bar and orders a grilled ...", answers: ["cheese", "steak", "couple & their dog", "lettuce"], correct: 0 },
   { type: "custom", q: "Drag the movies into Rotten Tomatoes order, best first",
@@ -53,13 +78,16 @@ export const levels = [
   { type: "custom", q: "Press asdf + Space to Beatbox",
     setup(stage, game) {
       const GOAL = 15, IDLE = 7000, root = Object.assign(document.createElement("div"), { className: "beat" });
-      root.innerHTML = '<div class="board">BEATBOX 101</div><div class="guy">\u{1F9D1}‍\u{1F393}</div><div class="desk"></div><div class="count"></div>';
+      root.innerHTML = '<div class="board">BEATBOX 101</div><div class="guy"><img src="assets/img/school-child.svg" alt="school child"></div><div class="desk"></div><div class="count"></div>';
       stage.el.append(root);
       const guy = root.querySelector(".guy"), count = root.querySelector(".count");
-      let n = 0, ac, idle; // presses, audio context, idle timer
-      const blip = k => { try { ac ??= new AudioContext(); const o = ac.createOscillator(), g = ac.createGain(); // synth noise per key, no assets
-        o.type = "square"; o.frequency.value = 80 + "asdf ".indexOf(k) * 90; g.gain.value = .15; g.gain.exponentialRampToValueAtTime(.001, ac.currentTime + .12);
-        o.connect(g).connect(ac.destination); o.start(); o.stop(ac.currentTime + .12); } catch {} };
+      let n = 0, idle;
+      const snds = { a: "beatbox-a", s: "beatbox-s", d: "beatbox-d", f: "beatbox-f", " ": "beatbox-space" };
+      const beats = Object.fromEntries(Object.entries(snds).map(([k, s]) => [k, new Audio(`assets/sounds/${s}.mp3`)]));
+      const playBeat = k => {
+        try { const a = beats[k]?.cloneNode(); if (a) { a.volume = .8; a.play().catch(() => {}); } else game.sound(snds[k]); }
+        catch { game.sound(snds[k]); }
+      };
       const confetti = () => { for (let i = 0; i < 50; i++) { const c = document.createElement("i"); c.className = "confetti";
         c.style.cssText = `left:${Math.random() * 100}%;background:hsl(${Math.random() * 360},90%,55%);animation-delay:${Math.random() * .5}s`; root.append(c); } };
       const stop = () => { clearTimeout(idle); removeEventListener("keydown", press); };
@@ -68,7 +96,7 @@ export const levels = [
         if (!root.isConnected) return stop(); // level was skipped
         const k = e.key === " " ? " " : e.key.toLowerCase();
         if (e.repeat || !"asdf ".includes(k) || k.length !== 1) return;
-        e.preventDefault(); blip(k); arm();
+        e.preventDefault(); playBeat(k); arm();
         guy.classList.remove("hit"); void guy.offsetWidth; guy.classList.add("hit");
         count.textContent = `${++n}/${GOAL}`;
         if (n >= GOAL) { stop(); confetti(); game.sound("yay"); setTimeout(game.win, 1500); }
