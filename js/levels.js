@@ -17,7 +17,7 @@ const drag = (e, area, drop) => e.onpointerdown = ev => {
 };
 const inside = (a, b) => { const p = a.getBoundingClientRect(), m = b.getBoundingClientRect(), x = p.x + p.width / 2, y = p.y + p.height / 2; return x > m.left && x < m.right && y > m.top && y < m.bottom; };
 
-// TODO(author): best-guess answer for the movie-night question; confirm the real Rotten Tomatoes order (highest first)
+// Rotten Tomatoes critic scores (checked 2026-11-14): Blade Runner 2049 88%, DuckTales the Movie 65%, Spaceballs 53%, The Gambler 43%. Highest first.
 const RANKING = ["Blade Runner 2049", "Ducktales the Movie", "Spaceballs", "The Gambler"];
 
 export const levels = [
@@ -25,16 +25,18 @@ export const levels = [
     answers: ["Philosophy of the World", "Who Are Parents?", "My Pal Foot Foot", "It's Halloween"] },
   { type: "custom", q: "Put the pipe in old Garfield's mouth",
     setup(stage, game) {
-      art(stage.el, "garfield.png", "\u{1F431}", "garfield", { left: "300px", top: "70px", width: "200px", height: "200px" });
-      const mouth = art(stage.el, "", "", "mouth", { left: "375px", top: "228px", width: "50px", height: "26px" }); // MOUTH hotspot: tweak to match the art
+      art(stage.el, "garfield.png", "\u{1F431}", "garfield", { left: "300px", top: "75px", width: "190px", height: "250px" });
+      const mouth = art(stage.el, "", "", "mouth", { left: "377px", top: "115px", width: "60px", height: "80px", background: "none" }); // MOUTH hotspot over the open mouth in garfield.png
       const pipe = art(stage.el, "pipe.png", "\u{1FA88}", "pipe", { left: "60px", top: "220px", width: "80px", height: "80px" });
       drag(pipe, stage.el, () => inside(pipe, mouth) && game.win());
     } },
   { type: "choice", q: "A bear walks into a bar and orders a grilled ...", answers: ["cheese", "steak", "couple & their dog", "lettuce"], correct: 0 },
-  { type: "custom", q: "Movie night: rank these 4 movies by Rotten Tomato score (click best first)", sound: "levels/elevator-music.mp3",
+  { type: "custom", q: "Movie night: rank these 4 movies by Rotten Tomato score (click best first)",
     setup(stage, game) {
       const films = [["Spaceballs", "spaceballs", "#c33"], ["Blade Runner 2049", "blade-runner-2049", "#e80"], ["Ducktales the Movie", "ducktales", "#27c"], ["The Gambler", "the-gambler", "#555"]];
       const row = Object.assign(document.createElement("div"), { className: "posters" }), picks = [], badges = [];
+      const bgm = new Audio("assets/levels/elevator-music.mp3"), watch = setInterval(() => row.isConnected || (bgm.pause(), game.bgm.play().catch(() => {}), clearInterval(watch)), 300); // loop music until the level ends
+      bgm.loop = true; bgm.volume = .5; bgm.play().catch(() => {}); game.bgm.pause(); // swap the theme for elevator music
       const submit = Object.assign(document.createElement("button"), { className: "btn", textContent: "Submit", disabled: true });
       films.forEach(([title, file, bg], i) => {
         const slot = document.createElement("div"), badge = document.createElement("div");
