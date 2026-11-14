@@ -25,9 +25,9 @@ export const levels = [
     answers: ["Philosophy of the World", "Who Are Parents?", "My Pal Foot Foot", "It's Halloween"] },
   { type: "custom", q: "Put the pipe in old Garfield's mouth",
     setup(stage, game) {
-      art(stage.el, "garfield.png", "\u{1F431}", "garfield", { left: "300px", top: "75px", width: "190px", height: "250px" });
-      const mouth = art(stage.el, "", "", "mouth", { left: "377px", top: "115px", width: "60px", height: "80px", background: "none" }); // MOUTH hotspot over the open mouth in garfield.png
-      const pipe = art(stage.el, "pipe.png", "\u{1FA88}", "pipe", { left: "60px", top: "220px", width: "80px", height: "80px" });
+      art(stage.el, "garfield.png", "\u{1F431}", "garfield", { left: "275px", top: "100px", width: "250px", height: "222px" });
+      const mouth = art(stage.el, "", "", "mouth", { left: "318px", top: "124px", width: "48px", height: "36px", background: "none" }); // MOUTH hotspot over the muzzle in garfield.png
+      const pipe = art(stage.el, "pipe.png", "\u{1FA88}", "pipe", { left: "60px", top: "200px", width: "80px", height: "80px" });
       drag(pipe, stage.el, () => inside(pipe, mouth) && game.win());
     } },
   { type: "choice", q: "A bear walks into a bar and orders a grilled ...", answers: ["cheese", "steak", "couple & their dog", "lettuce"], correct: 0 },
