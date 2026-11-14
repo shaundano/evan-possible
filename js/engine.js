@@ -19,7 +19,10 @@ over.hidden = true;
 
 let s, cur; // run state { i, lives, skips }; current level game
 skipBtn.onclick = () => cur?.skip();
-const boxes = (answers, fn) => answers.forEach((a, i) => { el("ans", play, a, "button").onclick = () => fn(i); });
+const boxes = (answers, fn) => { // long answer sets get a compact layout
+  play.classList.toggle("dense", answers.join("").length > 200);
+  answers.forEach((a, i) => { el("ans", play, a, "button").onclick = () => fn(i); });
+};
 
 // absolutely positioned image; falls back to a labelled box if the file is missing
 function sprite(src, { x = 0, y = 0, w = 64, h = 64 } = {}) {
@@ -34,11 +37,11 @@ function sprite(src, { x = 0, y = 0, w = 64, h = 64 } = {}) {
 
 // level types: (level, stage, game) => render into stage.el
 const types = {
-  choice: (lv, st, game) => boxes(lv.answers, i => i === lv.correct ? game.win() : game.lose()),
+  choice: (lv, st, game) => boxes(lv.answers, i => [].concat(lv.correct).includes(i) ? game.win() : game.lose()),
   type(lv, st, game) {
     const input = el("input", play, "", "input"), submit = () =>
       lv.accept.some(a => a.toLowerCase() === input.value.trim().toLowerCase()) ? game.win() : game.lose();
-    input.onkeydown = e => e.key === "Enter" && submit();
+    input.onkeydown = e => { if (e.key === "Enter") submit(); }; // returning false would block typing
     el("btn", play, "Submit", "button").onclick = submit;
     input.focus();
   },
@@ -66,8 +69,8 @@ function screen(msg, label, fn) {
   el("btn", over, label, "button").onclick = () => { over.hidden = true; fn(); };
 }
 
-// play assets/sounds/<name>(.mp3); silently ignored if missing or blocked
-const sound = name => { try { new Audio(`assets/sounds/${name}${name.includes(".") ? "" : ".mp3"}`).play().catch(() => {}); } catch {} };
+// play assets/sounds/<name>(.mp3), or assets/<path> if name has a "/"; silently ignored if missing or blocked
+const sound = name => { try { new Audio(`assets/${name.includes("/") ? "" : "sounds/"}${name}${name.includes(".") ? "" : ".mp3"}`).play().catch(() => {}); } catch {} };
 
 const next = () => { s.i++; load(); };
 
@@ -84,6 +87,7 @@ function load() {
   lives.textContent = "\u2665".repeat(s.lives);
   skipBtn.textContent = `Skip (${s.skips})`;
   play.replaceChildren(); play.onclick = null;
+  play.classList.toggle("withpic", !!lv.image); // image on the left, answers on the right
   el("q", play, lv.q);
   if (lv.image) { const im = el("pic", play, "", "img"); im.src = lv.image; im.onerror = () => im.remove(); }
   let done = false;
