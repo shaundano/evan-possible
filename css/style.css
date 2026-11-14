@@ -11,6 +11,8 @@ html, body { margin: 0; height: 100%; background: #111; overflow: hidden; font-f
 .skip { margin-left: auto; }
 .ans { display: block; width: 80%; margin: 8px auto; padding: 10px; font-size: 18px; background: #fff; border: 2px solid #333; border-radius: 6px; }
 .ans:hover { background: #ffd; }
+.dense .ans { font-size: 13px; padding: 5px 8px; margin: 5px auto; width: 92%; }
+.dense .q { font-size: 18px; margin-bottom: 6px; }
 .input { display: block; margin: 20px auto 10px; width: 60%; padding: 8px; font-size: 20px; font-family: inherit; text-align: center; }
 .play .btn { display: block; margin: 0 auto; padding: 6px 18px; font-size: 18px; }
 .sprite { position: absolute; cursor: pointer; transition: left .1s, top .1s; }

@@ -19,7 +19,10 @@ over.hidden = true;
 
 let s, cur; // run state { i, lives, skips }; current level game
 skipBtn.onclick = () => cur?.skip();
-const boxes = (answers, fn) => answers.forEach((a, i) => { el("ans", play, a, "button").onclick = () => fn(i); });
+const boxes = (answers, fn) => { // long answer sets get a compact layout
+  play.classList.toggle("dense", answers.join("").length > 200);
+  answers.forEach((a, i) => { el("ans", play, a, "button").onclick = () => fn(i); });
+};
 
 // absolutely positioned image; falls back to a labelled box if the file is missing
 function sprite(src, { x = 0, y = 0, w = 64, h = 64 } = {}) {
