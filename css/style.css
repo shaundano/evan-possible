@@ -60,11 +60,18 @@ html, body { margin: 0; height: 100%; background: #111; overflow: hidden; font-f
 .garfield { font-size: 150px; }
 .mouth { background: #222; border-radius: 50%; }
 .pipe { cursor: grab; touch-action: none; z-index: 2; }
-.posters { display: flex; justify-content: center; gap: 12px; margin: 14px 0; }
-.posters > div { position: relative; cursor: pointer; }
-.art.poster { position: static; width: 112px; height: 168px; font-size: 18px; font-weight: bold; color: #fff; text-align: center; border: 2px solid #222; box-sizing: border-box; }
-.badge { position: absolute; top: -8px; left: -8px; min-width: 28px; height: 28px; border-radius: 14px; background: #fc0; border: 2px solid #222; font-size: 18px; text-align: center; line-height: 28px; }
-.badge:empty { display: none; }
+/* cinema level: curtains, screen, seats, rank slots, draggable posters (stage coords) */
+.cinema { position: absolute; left: 0; top: -32px; width: 550px; height: 400px; background: radial-gradient(ellipse at 50% 30%, #3a1420, #14060b 75%); overflow: hidden; }
+.cinema .screen { position: absolute; left: 96px; top: 18px; width: 392px; height: 116px; box-sizing: border-box; background: #f5f3e6; border: 5px solid #111; box-shadow: 0 0 36px 8px rgba(255, 244, 180, .45); }
+.cinema .curtain { position: absolute; top: 0; height: 400px; background: repeating-linear-gradient(90deg, #5c0d1c 0 9px, #3c0813 9px 18px, #6e1224 18px 22px); box-shadow: inset 0 -40px 40px rgba(0, 0, 0, .55); }
+.cinema .valance { position: absolute; left: 0; top: 0; width: 550px; height: 14px; background: radial-gradient(circle at 50% 0, #7a1428 0 13px, transparent 14px) 0 0 / 28px 14px repeat-x, #7a1428; border-bottom: 2px solid #3c0813; }
+.cinema .seat { position: absolute; width: 40px; height: 32px; border-radius: 14px 14px 6px 6px; background: linear-gradient(#7d1325, #4b0a16); box-shadow: inset 0 3px 0 rgba(255, 255, 255, .12); }
+.cinema .slot { position: absolute; box-sizing: border-box; width: 70px; height: 102px; border: 3px dashed #e8c14a; border-radius: 4px; background: rgba(232, 193, 74, .08); color: rgba(232, 193, 74, .55); font-size: 56px; display: flex; align-items: center; justify-content: center; }
+.cinema .art.poster { position: absolute; width: 66px; height: 98px; font-size: 11px; line-height: 1.1; color: #fff; text-align: center; border: 2px solid #111; box-sizing: border-box; cursor: grab; touch-action: none; z-index: 3; box-shadow: 0 3px 8px rgba(0, 0, 0, .6); transition: left .15s, top .15s; }
+.cinema .art.poster:active { cursor: grabbing; transition: none; z-index: 4; }
+.cinema .art.poster img { object-fit: cover; }
+.cinema .btn { left: 205px; top: 350px; width: 140px; height: 44px; font-size: 26px; }
+.cinema .btn:disabled { opacity: .45; cursor: default; background: #f8caff; }
 .beat { position: absolute; inset: 0; overflow: hidden; }
 .beat .board { margin: 100px auto 0; width: 300px; padding: 14px; background: #1d4d2f; border: 6px solid #8a5a2b; color: #fff; text-align: center; font-size: 24px; }
 .beat .guy { position: absolute; left: 240px; top: 190px; font-size: 90px; line-height: 1; }
