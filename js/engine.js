@@ -41,7 +41,7 @@ const types = {
   type(lv, st, game) {
     const input = el("input", play, "", "input"), submit = () =>
       lv.accept.some(a => a.toLowerCase() === input.value.trim().toLowerCase()) ? game.win() : game.lose();
-    input.onkeydown = e => e.key === "Enter" && submit();
+    input.onkeydown = e => { if (e.key === "Enter") submit(); }; // returning false would block typing
     el("btn", play, "Submit", "button").onclick = submit;
     input.focus();
   },
