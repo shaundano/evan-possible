@@ -1,0 +1,4 @@
+html, body { margin: 0; height: 100%; background: #111; overflow: hidden; font-family: "Comic Sans MS", Arial, sans-serif; }
+/* fixed 550x400 stage, scaled by --s from engine.js */
+#stage { position: absolute; left: 50%; top: 50%; width: 550px; height: 400px; background: #fff; overflow: hidden;
+  transform: translate(-50%, -50%) scale(var(--s, 1)); user-select: none; }
