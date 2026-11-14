@@ -9,3 +9,5 @@ html, body { margin: 0; height: 100%; background: #111; overflow: hidden; font-f
 .over { position: absolute; inset: 0; background: rgba(0, 0, 0, .85); color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; text-align: center; padding: 20px; font-size: 26px; z-index: 10; }
 .over[hidden] { display: none; }
 .skip { margin-left: auto; }
+.ans { display: block; width: 80%; margin: 8px auto; padding: 10px; font-size: 18px; background: #fff; border: 2px solid #333; border-radius: 6px; }
+.ans:hover { background: #ffd; }

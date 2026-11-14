@@ -19,7 +19,13 @@ over.hidden = true;
 
 let s, cur; // run state { i, lives, skips }; current level game
 skipBtn.onclick = () => cur?.skip();
-const types = { custom: (lv, st, game) => lv.setup(st, game) };
+const boxes = (answers, fn) => answers.forEach((a, i) => { el("ans", play, a, "button").onclick = () => fn(i); });
+
+// level types: (level, stage, game) => render into stage.el
+const types = {
+  choice: (lv, st, game) => boxes(lv.answers, i => i === lv.correct ? game.win() : game.lose()),
+  custom: (lv, st, game) => lv.setup(st, game),
+};
 
 // full-stage message with one button
 function screen(msg, label, fn) {
