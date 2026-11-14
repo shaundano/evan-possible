@@ -132,4 +132,21 @@ export const levels = [
   { type: "type", q: "Press F to...", accept: ["pay respects", "pay my respects", "pay respect", "pay your respects"], fakeout: "F" },
   // DRAFT
   { type: "choice", q: "How many members are in King Gizzard?", answers: ["5", "6", "7", "Yes"], correct: 3, fakeout: "Even the Lizard Wizard lost count." },
+  // DRAFT
+  { type: "custom", q: "Click the Lizard Wizard", fakeout: "Not a Lizard Wizard.",
+    setup(stage, game) {
+      const need = new Set(["\u{1F98E}", "\u{1F9D9}"]); // lizard + wizard
+      ["\u{1F40D}", "\u{1F98E}", "\u{1F40A}", "\u{1F9D9}"].forEach((e, i) => {
+        const a = art(stage.el, "", e, "", { left: 25 + i * 130 + "px", top: "120px", width: "110px", height: "110px", cursor: "pointer" });
+        a.onclick = () => { if (!need.has(e)) return game.lose("Not a Lizard Wizard."); need.delete(e); a.style.opacity = .3; need.size || game.win(); };
+      });
+    } },
+  // DRAFT
+  { type: "custom", q: "Please release 5 albums this year",
+    setup(stage, game) {
+      let n = 0; const cnt = art(stage.el, "", "\u{1F4BF} 0/5", "", { left: 0, top: "90px", width: "550px", fontSize: "56px" });
+      const b = Object.assign(document.createElement("button"), { className: "btn", textContent: "Release album" }); b.style.width = "220px"; b.style.left = "165px"; stage.el.append(b);
+      b.onclick = () => { cnt.textContent = `\u{1F4BF} ${++n}/5`; n >= 5 && game.win(); };
+      game.timer(6, () => game.lose(`Only ${n} albums. Lazy.`));
+    } },
 ];
