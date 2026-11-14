@@ -10,7 +10,7 @@ A birthday gift for Evan: a 25-question browser game in the style of *The Imposs
 |---|---|
 | Length | 25 questions: ~15 multiple choice, ~10 "funky" (click / wait / type / custom) |
 | Reference game | The Impossible Quiz **1** |
-| Rules | Authentic: 3 lives, a few skips, game over → back to Q1 |
+| Rules | Authentic: 3 lives, a few skips; wrong answer = -1 life + modal, retry same question; game over → back to Q1 |
 | Ending | Q25 = birthday "final boss"; win → end screen (content TBD by author) |
 | Stack | Plain HTML + vanilla JS, DOM rendering, no build step |
 | Stage | Fixed 550×400, scaled to fit window |
