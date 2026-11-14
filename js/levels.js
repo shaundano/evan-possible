@@ -49,6 +49,31 @@ export const levels = [
       submit.onclick = () => picks.map(i => films[i][0]).join() === RANKING.join() ? game.win() : game.lose();
       stage.el.append(row, submit);
     } },
+  { type: "custom", q: "Press asdf + Space to Beatbox",
+    setup(stage, game) {
+      const GOAL = 15, IDLE = 7000, root = Object.assign(document.createElement("div"), { className: "beat" });
+      root.innerHTML = '<div class="board">BEATBOX 101</div><div class="guy">\u{1F9D1}‍\u{1F393}</div><div class="desk"></div><div class="count"></div>';
+      stage.el.append(root);
+      const guy = root.querySelector(".guy"), count = root.querySelector(".count");
+      let n = 0, ac, idle; // presses, audio context, idle timer
+      const blip = k => { try { ac ??= new AudioContext(); const o = ac.createOscillator(), g = ac.createGain(); // synth noise per key, no assets
+        o.type = "square"; o.frequency.value = 80 + "asdf ".indexOf(k) * 90; g.gain.value = .15; g.gain.exponentialRampToValueAtTime(.001, ac.currentTime + .12);
+        o.connect(g).connect(ac.destination); o.start(); o.stop(ac.currentTime + .12); } catch {} };
+      const confetti = () => { for (let i = 0; i < 50; i++) { const c = document.createElement("i"); c.className = "confetti";
+        c.style.cssText = `left:${Math.random() * 100}%;background:hsl(${Math.random() * 360},90%,55%);animation-delay:${Math.random() * .5}s`; root.append(c); } };
+      const stop = () => { clearTimeout(idle); removeEventListener("keydown", press); };
+      const arm = () => { clearTimeout(idle); idle = setTimeout(() => { stop(); game.lose("Too slow! No beats for 7 seconds."); }, IDLE); };
+      function press(e) {
+        if (!root.isConnected) return stop(); // level was skipped
+        const k = e.key === " " ? " " : e.key.toLowerCase();
+        if (e.repeat || !"asdf ".includes(k) || k.length !== 1) return;
+        e.preventDefault(); blip(k); arm();
+        guy.classList.remove("hit"); void guy.offsetWidth; guy.classList.add("hit");
+        count.textContent = `${++n}/${GOAL}`;
+        if (n >= GOAL) { stop(); confetti(); game.sound("yay"); setTimeout(game.win, 1500); }
+      }
+      addEventListener("keydown", press); arm();
+    } },
   { type: "choice", q: "Oil, what is it?", answers: ["makes french fries tasty", "related to Iran probably", "Oi, let's go to Mandy's", "gives me acne"], correct: 2 },
   { type: "choice", q: "Oldest breakfast place in Montreal?", answers: ["Chez Nick", "Greenspot", "Beauty's", "La Binerie"], correct: 0 },
   { type: "choice", q: "Why is Eeyore sad", answers: ["He has to pooh", "Shrinkflation", "His bones are his money", "He has a nail in his anus"], correct: 3 },

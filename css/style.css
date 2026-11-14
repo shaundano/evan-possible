@@ -35,4 +35,13 @@ html, body { margin: 0; height: 100%; background: #111; overflow: hidden; font-f
 .art.poster { position: static; width: 112px; height: 168px; font-size: 18px; font-weight: bold; color: #fff; text-align: center; border: 2px solid #222; box-sizing: border-box; }
 .badge { position: absolute; top: -8px; left: -8px; min-width: 28px; height: 28px; border-radius: 14px; background: #fc0; border: 2px solid #222; font-size: 18px; text-align: center; line-height: 28px; }
 .badge:empty { display: none; }
+.beat { position: absolute; inset: 0; overflow: hidden; }
+.beat .board { margin: 50px auto 0; width: 300px; padding: 14px; background: #1d4d2f; border: 6px solid #8a5a2b; color: #fff; text-align: center; font-size: 24px; }
+.beat .guy { position: absolute; left: 240px; top: 170px; font-size: 90px; line-height: 1; }
+.beat .guy.hit { animation: bop .15s; }
+.beat .desk { position: absolute; left: 190px; top: 250px; width: 170px; height: 14px; background: #8a5a2b; border-radius: 4px; }
+.beat .count { position: absolute; right: 12px; bottom: 8px; font-size: 22px; }
+.confetti { position: absolute; top: -12px; width: 8px; height: 14px; animation: fall 1.4s linear forwards; }
+@keyframes bop { 50% { transform: translateY(-14px) scale(1.08); } }
+@keyframes fall { to { transform: translateY(380px) rotate(540deg); } }
 .msg { white-space: pre-line; }
