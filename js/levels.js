@@ -114,4 +114,16 @@ export const levels = [
     "\"The more you learn, the more you earn\"",
     "\"I think the issue with young people these days is they think they can get a degree and be rich, but school won't teach you how to be rich.\"",
   ] },
+  // DRAFT
+  { type: "choice", q: "What is 2+2?", answers: ["Fish", "That's 4", "Quick maths", "Four, minus 1"], correct: 2, fakeout: "4 minus 1 that's 3" },
+  // DRAFT
+  { type: "click", q: "Click the duck.", hotspot: "duck", bomb: 8 },
+  // DRAFT
+  { type: "choice", q: "What does the fox say?", answers: ["Ring-ding-ding-ding", "Wa-pa-pa-pow", "Hatee-hatee-hatee-ho", "Yes"], correct: 3, fakeout: "Nobody knows. Still wrong." },
+  // DRAFT
+  { type: "wait", q: "Don't click anything.", seconds: 6, answers: ["Never gonna give you up", "Never gonna let you down", "Never gonna run around", "And desert you"], fakeout: "You clicked. You've been rickrolled." },
+  // DRAFT
+  { type: "choice", q: "Dat boi is...", answers: ["Here come", "A frog", "On a unicycle", "Oh shit waddup"], correct: 0, fakeout: "Oh shit waddup" },
+  // DRAFT
+  { type: "type", q: "Type the Konami code", accept: ["uuddlrlrba", "uuddlrlrbastart", "u u d d l r l r b a", "up up down down left right left right b a", "up up down down left right left right ba", "\u2191\u2191\u2193\u2193\u2190\u2192\u2190\u2192ba"], fakeout: "30 lives wasted." },
 ];
