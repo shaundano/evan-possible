@@ -17,6 +17,9 @@ const drag = (e, area, drop) => e.onpointerdown = ev => {
 };
 const inside = (a, b) => { const p = a.getBoundingClientRect(), m = b.getBoundingClientRect(), x = p.x + p.width / 2, y = p.y + p.height / 2; return x > m.left && x < m.right && y > m.top && y < m.bottom; };
 
+// TODO(author): best-guess answer for the movie-night question; confirm the real Rotten Tomatoes order (highest first)
+const RANKING = ["Blade Runner 2049", "Ducktales the Movie", "Spaceballs", "The Gambler"];
+
 export const levels = [
   { type: "choice", q: "Which Shaggs song is this?", sound: "levels/shaggs-who-are-parents.mp3", correct: 1,
     answers: ["Philosophy of the World", "Who Are Parents?", "My Pal Foot Foot", "It's Halloween"] },
@@ -28,6 +31,24 @@ export const levels = [
       drag(pipe, stage.el, () => inside(pipe, mouth) && game.win());
     } },
   { type: "choice", q: "A bear walks into a bar and orders a grilled ...", answers: ["cheese", "steak", "couple & their dog", "lettuce"], correct: 0 },
+  { type: "custom", q: "Movie night: rank these 4 movies by Rotten Tomato score (click best first)", sound: "levels/elevator-music.mp3",
+    setup(stage, game) {
+      const films = [["Spaceballs", "spaceballs", "#c33"], ["Blade Runner 2049", "blade-runner-2049", "#e80"], ["Ducktales the Movie", "ducktales", "#27c"], ["The Gambler", "the-gambler", "#555"]];
+      const row = Object.assign(document.createElement("div"), { className: "posters" }), picks = [], badges = [];
+      const submit = Object.assign(document.createElement("button"), { className: "btn", textContent: "Submit", disabled: true });
+      films.forEach(([title, file, bg], i) => {
+        const slot = document.createElement("div"), badge = document.createElement("div");
+        art(slot,`poster-${file}.jpg`, title, "poster", { background: bg });
+        badge.className = "badge"; badges.push(badge); slot.append(badge); row.append(slot);
+        slot.onclick = () => { // click to rank, click again to unrank
+          picks.includes(i) ? picks.splice(picks.indexOf(i), 1) : picks.push(i);
+          badges.forEach((b, j) => b.textContent = picks.indexOf(j) + 1 || "");
+          submit.disabled = picks.length < films.length;
+        };
+      });
+      submit.onclick = () => picks.map(i => films[i][0]).join() === RANKING.join() ? game.win() : game.lose();
+      stage.el.append(row, submit);
+    } },
   { type: "choice", q: "Oil, what is it?", answers: ["makes french fries tasty", "related to Iran probably", "Oi, let's go to Mandy's", "gives me acne"], correct: 2 },
   { type: "choice", q: "Oldest breakfast place in Montreal?", answers: ["Chez Nick", "Greenspot", "Beauty's", "La Binerie"], correct: 0 },
   { type: "choice", q: "Why is Eeyore sad", answers: ["He has to pooh", "Shrinkflation", "His bones are his money", "He has a nail in his anus"], correct: 3 },

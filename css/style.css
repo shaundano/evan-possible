@@ -30,4 +30,9 @@ html, body { margin: 0; height: 100%; background: #111; overflow: hidden; font-f
 .garfield { font-size: 150px; }
 .mouth { background: #222; border-radius: 50%; }
 .pipe { cursor: grab; touch-action: none; z-index: 2; }
+.posters { display: flex; justify-content: center; gap: 12px; margin: 14px 0; }
+.posters > div { position: relative; cursor: pointer; }
+.art.poster { position: static; width: 112px; height: 168px; font-size: 18px; font-weight: bold; color: #fff; text-align: center; border: 2px solid #222; box-sizing: border-box; }
+.badge { position: absolute; top: -8px; left: -8px; min-width: 28px; height: 28px; border-radius: 14px; background: #fc0; border: 2px solid #222; font-size: 18px; text-align: center; line-height: 28px; }
+.badge:empty { display: none; }
 .msg { white-space: pre-line; }
