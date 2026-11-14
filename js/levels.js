@@ -152,3 +152,7 @@ export const levels = [
   // DRAFT: final boss
   { type: "choice", q: "Whose birthday is it?", answers: ["Garfield", "Whomst've", "The Lizard Wizard", "Evan"], correct: 3, bomb: 10, fakeout: "Wrong. Evan's feelings are hurt." },
 ];
+
+// END SCREEN (author: replace these two): message under "HAPPY BIRTHDAY EVAN", and an optional image path like "assets/levels/end.jpg" (or "")
+export const END_MESSAGE = "Placeholder: your birthday message goes here.";
+export const END_IMAGE = "";

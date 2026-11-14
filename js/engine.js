@@ -1,4 +1,4 @@
-import { levels } from "./levels.js";
+import { levels, END_MESSAGE, END_IMAGE } from "./levels.js";
 
 const stage = document.getElementById("stage");
 const el = (cls, parent, text = "", tag = "div") => {
@@ -105,10 +105,21 @@ function gameOver() { // splat; click anywhere to retry
   over.onclick = () => { over.hidden = true; over.onclick = null; start(); };
 }
 
+// birthday end screen: confetti, victory sound, author message/image, Play Again returns to the title card
+function endScreen() {
+  clearTimeout(tm); bgm.pause(); sound("victory"); over.replaceChildren(); over.hidden = false; over.className = "over end";
+  for (let i = 0; i < 70; i++) el("confetti", over, "", "i").style.cssText = `left:${Math.random() * 100}%;background:hsl(${Math.random() * 360},90%,55%);animation-delay:${Math.random() * 3}s`;
+  el("h", over, "HAPPY BIRTHDAY").append(el("b", over, "EVAN", "b"));
+  if (END_IMAGE) el("pic", over, "", "img").src = END_IMAGE;
+  el("note", over, END_MESSAGE);
+  el("btn", over, "Play again", "button").onclick = () => { over.hidden = true; title.hidden = false; };
+  el("credits", over, 'Music: Kevin MacLeod (CC BY 4.0), "Local Forecast - Elevator"; beatbox: Pepouni (CC BY-SA 3.0) & stilgar (PD); inspired by The Impossible Quiz by Splapp-me-do');
+}
+
 function load() {
   const lv = levels[s.i];
   cur?.teardown(); lvSnd?.pause(); held = null; // previous level's clip must not leak into this one
-  if (!lv) return screen("\u{1F382} Happy Birthday Evan! \u{1F382}\n(end screen TBD)", "Play again", start);
+  if (!lv) return endScreen();
   qnum.lastChild.textContent = `${s.i + 1}.`;
   lives.querySelector(".n").textContent = s.lives;
   skips.replaceChildren(); for (let k = 0; k < s.skips; k++) el("", skips, "", "button").onclick = () => cur?.skip();
