@@ -24,6 +24,13 @@ const boxes = (answers, fn) => answers.forEach((a, i) => { el("ans", play, a, "b
 // level types: (level, stage, game) => render into stage.el
 const types = {
   choice: (lv, st, game) => boxes(lv.answers, i => i === lv.correct ? game.win() : game.lose()),
+  type(lv, st, game) {
+    const input = el("input", play, "", "input"), submit = () =>
+      lv.accept.some(a => a.toLowerCase() === input.value.trim().toLowerCase()) ? game.win() : game.lose();
+    input.onkeydown = e => e.key === "Enter" && submit();
+    el("btn", play, "Submit", "button").onclick = submit;
+    input.focus();
+  },
   custom: (lv, st, game) => lv.setup(st, game),
 };
 
