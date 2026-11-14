@@ -14,6 +14,7 @@ const art = (parent, src, emoji, cls, css) => {
   }
   Object.assign(d.style, css); parent.append(d); return d;
 };
+["garfield.png", "pipe.png"].forEach(f => new Image().src = "assets/levels/" + f); // preload so nothing pops in
 // drag: pointer-drag e inside area (works under the scaled stage); drop(e) on release
 const drag = (e, area, drop) => e.onpointerdown = ev => {
   const r = area.getBoundingClientRect(), k = r.width / area.offsetWidth, ox = (ev.clientX - r.left) / k - e.offsetLeft, oy = (ev.clientY - r.top) / k - e.offsetTop;
@@ -32,27 +33,17 @@ export const levels = [
   { type: "custom", q: "Put the pipe in old Garfield's mouth",
     setup(stage, game) {
       art(stage.el, "garfield.png", "", "garfield", { left: "275px", top: "100px", width: "250px", height: "222px" });
-      const mouth = art(stage.el, "", "", "mouth", { left: "270px", top: "145px", width: "70px", height: "55px", background: "none" }); // MOUTH hotspot over muzzle
-      const pipe = art(stage.el, "pipe.png", "", "pipe", { left: "60px", top: "200px", width: "80px", height: "80px" });
+      const mouth = art(stage.el, "", "", "mouth", { left: "290px", top: "125px", width: "80px", height: "50px", background: "none" }); // hotspot over his muzzle
+      const pipe = art(stage.el, "pipe.png", "", "pipe", { left: "60px", top: "200px", width: "120px", height: "55px" });
       let won = false;
-      const hit = () => {
-        const pr = pipe.getBoundingClientRect(), mr = mouth.getBoundingClientRect();
-        const tipX = pr.left + pr.width * .8, tipY = pr.top + pr.height * .22;
-        const cx = pr.left + pr.width / 2, cy = pr.top + pr.height / 2;
-        const inMouth = (x, y) => x > mr.left && x < mr.right && y > mr.top && y < mr.bottom;
-        return inMouth(tipX, tipY) || inMouth(cx, cy) || inside(pipe, mouth);
-      };
       drag(pipe, stage.el, () => {
-        if (won || !hit()) return;
-        won = true;
-        pipe.onpointerdown = null;
-        Object.assign(pipe.style, { left: "230px", top: "152px" });
-        for (let i = 0; i < 4; i++) {
-          const puff = Object.assign(document.createElement("div"), { className: "smoke-puff" });
-          Object.assign(puff.style, { left: 252 + (i % 2 * 4 - 2) + "px", top: "188px", animationDelay: i * .25 + "s" });
-          stage.el.append(puff);
-        }
-        setTimeout(game.win, 1500);
+        const pr = pipe.getBoundingClientRect(), mr = mouth.getBoundingClientRect(), x = pr.right - 4, y = pr.top + pr.height * .12; // stem tip
+        if (won || !(x > mr.left && x < mr.right && y > mr.top && y < mr.bottom)) return;
+        won = true; pipe.onpointerdown = null;
+        Object.assign(pipe.style, { left: "210px", top: "141px" }); // stem in his mouth, bowl outside
+        const puff = () => { const p = Object.assign(document.createElement("div"), { className: "smoke-puff" }); Object.assign(p.style, { left: 226 + Math.random() * 8 + "px", top: "141px" }); p.onanimationend = () => p.remove(); stage.el.append(p); };
+        puff(); const t = setInterval(puff, 250);
+        setTimeout(() => { clearInterval(t); game.win(); }, 3000); // hold 3s while smoking
       });
     } },
   { type: "choice", q: "A bear walks into a bar and orders a grilled ...", answers: ["cheese", "steak", "couple & their dog", "lettuce"], correct: 0 },
