@@ -42,6 +42,15 @@ const types = {
     el("btn", play, "Submit", "button").onclick = submit;
     input.focus();
   },
+  click(lv, st, game) { // hotspot: a word in q, or a sprite {src, x, y, w, h}
+    const h = lv.hotspot;
+    if (typeof h !== "string") return sprite(h.src, h).onClick(game.win);
+    const q = play.querySelector(".q"), at = lv.q.indexOf(h);
+    if (at < 0) return console.warn("hotspot not found in q:", h);
+    const hot = el("hot", q, h, "span");
+    hot.onclick = game.win;
+    q.replaceChildren(lv.q.slice(0, at), hot, lv.q.slice(at + h.length));
+  },
   wait(lv, st, game) { // clicking anything in the play area loses; surviving wins
     boxes(lv.answers ?? [], () => {});
     play.onclick = () => game.lose();
