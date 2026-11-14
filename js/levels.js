@@ -126,4 +126,10 @@ export const levels = [
   { type: "choice", q: "Dat boi is...", answers: ["Here come", "A frog", "On a unicycle", "Oh shit waddup"], correct: 0, fakeout: "Oh shit waddup" },
   // DRAFT
   { type: "type", q: "Type the Konami code", accept: ["uuddlrlrba", "uuddlrlrbastart", "u u d d l r l r b a", "up up down down left right left right b a", "up up down down left right left right ba", "\u2191\u2191\u2193\u2193\u2190\u2192\u2190\u2192ba"], fakeout: "30 lives wasted." },
+  // DRAFT
+  { type: "choice", q: "I am your...", answers: ["Dad", "Father", "Mother", "Nephew"], correct: 0, fakeout: "No. That's not true. That's impossible!" },
+  // DRAFT
+  { type: "type", q: "Press F to...", accept: ["pay respects", "pay my respects", "pay respect", "pay your respects"], fakeout: "F" },
+  // DRAFT
+  { type: "choice", q: "How many members are in King Gizzard?", answers: ["5", "6", "7", "Yes"], correct: 3, fakeout: "Even the Lizard Wizard lost count." },
 ];
