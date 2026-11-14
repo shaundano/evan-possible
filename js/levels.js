@@ -35,8 +35,8 @@ export const levels = [
     setup(stage, game) {
       const films = [["Spaceballs", "spaceballs", "#c33"], ["Blade Runner 2049", "blade-runner-2049", "#e80"], ["Ducktales the Movie", "ducktales", "#27c"], ["The Gambler", "the-gambler", "#555"]];
       const row = Object.assign(document.createElement("div"), { className: "posters" }), picks = [], badges = [];
-      const bgm = new Audio("assets/levels/elevator-music.mp3"), watch = setInterval(() => row.isConnected || (bgm.pause(), clearInterval(watch)), 300); // loop music until the level ends
-      bgm.loop = true; bgm.volume = .5; bgm.play().catch(() => {});
+      const bgm = new Audio("assets/levels/elevator-music.mp3"), watch = setInterval(() => row.isConnected || (bgm.pause(), game.bgm.play().catch(() => {}), clearInterval(watch)), 300); // loop music until the level ends
+      bgm.loop = true; bgm.volume = .5; bgm.play().catch(() => {}); game.bgm.pause(); // swap the theme for elevator music
       const submit = Object.assign(document.createElement("button"), { className: "btn", textContent: "Submit", disabled: true });
       films.forEach(([title, file, bg], i) => {
         const slot = document.createElement("div"), badge = document.createElement("div");

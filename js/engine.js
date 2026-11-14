@@ -72,6 +72,10 @@ function screen(msg, label, fn) {
 // play assets/sounds/<name>(.mp3), or assets/<path> if name has a "/"; silently ignored if missing or blocked
 const sound = name => { try { new Audio(`assets/${name.includes("/") ? "" : "sounds/"}${name}${name.includes(".") ? "" : ".mp3"}`).play().catch(() => {}); } catch {} };
 
+// background music: loops quietly, starts on the first click (browser autoplay rules)
+const bgm = Object.assign(new Audio("assets/sounds/bgm.mp3"), { loop: true, volume: .25 });
+addEventListener("pointerdown", () => bgm.play().catch(() => {}), { once: true });
+
 const next = () => { s.i++; load(); };
 
 // wrong answer: lose a life, show the message, then continue or game over
@@ -94,7 +98,7 @@ function load() {
   const ids = []; // pending timers, cleared when the level ends
   const end = f => (...a) => { if (!done) { done = true; ids.forEach(clearTimeout); f(...a); } };
   const game = { win: end(() => { sound("correct"); next(); }), lose: end((msg = lv.fakeout ?? "Wrong!") => die(msg)),
-    sound,
+    sound, bgm,
     timer(sec, fn) { ids.push(setTimeout(() => done || fn(), sec * 1000)); },
     skip() { if (s.skips > 0 && !done) { s.skips--; end(next)(); } } };
   cur = game;
