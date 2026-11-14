@@ -79,7 +79,7 @@ function die(msg) {
 
 function load() {
   const lv = levels[s.i];
-  if (!lv) return screen("The end! (end screen TBD)", "Play again", start);
+  if (!lv) return screen("\u{1F382} Happy Birthday Evan! \u{1F382}\n(end screen TBD)", "Play again", start);
   qnum.textContent = `Q${s.i + 1}/${levels.length}`;
   lives.textContent = "\u2665".repeat(s.lives);
   skipBtn.textContent = `Skip (${s.skips})`;

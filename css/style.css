@@ -18,3 +18,4 @@ html, body { margin: 0; height: 100%; background: #111; overflow: hidden; font-f
 .sprite.missing { background: #f9c; border: 2px dashed #c06; font-size: 11px; display: flex; align-items: center; justify-content: center; word-break: break-all; }
 .hot { cursor: pointer; }
 .pic { display: block; margin: 0 auto 8px; max-height: 120px; }
+.msg { white-space: pre-line; }
