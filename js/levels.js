@@ -31,10 +31,12 @@ export const levels = [
       drag(pipe, stage.el, () => inside(pipe, mouth) && game.win());
     } },
   { type: "choice", q: "A bear walks into a bar and orders a grilled ...", answers: ["cheese", "steak", "couple & their dog", "lettuce"], correct: 0 },
-  { type: "custom", q: "Movie night: rank these 4 movies by Rotten Tomato score (click best first)", sound: "levels/elevator-music.mp3",
+  { type: "custom", q: "Movie night: rank these 4 movies by Rotten Tomato score (click best first)",
     setup(stage, game) {
       const films = [["Spaceballs", "spaceballs", "#c33"], ["Blade Runner 2049", "blade-runner-2049", "#e80"], ["Ducktales the Movie", "ducktales", "#27c"], ["The Gambler", "the-gambler", "#555"]];
       const row = Object.assign(document.createElement("div"), { className: "posters" }), picks = [], badges = [];
+      const bgm = new Audio("assets/levels/elevator-music.mp3"), watch = setInterval(() => row.isConnected || (bgm.pause(), clearInterval(watch)), 300); // loop music until the level ends
+      bgm.loop = true; bgm.volume = .5; bgm.play().catch(() => {});
       const submit = Object.assign(document.createElement("button"), { className: "btn", textContent: "Submit", disabled: true });
       films.forEach(([title, file, bg], i) => {
         const slot = document.createElement("div"), badge = document.createElement("div");
