@@ -21,6 +21,17 @@ let s, cur; // run state { i, lives, skips }; current level game
 skipBtn.onclick = () => cur?.skip();
 const boxes = (answers, fn) => answers.forEach((a, i) => { el("ans", play, a, "button").onclick = () => fn(i); });
 
+// absolutely positioned image; falls back to a labelled box if the file is missing
+function sprite(src, { x = 0, y = 0, w = 64, h = 64 } = {}) {
+  const e = el("sprite", play), img = el("", e, "", "img");
+  Object.assign(e.style, { left: x + "px", top: y + "px", width: w + "px", height: h + "px" });
+  img.src = src.includes("/") ? src : `assets/${src}`;
+  img.onerror = () => { img.remove(); e.classList.add("missing"); e.textContent = src; };
+  const on = (ev, fn) => e.addEventListener(ev, ev2 => { ev2.stopPropagation(); fn(ev2); });
+  return { el: e, onClick: fn => on("click", fn), onHover: fn => on("mouseenter", fn),
+    moveRandom() { e.style.left = Math.random() * (550 - w) + "px"; e.style.top = Math.random() * (368 - h - 24) + "px"; } };
+}
+
 // level types: (level, stage, game) => render into stage.el
 const types = {
   choice: (lv, st, game) => boxes(lv.answers, i => i === lv.correct ? game.win() : game.lose()),
@@ -80,7 +91,7 @@ function load() {
     tick();
   }
   if (lv.sound) sound(lv.sound);
-  types[lv.type](lv, { el: play }, game);
+  types[lv.type](lv, { el: play, sprite }, game);
 }
 
 function start(i = 0) { s = { i, lives: 3, skips: 3 }; load(); }

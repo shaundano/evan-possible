@@ -5,4 +5,10 @@ export const levels = [
   { type: "choice", q: "What is 2 + 2?", answers: ["4", "5", "Fish", "Evan"], correct: 3, fakeout: "It was obviously Evan." },
   { type: "type", q: "Name a famous cheese.", accept: ["cheese", "Cheddar"] },
   { type: "wait", q: "Don't touch anything.", seconds: 5, answers: ["Do not click me", "Seriously"], fakeout: "You touched something." },
+  { type: "custom", q: "Catch Evan.", bomb: 10,
+    setup(stage, game) {
+      const evan = stage.sprite("evan.png", { x: 240, y: 150 });
+      evan.onHover(() => evan.moveRandom());
+      evan.onClick(() => game.win());
+    } },
 ];
