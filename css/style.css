@@ -10,15 +10,19 @@ html, body { margin: 0; height: 100%; background: #111; overflow: hidden; font-f
 .hot { cursor: pointer; }
 /* answer grid: 2x2 pink boxes, blue border, wire pegs on the outer edge (box = 236x83) */
 .grid { position: absolute; left: 32px; top: 158px; display: grid; grid-template-columns: 236px 236px; grid-auto-rows: 83px; gap: 6px 15px; }
-.dense .grid { top: 134px; grid-auto-rows: 100px; }
+.dense .grid { top: 122px; grid-auto-rows: 108px; }
+.dense .ans .t { word-spacing: .2em; }
 .dense .q { height: 90px; top: 14px; font-size: 38px; }
 .many .grid { top: 132px; grid-auto-rows: 52px; }
 .withpic .grid { left: 200px; top: 132px; grid-template-columns: 318px; grid-auto-rows: 50px; gap: 6px; }
+.pictop .q { left: 90px; width: 400px; top: 4px; height: 36px; }
+.pictop .pic { left: 207px; top: 42px; width: 136px; height: 72px; }
+.pictop .grid { top: 120px; grid-auto-rows: 111px; }
 .pic { position: absolute; left: 16px; top: 134px; width: 170px; height: 204px; object-fit: contain; }
 .ans, .btn { position: relative; box-sizing: border-box; border: 6px solid #281efb; border-radius: 3px; background: #f8caff; color: #000; padding: 3px 8px;
   display: flex; align-items: center; justify-content: center; text-align: center; text-transform: uppercase; font-size: 28px; line-height: 1.1; }
 .ans:hover, .btn:hover { background: radial-gradient(circle, #fff176 0%, #ffb02e 100%); }
-.ans .t { display: block; width: 100%; overflow-wrap: anywhere; }
+.ans .t { display: block; width: 100%; min-width: 0; line-height: 1.02; }
 .ans.l::before, .ans.r::after { content: ""; position: absolute; top: calc(50% - 31px); width: 103px; height: 61px; background: url(../assets/img/pegs.svg) no-repeat; background-size: 100% 100%; pointer-events: none; }
 .ans.l::before { left: -104px; }
 .ans.r::after { right: -104px; transform: scaleX(-1); }

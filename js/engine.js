@@ -22,13 +22,21 @@ over.hidden = true;
 let s, cur, lvSnd; // run state { i, lives, skips }; current level game
 // shrink text until it fits its box
 const fitText = (box, t, max, min = 4) => { for (let f = max; f >= min; f--) { t.style.fontSize = f + "px"; if (t.offsetHeight <= box.clientHeight - 4) break; } };
+// answer fit: biggest font where no word splits and text fits the box; prefers one line if that stays >=60% of max
+const fits = (box, t) => t.scrollWidth <= t.clientWidth && t.offsetHeight <= box.clientHeight - 6;
+const fitAns = (box, t, max = 28, min = 4) => {
+  for (const ws of ["nowrap", "normal"]) { t.style.whiteSpace = ws;
+    for (let f = max; f >= (ws == "nowrap" ? max * .6 : min); f -= .5) { t.style.fontSize = f + "px"; if (fits(box, t)) return; } }
+};
+const refit = []; // answer boxes on the current level, refit once fonts finish loading
+document.fonts.ready.then(() => refit.forEach(f => f()));
 const boxes = (answers, fn) => { // 2x2 grid; long answer sets get taller boxes, >4 shrink
   const grid = el("grid", play);
   play.classList.toggle("dense", answers.join("").length > 200);
   play.classList.toggle("many", answers.length > 4);
   answers.forEach((a, i) => {
     const b = el("ans " + (play.classList.contains("withpic") ? "r" : i % 2 ? "r" : "l"), grid, "", "button");
-    b.onclick = () => fn(i); fitText(b, el("t", b, a), 28, 4);
+    const t = el("t", b, a); b.onclick = () => fn(i); fitAns(b, t); refit.push(() => fitAns(b, t));
   });
 };
 
@@ -123,10 +131,10 @@ function load() {
   qnum.lastChild.textContent = `${s.i + 1}.`;
   lives.querySelector(".n").textContent = s.lives;
   skips.replaceChildren(); for (let k = 0; k < s.skips; k++) el("", skips, "", "button").onclick = () => cur?.skip();
-  play.replaceChildren(area); area.replaceChildren(); play.onclick = null; play.className = "play";
-  play.classList.toggle("withpic", !!lv.image); // image on the left, answers on the right
+  refit.length = 0; play.replaceChildren(area); area.replaceChildren(); play.onclick = null; play.className = "play";
+  play.classList.toggle("withpic", !!lv.image && !lv.pictop); play.classList.toggle("pictop", !!lv.pictop); // image on the left, answers on the right
   const q = el("q", play), qt = el("qt", q, lv.q);
-  fitText(q, qt, lv.q.length > 70 ? 34 : 48, 16);
+  fitText(q, qt, lv.pictop ? 26 : lv.q.length > 70 ? 34 : 48, 16);
   if (lv.image) { const im = el("pic", play, "", "img"); im.src = lv.image; im.onerror = () => im.remove(); }
   let done = false;
   const ids = [], fns = []; // pending timers (cleared when the level ends) and cleanup hooks (run before the next load)

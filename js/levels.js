@@ -108,7 +108,7 @@ export const levels = [
     "\"Sleep is for broke people. You can rest when you're dead, or when your bank account has enough zeros to buy the hospital.\"",
   ] },
   { type: "choice", q: "Hey it's me your old property manager Tom. It's gonna be $150 for bedbug removal.", answers: ["No", "No", "No", "No"], correct: [0, 1, 2, 3] },
-  { type: "choice", q: "Which is a real Robert Luxenberg quote?", image: "assets/levels/luxenberg.jpg", correct: 1, answers: [
+  { type: "choice", q: "Which is a real Robert Luxenberg quote?", image: "assets/levels/luxenberg.jpg", pictop: true, correct: 1, answers: [
     "\"Evan, I'm on the bean diet\"",
     "\"With the students, when we started thinking like them, it was privacy, a place to hang out so we did a lot of things we knew they wanted, but we also thought about the secondary market: their parents. So we’ve put in 90 security cameras.\"",
     "\"The more you learn, the more you earn\"",
