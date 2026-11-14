@@ -11,7 +11,7 @@ html, body { margin: 0; height: 100%; background: #111; overflow: hidden; font-f
 .skip { margin-left: auto; }
 .ans { display: block; width: 80%; margin: 8px auto; padding: 10px; font-size: 18px; background: #fff; border: 2px solid #333; border-radius: 6px; }
 .ans:hover { background: #ffd; }
-.dense .ans { font-size: 13px; padding: 5px 8px; margin: 5px auto; width: 92%; }
+#stage .dense .ans { font-size: 13px; padding: 5px 8px; margin: 5px auto; width: 92%; }
 .dense .q { font-size: 18px; margin-bottom: 6px; }
 .input { display: block; margin: 20px auto 10px; width: 60%; padding: 8px; font-size: 20px; font-family: inherit; text-align: center; }
 .play .btn { display: block; margin: 0 auto; padding: 6px 18px; font-size: 18px; }
@@ -20,4 +20,9 @@ html, body { margin: 0; height: 100%; background: #111; overflow: hidden; font-f
 .sprite.missing { background: #f9c; border: 2px dashed #c06; font-size: 11px; display: flex; align-items: center; justify-content: center; word-break: break-all; }
 .hot { cursor: pointer; }
 .pic { display: block; margin: 0 auto 8px; max-height: 120px; }
+.withpic { display: grid; grid-template-columns: 200px 1fr; grid-template-rows: auto; align-content: start; column-gap: 10px; }
+.withpic .q { grid-column: 1 / 3; }
+.withpic .pic { grid-column: 1; grid-row: 2 / span 8; width: 100%; max-height: 300px; object-fit: contain; margin: 0; }
+#stage .withpic .ans { grid-column: 2; width: auto; margin: 4px 0; font-size: 14px; padding: 6px 8px; }
+#stage .withpic.dense .ans { font-size: 12px; padding: 4px 6px; margin: 3px 0; }
 .msg { white-space: pre-line; }

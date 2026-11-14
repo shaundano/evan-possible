@@ -87,6 +87,7 @@ function load() {
   lives.textContent = "\u2665".repeat(s.lives);
   skipBtn.textContent = `Skip (${s.skips})`;
   play.replaceChildren(); play.onclick = null;
+  play.classList.toggle("withpic", !!lv.image); // image on the left, answers on the right
   el("q", play, lv.q);
   if (lv.image) { const im = el("pic", play, "", "img"); im.src = lv.image; im.onerror = () => im.remove(); }
   let done = false;

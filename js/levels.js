@@ -6,6 +6,8 @@ export const levels = [
   { type: "choice", q: "Oil, what is it?", answers: ["makes french fries tasty", "related to Iran probably", "Oi, let's go to Mandy's", "gives me acne"], correct: 2 },
   { type: "choice", q: "Oldest breakfast place in Montreal?", answers: ["Chez Nick", "Greenspot", "Beauty's", "La Binerie"], correct: 0 },
   { type: "choice", q: "Why is Eeyore sad", answers: ["He has to pooh", "Shrinkflation", "His bones are his money", "He has a nail in his anus"], correct: 3 },
+  { type: "choice", q: "What's he doing", image: "assets/levels/evan-bench.jpg", correct: 1,
+    answers: ["Contemplating the meaning of life", "\"I should start a podcast\"", "Posing for a photo", "\"I don't think the waiter who poured my wine was Jewish\""] },
   { type: "choice", q: "Which is a real Tony Robbins quote?", correct: 1, answers: [
     "\"Didn't get promoted? Good. More time to get better.\"",
     "\"I'm not knocking the Me Too movement, I'm knocking victimhood.\"",
@@ -13,4 +15,10 @@ export const levels = [
     "\"Sleep is for broke people. You can rest when you're dead, or when your bank account has enough zeros to buy the hospital.\"",
   ] },
   { type: "choice", q: "Hey it's me your old property manager Tom. It's gonna be $150 for bedbug removal.", answers: ["No", "No", "No", "No"], correct: [0, 1, 2, 3] },
+  { type: "choice", q: "Which is a real Robert Luxenberg quote?", image: "assets/levels/luxenberg.jpg", correct: 1, answers: [
+    "\"Evan, I'm on the bean diet\"",
+    "\"With the students, when we started thinking like them, it was privacy, a place to hang out so we did a lot of things we knew they wanted, but we also thought about the secondary market: their parents. So we’ve put in 90 security cameras.\"",
+    "\"The more you learn, the more you earn\"",
+    "\"I think the issue with young people these days is they think they can get a degree and be rich, but school won't teach you how to be rich.\"",
+  ] },
 ];
