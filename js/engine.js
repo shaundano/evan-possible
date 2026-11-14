@@ -13,10 +13,12 @@ addEventListener("resize", fit);
 fit();
 
 const hud = el("hud", stage), qnum = el("qnum", hud), lives = el("lives", hud);
+const skipBtn = el("skip", hud, "", "button");
 const play = el("play", stage), over = el("over", stage);
 over.hidden = true;
 
-let s; // run state: { i, lives }
+let s, cur; // run state { i, lives, skips }; current level game
+skipBtn.onclick = () => cur?.skip();
 const types = { custom: (lv, st, game) => lv.setup(st, game) };
 
 // full-stage message with one button
@@ -39,15 +41,18 @@ function load() {
   if (!lv) return screen("The end! (end screen TBD)", "Play again", start);
   qnum.textContent = `Q${s.i + 1}/${levels.length}`;
   lives.textContent = "\u2665".repeat(s.lives);
+  skipBtn.textContent = `Skip (${s.skips})`;
   play.replaceChildren();
   el("q", play, lv.q);
   let done = false;
   const end = f => (...a) => { if (!done) { done = true; f(...a); } };
-  const game = { win: end(next), lose: end((msg = lv.fakeout ?? "Wrong!") => die(msg)) };
+  const game = { win: end(next), lose: end((msg = lv.fakeout ?? "Wrong!") => die(msg)),
+    skip() { if (s.skips > 0 && !done) { s.skips--; end(next)(); } } };
+  cur = game;
   types[lv.type](lv, { el: play }, game);
 }
 
-function start(i = 0) { s = { i, lives: 3 }; load(); }
+function start(i = 0) { s = { i, lives: 3, skips: 3 }; load(); }
 
 // ?q=N debug jump
 const q = +new URLSearchParams(location.search).get("q");
