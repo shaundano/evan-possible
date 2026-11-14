@@ -52,7 +52,7 @@ html, body { margin: 0; height: 100%; background: #111; overflow: hidden; font-f
 .over.wrong { background: rgba(0, 0, 0, .45); } /* modal: question stays visible beneath */
 .over .board { box-sizing: border-box; width: 330px; padding: 18px 12px 22px; background: #1d1d1d; border: 6px solid #444; border-radius: 10px; color: #fff; font-size: 46px; line-height: 1.1; text-transform: uppercase; }
 .over .board b { display: block; color: #f00; font-weight: normal; font-size: 62px; }
-.over.gameover { background: #fff; }
+.over.gameover { background: #000; }
 .over.gameover img { height: 380px; }
 .over .btn { position: static; width: auto; padding: 4px 20px; height: 48px; font-size: 28px; }
 .msg { white-space: pre-line; }
