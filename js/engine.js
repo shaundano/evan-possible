@@ -85,6 +85,7 @@ function load() {
   skipBtn.textContent = `Skip (${s.skips})`;
   play.replaceChildren(); play.onclick = null;
   el("q", play, lv.q);
+  if (lv.image) { const im = el("pic", play, "", "img"); im.src = lv.image; im.onerror = () => im.remove(); }
   let done = false;
   const ids = []; // pending timers, cleared when the level ends
   const end = f => (...a) => { if (!done) { done = true; ids.forEach(clearTimeout); f(...a); } };
