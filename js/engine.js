@@ -16,7 +16,7 @@ const play = el("play", stage), area = el("area", play), hud = el("hud", stage);
 const qnum = el("qnum", hud), lives = el("lives", hud), bomb = el("bomb", hud), skips = el("skips", hud);
 qnum.innerHTML = '<svg viewBox="0 0 76 84"><path d="M40 4C18 2 4 20 5 44c1 24 18 37 38 36 22-1 30-22 28-42C69 18 56 5 38 6" fill="none" stroke="#ff1a1a" stroke-width="4" stroke-linecap="round"/></svg><span></span>';
 lives.innerHTML = '<img src="assets/img/lives-label.svg" alt=""><span class="n"></span>';
-const over = el("over", stage);
+const over = el("over", stage), title = el("title", stage);
 over.hidden = true;
 
 let s, cur, lvSnd; // run state { i, lives, skips }; current level game
@@ -136,7 +136,10 @@ function load() {
 
 function start(i = 0) { s = { i, lives: 3, skips: 3 }; load(); }
 
-// ?q=N debug jump
-const q = +new URLSearchParams(location.search).get("q");
+// title card; Play is the first gesture, so music (and the first clip) can start
 await document.fonts.load("46px Akbar");
-start(q > 0 ? Math.min(q, levels.length) - 1 : 0);
+const q = +new URLSearchParams(location.search).get("q"); // ?q=N debug jump skips the title
+title.innerHTML = "<h1>THE EVAN-POSSIBLE<b>QUIZ</b></h1>";
+const go = el("ans l r btn", title, "Play", "button"), pk = el("", title, "a birthday gift for Evan", "p");
+go.onclick = () => { title.hidden = true; bgm.play().catch(() => {}); start(); };
+if (q > 0) { title.hidden = true; start(Math.min(q, levels.length) - 1); }
