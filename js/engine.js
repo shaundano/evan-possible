@@ -62,11 +62,13 @@ const types = {
   custom: (lv, st, game) => lv.setup(st, game),
 };
 
-// full-stage message with one button
+// full-stage message: a button, or (no label) auto-continues after 1.6s / on click
 function screen(msg, label, fn) {
   over.replaceChildren(); over.hidden = false;
   el("msg", over, msg);
-  el("btn", over, label, "button").onclick = () => { over.hidden = true; fn(); };
+  const go = () => { if (over.hidden) return; over.hidden = true; over.onclick = null; fn(); };
+  if (label) return el("btn", over, label, "button").onclick = go;
+  over.onclick = go; setTimeout(go, 1600);
 }
 
 // play assets/sounds/<name>(.mp3), or assets/<path> if name has a "/"; silently ignored if missing.
@@ -85,7 +87,7 @@ const next = () => { s.i++; load(); };
 // wrong answer: lose a life, show the message, then continue or game over
 function die(msg) {
   s.lives--; sound("wrong");
-  screen(msg, "Continue", () => s.lives > 0 ? next() : (sound("gameover"), screen("GAME OVER", "Try again", start)));
+  screen(msg, "", () => s.lives > 0 ? next() : (sound("game-over"), screen("GAME OVER", "Try again", start)));
 }
 
 function load() {
