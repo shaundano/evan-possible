@@ -149,4 +149,6 @@ export const levels = [
       b.onclick = () => { cnt.textContent = `\u{1F4BF} ${++n}/5`; n >= 5 && game.win(); };
       game.timer(6, () => game.lose(`Only ${n} albums. Lazy.`));
     } },
+  // DRAFT: final boss
+  { type: "choice", q: "Whose birthday is it?", answers: ["Garfield", "Whomst've", "The Lizard Wizard", "Evan"], correct: 3, bomb: 10, fakeout: "Wrong. Evan's feelings are hurt." },
 ];
