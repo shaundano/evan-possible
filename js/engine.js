@@ -12,21 +12,29 @@ const fit = () => stage.style.setProperty("--s", Math.min(innerWidth / 550, inne
 addEventListener("resize", fit);
 fit();
 
-const hud = el("hud", stage), qnum = el("qnum", hud), lives = el("lives", hud), bomb = el("bomb", hud);
-const skipBtn = el("skip", hud, "", "button");
-const play = el("play", stage), over = el("over", stage);
+const play = el("play", stage), area = el("area", play), hud = el("hud", stage);
+const qnum = el("qnum", hud), lives = el("lives", hud), bomb = el("bomb", hud), skips = el("skips", hud);
+qnum.innerHTML = '<svg viewBox="0 0 76 84"><path d="M40 4C18 2 4 20 5 44c1 24 18 37 38 36 22-1 30-22 28-42C69 18 56 5 38 6" fill="none" stroke="#ff1a1a" stroke-width="4" stroke-linecap="round"/></svg><span></span>';
+lives.innerHTML = '<img src="assets/img/lives-label.svg" alt=""><span class="n"></span>';
+const over = el("over", stage), title = el("title", stage);
 over.hidden = true;
 
 let s, cur, lvSnd; // run state { i, lives, skips }; current level game
-skipBtn.onclick = () => cur?.skip();
-const boxes = (answers, fn) => { // long answer sets get a compact layout
+// shrink text until it fits its box
+const fitText = (box, t, max, min) => { for (let f = max; f > min; f--) { t.style.fontSize = f + "px"; if (t.offsetHeight <= box.clientHeight - 6) break; } };
+const boxes = (answers, fn) => { // 2x2 grid; long answer sets get taller boxes, >4 shrink
+  const grid = el("grid", play);
   play.classList.toggle("dense", answers.join("").length > 200);
-  answers.forEach((a, i) => { el("ans", play, a, "button").onclick = () => fn(i); });
+  play.classList.toggle("many", answers.length > 4);
+  answers.forEach((a, i) => {
+    const b = el("ans " + (play.classList.contains("withpic") ? "r" : i % 2 ? "r" : "l"), grid, "", "button");
+    b.onclick = () => fn(i); fitText(b, el("t", b, a), 28, 8);
+  });
 };
 
 // absolutely positioned image; falls back to a labelled box if the file is missing
 function sprite(src, { x = 0, y = 0, w = 64, h = 64 } = {}) {
-  const e = el("sprite", play), img = el("", e, "", "img");
+  const e = el("sprite", area), img = el("", e, "", "img");
   Object.assign(e.style, { left: x + "px", top: y + "px", width: w + "px", height: h + "px" });
   img.src = src.includes("/") ? src : `assets/${src}`;
   img.onerror = () => { img.remove(); e.classList.add("missing"); e.textContent = src; };
@@ -48,7 +56,7 @@ const types = {
   click(lv, st, game) { // hotspot: a word in q, or a sprite {src, x, y, w, h}
     const h = lv.hotspot;
     if (typeof h !== "string") return sprite(h.src, h).onClick(game.win);
-    const q = play.querySelector(".q"), at = lv.q.indexOf(h);
+    const q = play.querySelector(".qt"), at = lv.q.indexOf(h);
     if (at < 0) return console.warn("hotspot not found in q:", h);
     const hot = el("hot", q, h, "span");
     hot.onclick = game.win;
@@ -63,9 +71,9 @@ const types = {
 };
 
 // full-stage message: a button, or (no label) auto-continues after 1.6s / on click
-function screen(msg, label, fn) {
-  over.replaceChildren(); over.hidden = false;
-  el("msg", over, msg);
+function screen(msg, label, fn, cls = "") {
+  over.replaceChildren(); over.hidden = false; over.className = "over " + cls;
+  if (cls === "wrong") { const b = el("board", over); el("", b, "Wrong!", "b"); b.append(msg); } else el("msg", over, msg);
   const go = () => { if (over.hidden) return; over.hidden = true; over.onclick = null; fn(); };
   if (label) return el("btn", over, label, "button").onclick = go;
   over.onclick = go; setTimeout(go, 1600);
@@ -86,20 +94,27 @@ const next = () => { s.i++; load(); };
 
 // wrong answer: lose a life, show the message, then continue or game over
 function die(msg) {
-  s.lives--; sound("wrong");
-  screen(msg, "", () => s.lives > 0 ? next() : (sound("game-over"), screen("GAME OVER", "Try again", start)));
+  s.lives--; sound("wrong"); lives.querySelector(".n").textContent = s.lives;
+  screen(msg === "Wrong!" ? "-1 life!" : msg, "", () => s.lives > 0 ? next() : gameOver(), "wrong");
+}
+
+function gameOver() { // splat; click anywhere to retry
+  sound("game-over"); over.replaceChildren(); over.hidden = false; over.className = "over gameover";
+  el("", over, "", "img").src = "assets/img/game-over.svg";
+  over.onclick = () => { over.hidden = true; over.onclick = null; start(); };
 }
 
 function load() {
   const lv = levels[s.i];
   lvSnd?.pause(); held = null; // previous level's clip must not leak into this one
   if (!lv) return screen("\u{1F382} Happy Birthday Evan! \u{1F382}\n(end screen TBD)", "Play again", start);
-  qnum.textContent = `Q${s.i + 1}/${levels.length}`;
-  lives.textContent = "\u2665".repeat(s.lives);
-  skipBtn.textContent = `Skip (${s.skips})`;
-  play.replaceChildren(); play.onclick = null;
+  qnum.lastChild.textContent = `${s.i + 1}.`;
+  lives.querySelector(".n").textContent = s.lives;
+  skips.replaceChildren(); for (let k = 0; k < s.skips; k++) el("", skips, "", "button").onclick = () => cur?.skip();
+  play.replaceChildren(area); area.replaceChildren(); play.onclick = null; play.className = "play";
   play.classList.toggle("withpic", !!lv.image); // image on the left, answers on the right
-  el("q", play, lv.q);
+  const q = el("q", play), qt = el("qt", q, lv.q);
+  fitText(q, qt, lv.q.length > 70 ? 34 : 48, 16);
   if (lv.image) { const im = el("pic", play, "", "img"); im.src = lv.image; im.onerror = () => im.remove(); }
   let done = false;
   const ids = []; // pending timers, cleared when the level ends
@@ -116,11 +131,15 @@ function load() {
     tick();
   }
   lvSnd = lv.sound ? sound(lv.sound, true) : null;
-  types[lv.type](lv, { el: play, sprite }, game);
+  types[lv.type](lv, { el: area, sprite }, game);
 }
 
 function start(i = 0) { s = { i, lives: 3, skips: 3 }; load(); }
 
-// ?q=N debug jump
-const q = +new URLSearchParams(location.search).get("q");
-start(q > 0 ? Math.min(q, levels.length) - 1 : 0);
+// title card; Play is the first gesture, so music (and the first clip) can start
+await document.fonts.load("46px Akbar");
+const q = +new URLSearchParams(location.search).get("q"); // ?q=N debug jump skips the title
+title.innerHTML = "<h1>THE EVAN-POSSIBLE<b>QUIZ</b></h1>";
+const go = el("ans l r btn", title, "Play", "button"), pk = el("", title, "a birthday gift for Evan", "p");
+go.onclick = () => { title.hidden = true; bgm.play().catch(() => {}); start(); };
+if (q > 0) { title.hidden = true; start(Math.min(q, levels.length) - 1); }

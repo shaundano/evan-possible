@@ -40,3 +40,5 @@ Extracted from The Impossible Quiz 1 (Splapp-me-do) with JPEXS. Source SWF: arch
 ## fonts/
 
 - `Akbar.ttf`: hand-drawn font used in the SWF. It is a glyph subset, so some characters may be missing.
+
+Added for the TIQ look (hand-built from the decompiled `answer-box.svg` / `skip.svg` paths): `img/pegs.svg` (answer box wire pegs, left side; mirrored in CSS for the right), `img/skip-grey.svg` (grey skip arrow).
