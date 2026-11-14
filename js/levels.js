@@ -31,25 +31,24 @@ export const levels = [
       drag(pipe, stage.el, () => inside(pipe, mouth) && game.win());
     } },
   { type: "choice", q: "A bear walks into a bar and orders a grilled ...", answers: ["cheese", "steak", "couple & their dog", "lettuce"], correct: 0 },
-  { type: "custom", q: "Movie night: rank these 4 movies by Rotten Tomato score (click best first)",
+  { type: "custom", q: "Drag the movies into Rotten Tomatoes order, best first",
     setup(stage, game) {
       const films = [["Spaceballs", "spaceballs", "#c33"], ["Blade Runner 2049", "blade-runner-2049", "#e80"], ["Ducktales the Movie", "ducktales", "#27c"], ["The Gambler", "the-gambler", "#555"]];
-      const row = Object.assign(document.createElement("div"), { className: "posters" }), picks = [], badges = [];
-      const bgm = new Audio("assets/levels/elevator-music.mp3"), watch = setInterval(() => row.isConnected || (bgm.pause(), game.bgm.play().catch(() => {}), clearInterval(watch)), 300); // loop music until the level ends
+      const div = (cls, parent, css = {}) => { const d = Object.assign(document.createElement("div"), { className: cls }); Object.assign(d.style, css); parent.append(d); return d; };
+      const cin = div("cinema", stage.el), X = i => 131 + i * 84; // curtains, screen, seats behind the 4 slots
+      for (let r = 0; r < 3; r++) for (let c = 0; c < 11; c++) div("seat", cin, { left: 78 + c * 44 + r % 2 * 22 + "px", top: 258 + r * 34 + "px" });
+      div("curtain", cin, { left: 0, width: "90px" }); div("curtain", cin, { left: "494px", width: "56px" }); div("screen", cin); div("valance", cin);
+      const slots = films.map((_, i) => { const d = div("slot", cin, { left: X(i) + "px", top: "148px" }); d.textContent = i + 1; return d; });
+      const where = films.map(() => -1), bgm = new Audio("assets/levels/elevator-music.mp3"), watch = setInterval(() => cin.isConnected || (bgm.pause(), game.bgm.play().catch(() => {}), clearInterval(watch)), 300); // loop music until the level ends
       bgm.loop = true; bgm.volume = .5; bgm.play().catch(() => {}); game.bgm.pause(); // swap the theme for elevator music
-      const submit = Object.assign(document.createElement("button"), { className: "btn", textContent: "Submit", disabled: true });
-      films.forEach(([title, file, bg], i) => {
-        const slot = document.createElement("div"), badge = document.createElement("div");
-        art(slot,`poster-${file}.jpg`, title, "poster", { background: bg });
-        badge.className = "badge"; badges.push(badge); slot.append(badge); row.append(slot);
-        slot.onclick = () => { // click to rank, click again to unrank
-          picks.includes(i) ? picks.splice(picks.indexOf(i), 1) : picks.push(i);
-          badges.forEach((b, j) => b.textContent = picks.indexOf(j) + 1 || "");
-          submit.disabled = picks.length < films.length;
-        };
-      });
-      submit.onclick = () => picks.map(i => films[i][0]).join() === RANKING.join() ? game.win() : game.lose();
-      stage.el.append(row, submit);
+      const submit = Object.assign(document.createElement("button"), { className: "btn", textContent: "Submit", disabled: true }); cin.append(submit);
+      const layout = () => { posters.forEach((p, i) => Object.assign(p.style, where[i] < 0 ? { left: X(i) + 2 + "px", top: "262px" } : { left: X(where[i]) + 2 + "px", top: "150px" })); submit.disabled = where.includes(-1); };
+      const posters = films.map(([title, file, bg], i) => { const p = art(cin, `poster-${file}.jpg`, title, "poster", { background: bg });
+        drag(p, cin, () => { const t = slots.findIndex(sl => inside(p, sl)), o = where.indexOf(t); // drop in a slot (swapping its occupant back) or off it
+          if (t >= 0 && o >= 0 && o !== i) where[o] = where[i]; where[i] = t; layout(); });
+        return p; });
+      layout();
+      submit.onclick = () => [0, 1, 2, 3].map(t => films[where.indexOf(t)][0]).join() === RANKING.join() ? game.win() : game.lose();
     } },
   { type: "custom", q: "Press asdf + Space to Beatbox",
     setup(stage, game) {
