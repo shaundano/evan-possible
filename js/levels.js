@@ -67,18 +67,18 @@ export const levels = [
       layout();
       submit.onclick = () => [0, 1, 2, 3].map(t => films[where.indexOf(t)][0]).join() === RANKING.join() ? game.win() : game.lose();
     } },
-  { type: "custom", q: "Press asdf + Space to Beatbox",
+  { type: "custom", q: "Mash any key to Beatbox",
     setup(stage, game) {
       const GOAL = 15, IDLE = 7000, root = Object.assign(document.createElement("div"), { className: "beat" });
       root.innerHTML = '<div class="board">BEATBOX 101</div><div class="guy"><img src="assets/img/school-child.svg" alt="school child"></div><div class="desk"></div><div class="count"></div>';
       stage.el.append(root);
       const guy = root.querySelector(".guy"), count = root.querySelector(".count");
       let n = 0, idle;
-      const snds = { a: "beatbox-a", s: "beatbox-s", d: "beatbox-d", f: "beatbox-f", " ": "beatbox-space" };
-      const beats = Object.fromEntries(Object.entries(snds).map(([k, s]) => [k, new Audio(`assets/sounds/${s}.mp3`)]));
+      const names = ["a", "s", "d", "f", "1", "2", "3", "4", "5"], snd = k => "beatbox-" + (k === " " ? "space" : names[(k.charCodeAt(0) - 97) % names.length]); // letters cycle the set, space accents
+      const beats = Object.fromEntries([..."abcdefghijklmnopqrstuvwxyz "].map(k => [k, new Audio(`assets/sounds/${snd(k)}.mp3`)]));
       const playBeat = k => {
-        try { const a = beats[k]?.cloneNode(); if (a) { a.volume = .8; a.play().catch(() => {}); } else game.sound(snds[k]); }
-        catch { game.sound(snds[k]); }
+        try { const a = beats[k].cloneNode(); a.volume = .9; a.play().catch(() => {}); }
+        catch { game.sound(snd(k)); }
       };
       const confetti = () => { for (let i = 0; i < 50; i++) { const c = document.createElement("i"); c.className = "confetti";
         c.style.cssText = `left:${Math.random() * 100}%;background:hsl(${Math.random() * 360},90%,55%);animation-delay:${Math.random() * .5}s`; root.append(c); } };
@@ -87,10 +87,10 @@ export const levels = [
       function press(e) {
         if (!root.isConnected) return stop(); // level was skipped
         const k = e.key === " " ? " " : e.key.toLowerCase();
-        if (e.repeat || !"asdf ".includes(k) || k.length !== 1) return;
+        if (e.repeat || e.ctrlKey || e.metaKey || e.altKey || !/^[a-z ]$/.test(k)) return;
         e.preventDefault(); playBeat(k); arm();
         guy.classList.remove("hit"); void guy.offsetWidth; guy.classList.add("hit");
-        count.textContent = `${++n}/${GOAL}`;
+        count.textContent = ++n;
         if (n >= GOAL) { stop(); confetti(); game.sound("yay"); setTimeout(game.win, 1500); }
       }
       addEventListener("keydown", press); game.cleanup(stop); arm();
