@@ -42,3 +42,17 @@ Extracted from The Impossible Quiz 1 (Splapp-me-do) with JPEXS. Source SWF: arch
 - `Akbar.ttf`: hand-drawn font used in the SWF. It is a glyph subset, so some characters may be missing.
 
 Added for the TIQ look (hand-built from the decompiled `answer-box.svg` / `skip.svg` paths): `img/pegs.svg` (answer box wire pegs, left side; mirrored in CSS for the right), `img/skip-grey.svg` (grey skip arrow).
+
+## sounds/beatbox-*.mp3 (real vocal hits, issue #19)
+
+Trimmed, loudness-matched mono mp3s cut from two Wikimedia Commons recordings.
+
+| Key | File | Source |
+|---|---|---|
+| a (kick) | `beatbox-a.mp3` | "Mouth percussion.ogg" by stilgar, public domain |
+| f (low pop) | `beatbox-f.mp3` | same file, public domain |
+| s (snare) | `beatbox-s.mp3` | "Beatboxset1 pepouni.ogg" by Pepouni, CC BY-SA 3.0 |
+| d (hi-hat) | `beatbox-d.mp3` | same file, CC BY-SA 3.0 |
+| space (accent) | `beatbox-space.mp3` | same file, CC BY-SA 3.0 |
+
+Attribution: "Beatboxset1" by Pepouni, https://commons.wikimedia.org/wiki/File:Beatboxset1_pepouni.ogg, licensed CC BY-SA 3.0 (https://creativecommons.org/licenses/by-sa/3.0/); excerpts trimmed and normalized, the s/d/space files are shared under the same license.
