@@ -12,11 +12,11 @@ const fit = () => stage.style.setProperty("--s", Math.min(innerWidth / 550, inne
 addEventListener("resize", fit);
 fit();
 
-const hud = el("hud", stage), qnum = el("qnum", hud);
+const hud = el("hud", stage), qnum = el("qnum", hud), lives = el("lives", hud);
 const play = el("play", stage), over = el("over", stage);
 over.hidden = true;
 
-let s; // run state: { i }
+let s; // run state: { i, lives }
 const types = { custom: (lv, st, game) => lv.setup(st, game) };
 
 // full-stage message with one button
@@ -26,18 +26,28 @@ function screen(msg, label, fn) {
   el("btn", over, label, "button").onclick = () => { over.hidden = true; fn(); };
 }
 
+const next = () => { s.i++; load(); };
+
+// wrong answer: lose a life, show the message, then continue or game over
+function die(msg) {
+  s.lives--;
+  screen(msg, "Continue", () => s.lives > 0 ? next() : screen("GAME OVER", "Try again", start));
+}
+
 function load() {
   const lv = levels[s.i];
   if (!lv) return screen("The end! (end screen TBD)", "Play again", start);
   qnum.textContent = `Q${s.i + 1}/${levels.length}`;
+  lives.textContent = "\u2665".repeat(s.lives);
   play.replaceChildren();
   el("q", play, lv.q);
   let done = false;
-  const game = { win() { if (!done) { done = true; s.i++; load(); } } };
+  const end = f => (...a) => { if (!done) { done = true; f(...a); } };
+  const game = { win: end(next), lose: end((msg = lv.fakeout ?? "Wrong!") => die(msg)) };
   types[lv.type](lv, { el: play }, game);
 }
 
-function start(i = 0) { s = { i }; load(); }
+function start(i = 0) { s = { i, lives: 3 }; load(); }
 
 // ?q=N debug jump
 const q = +new URLSearchParams(location.search).get("q");
