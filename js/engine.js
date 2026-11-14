@@ -101,10 +101,11 @@ addEventListener("pointerdown", () => bgm.play().catch(() => {}), { once: true }
 
 const next = () => { s.i++; load(); };
 
-// wrong answer: lose a life, show the modal over the question, then retry the same level or game over
+// wrong answer: last life goes straight to game over, else lose a life and show the modal over the question
 function die(msg) {
-  s.lives--; sound("wrong"); lives.querySelector(".n").textContent = s.lives;
-  screen(msg === "Wrong!" ? "-1 life!" : msg, "", () => s.lives > 0 ? load() : gameOver(), "wrong");
+  lives.querySelector(".n").textContent = --s.lives;
+  if (!s.lives) return gameOver();
+  sound("wrong"); screen(msg === "Wrong!" ? "-1 life!" : msg, "", load, "wrong");
 }
 
 function gameOver() { // splat; click anywhere to retry
