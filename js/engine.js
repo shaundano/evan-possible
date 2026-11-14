@@ -28,12 +28,15 @@ function screen(msg, label, fn) {
   el("btn", over, label, "button").onclick = () => { over.hidden = true; fn(); };
 }
 
+// play assets/sounds/<name>(.mp3); silently ignored if missing or blocked
+const sound = name => { try { new Audio(`assets/sounds/${name}${name.includes(".") ? "" : ".mp3"}`).play().catch(() => {}); } catch {} };
+
 const next = () => { s.i++; load(); };
 
 // wrong answer: lose a life, show the message, then continue or game over
 function die(msg) {
-  s.lives--;
-  screen(msg, "Continue", () => s.lives > 0 ? next() : screen("GAME OVER", "Try again", start));
+  s.lives--; sound("wrong");
+  screen(msg, "Continue", () => s.lives > 0 ? next() : (sound("gameover"), screen("GAME OVER", "Try again", start)));
 }
 
 function load() {
@@ -47,7 +50,8 @@ function load() {
   let done = false;
   const ids = []; // pending timers, cleared when the level ends
   const end = f => (...a) => { if (!done) { done = true; ids.forEach(clearTimeout); f(...a); } };
-  const game = { win: end(next), lose: end((msg = lv.fakeout ?? "Wrong!") => die(msg)),
+  const game = { win: end(() => { sound("correct"); next(); }), lose: end((msg = lv.fakeout ?? "Wrong!") => die(msg)),
+    sound,
     timer(sec, fn) { ids.push(setTimeout(() => done || fn(), sec * 1000)); },
     skip() { if (s.skips > 0 && !done) { s.skips--; end(next)(); } } };
   cur = game;
@@ -57,6 +61,7 @@ function load() {
     const tick = () => { bomb.textContent = `\u{1F4A3} ${n}`; if (!n--) return game.lose("The bomb went off!"); game.timer(1, tick); };
     tick();
   }
+  if (lv.sound) sound(lv.sound);
   types[lv.type](lv, { el: play }, game);
 }
 
