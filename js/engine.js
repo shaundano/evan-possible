@@ -31,6 +31,11 @@ const types = {
     el("btn", play, "Submit", "button").onclick = submit;
     input.focus();
   },
+  wait(lv, st, game) { // clicking anything in the play area loses; surviving wins
+    boxes(lv.answers ?? [], () => {});
+    play.onclick = () => game.lose();
+    game.timer(lv.seconds, game.win);
+  },
   custom: (lv, st, game) => lv.setup(st, game),
 };
 
@@ -58,7 +63,7 @@ function load() {
   qnum.textContent = `Q${s.i + 1}/${levels.length}`;
   lives.textContent = "\u2665".repeat(s.lives);
   skipBtn.textContent = `Skip (${s.skips})`;
-  play.replaceChildren();
+  play.replaceChildren(); play.onclick = null;
   el("q", play, lv.q);
   let done = false;
   const ids = []; // pending timers, cleared when the level ends
