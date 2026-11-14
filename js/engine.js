@@ -17,7 +17,7 @@ const skipBtn = el("skip", hud, "", "button");
 const play = el("play", stage), over = el("over", stage);
 over.hidden = true;
 
-let s, cur; // run state { i, lives, skips }; current level game
+let s, cur, lvSnd; // run state { i, lives, skips }; current level game
 skipBtn.onclick = () => cur?.skip();
 const boxes = (answers, fn) => { // long answer sets get a compact layout
   play.classList.toggle("dense", answers.join("").length > 200);
@@ -62,15 +62,21 @@ const types = {
   custom: (lv, st, game) => lv.setup(st, game),
 };
 
-// full-stage message with one button
+// full-stage message: a button, or (no label) auto-continues after 1.6s / on click
 function screen(msg, label, fn) {
   over.replaceChildren(); over.hidden = false;
   el("msg", over, msg);
-  el("btn", over, label, "button").onclick = () => { over.hidden = true; fn(); };
+  const go = () => { if (over.hidden) return; over.hidden = true; over.onclick = null; fn(); };
+  if (label) return el("btn", over, label, "button").onclick = go;
+  over.onclick = go; setTimeout(go, 1600);
 }
 
-// play assets/sounds/<name>(.mp3), or assets/<path> if name has a "/"; silently ignored if missing or blocked
-const sound = name => { try { new Audio(`assets/${name.includes("/") ? "" : "sounds/"}${name}${name.includes(".") ? "" : ".mp3"}`).play().catch(() => {}); } catch {} };
+// play assets/sounds/<name>(.mp3), or assets/<path> if name has a "/"; silently ignored if missing.
+// keep=true: if autoplay is blocked (no gesture yet), retry on the first click/key
+let held;
+const sound = (name, keep) => { try { const a = new Audio(`assets/${name.includes("/") ? "" : "sounds/"}${name}${name.includes(".") ? "" : ".mp3"}`);
+  a.preload = "auto"; a.play().catch(e => { if (keep && e.name === "NotAllowedError") held = a; }); return a; } catch {} };
+["pointerdown", "keydown"].forEach(ev => addEventListener(ev, () => { held?.play().catch(() => {}); held = null; }));
 
 // background music: loops quietly, starts on the first click (browser autoplay rules)
 const bgm = Object.assign(new Audio("assets/sounds/bgm.mp3"), { loop: true, volume: .25 });
@@ -81,11 +87,12 @@ const next = () => { s.i++; load(); };
 // wrong answer: lose a life, show the message, then continue or game over
 function die(msg) {
   s.lives--; sound("wrong");
-  screen(msg, "Continue", () => s.lives > 0 ? next() : (sound("gameover"), screen("GAME OVER", "Try again", start)));
+  screen(msg, "", () => s.lives > 0 ? next() : (sound("game-over"), screen("GAME OVER", "Try again", start)));
 }
 
 function load() {
   const lv = levels[s.i];
+  lvSnd?.pause(); held = null; // previous level's clip must not leak into this one
   if (!lv) return screen("\u{1F382} Happy Birthday Evan! \u{1F382}\n(end screen TBD)", "Play again", start);
   qnum.textContent = `Q${s.i + 1}/${levels.length}`;
   lives.textContent = "\u2665".repeat(s.lives);
@@ -108,7 +115,7 @@ function load() {
     const tick = () => { bomb.textContent = `\u{1F4A3} ${n}`; if (!n--) return game.lose("The bomb went off!"); game.timer(1, tick); };
     tick();
   }
-  if (lv.sound) sound(lv.sound);
+  lvSnd = lv.sound ? sound(lv.sound, true) : null;
   types[lv.type](lv, { el: play, sprite }, game);
 }
 
