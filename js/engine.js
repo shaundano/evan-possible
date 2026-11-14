@@ -19,7 +19,45 @@ over.hidden = true;
 
 let s, cur; // run state { i, lives, skips }; current level game
 skipBtn.onclick = () => cur?.skip();
-const types = { custom: (lv, st, game) => lv.setup(st, game) };
+const boxes = (answers, fn) => answers.forEach((a, i) => { el("ans", play, a, "button").onclick = () => fn(i); });
+
+// absolutely positioned image; falls back to a labelled box if the file is missing
+function sprite(src, { x = 0, y = 0, w = 64, h = 64 } = {}) {
+  const e = el("sprite", play), img = el("", e, "", "img");
+  Object.assign(e.style, { left: x + "px", top: y + "px", width: w + "px", height: h + "px" });
+  img.src = src.includes("/") ? src : `assets/${src}`;
+  img.onerror = () => { img.remove(); e.classList.add("missing"); e.textContent = src; };
+  const on = (ev, fn) => e.addEventListener(ev, ev2 => { ev2.stopPropagation(); fn(ev2); });
+  return { el: e, onClick: fn => on("click", fn), onHover: fn => on("mouseenter", fn),
+    moveRandom() { e.style.left = Math.random() * (550 - w) + "px"; e.style.top = Math.random() * (368 - h - 24) + "px"; } };
+}
+
+// level types: (level, stage, game) => render into stage.el
+const types = {
+  choice: (lv, st, game) => boxes(lv.answers, i => i === lv.correct ? game.win() : game.lose()),
+  type(lv, st, game) {
+    const input = el("input", play, "", "input"), submit = () =>
+      lv.accept.some(a => a.toLowerCase() === input.value.trim().toLowerCase()) ? game.win() : game.lose();
+    input.onkeydown = e => e.key === "Enter" && submit();
+    el("btn", play, "Submit", "button").onclick = submit;
+    input.focus();
+  },
+  click(lv, st, game) { // hotspot: a word in q, or a sprite {src, x, y, w, h}
+    const h = lv.hotspot;
+    if (typeof h !== "string") return sprite(h.src, h).onClick(game.win);
+    const q = play.querySelector(".q"), at = lv.q.indexOf(h);
+    if (at < 0) return console.warn("hotspot not found in q:", h);
+    const hot = el("hot", q, h, "span");
+    hot.onclick = game.win;
+    q.replaceChildren(lv.q.slice(0, at), hot, lv.q.slice(at + h.length));
+  },
+  wait(lv, st, game) { // clicking anything in the play area loses; surviving wins
+    boxes(lv.answers ?? [], () => {});
+    play.onclick = () => game.lose();
+    game.timer(lv.seconds, game.win);
+  },
+  custom: (lv, st, game) => lv.setup(st, game),
+};
 
 // full-stage message with one button
 function screen(msg, label, fn) {
@@ -41,12 +79,13 @@ function die(msg) {
 
 function load() {
   const lv = levels[s.i];
-  if (!lv) return screen("The end! (end screen TBD)", "Play again", start);
+  if (!lv) return screen("\u{1F382} Happy Birthday Evan! \u{1F382}\n(end screen TBD)", "Play again", start);
   qnum.textContent = `Q${s.i + 1}/${levels.length}`;
   lives.textContent = "\u2665".repeat(s.lives);
   skipBtn.textContent = `Skip (${s.skips})`;
-  play.replaceChildren();
+  play.replaceChildren(); play.onclick = null;
   el("q", play, lv.q);
+  if (lv.image) { const im = el("pic", play, "", "img"); im.src = lv.image; im.onerror = () => im.remove(); }
   let done = false;
   const ids = []; // pending timers, cleared when the level ends
   const end = f => (...a) => { if (!done) { done = true; ids.forEach(clearTimeout); f(...a); } };
@@ -62,7 +101,7 @@ function load() {
     tick();
   }
   if (lv.sound) sound(lv.sound);
-  types[lv.type](lv, { el: play }, game);
+  types[lv.type](lv, { el: play, sprite }, game);
 }
 
 function start(i = 0) { s = { i, lives: 3, skips: 3 }; load(); }
