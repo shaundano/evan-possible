@@ -12,7 +12,7 @@ const fit = () => stage.style.setProperty("--s", Math.min(innerWidth / 550, inne
 addEventListener("resize", fit);
 fit();
 
-const hud = el("hud", stage), qnum = el("qnum", hud), lives = el("lives", hud);
+const hud = el("hud", stage), qnum = el("qnum", hud), lives = el("lives", hud), bomb = el("bomb", hud);
 const skipBtn = el("skip", hud, "", "button");
 const play = el("play", stage), over = el("over", stage);
 over.hidden = true;
@@ -45,10 +45,18 @@ function load() {
   play.replaceChildren();
   el("q", play, lv.q);
   let done = false;
-  const end = f => (...a) => { if (!done) { done = true; f(...a); } };
+  const ids = []; // pending timers, cleared when the level ends
+  const end = f => (...a) => { if (!done) { done = true; ids.forEach(clearTimeout); f(...a); } };
   const game = { win: end(next), lose: end((msg = lv.fakeout ?? "Wrong!") => die(msg)),
+    timer(sec, fn) { ids.push(setTimeout(() => done || fn(), sec * 1000)); },
     skip() { if (s.skips > 0 && !done) { s.skips--; end(next)(); } } };
   cur = game;
+  bomb.textContent = "";
+  if (lv.bomb) { // bomb: N counts down in the HUD, lose at 0
+    let n = lv.bomb;
+    const tick = () => { bomb.textContent = `\u{1F4A3} ${n}`; if (!n--) return game.lose("The bomb went off!"); game.timer(1, tick); };
+    tick();
+  }
   types[lv.type](lv, { el: play }, game);
 }
 
