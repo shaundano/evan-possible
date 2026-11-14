@@ -114,4 +114,41 @@ export const levels = [
     "\"The more you learn, the more you earn\"",
     "\"I think the issue with young people these days is they think they can get a degree and be rich, but school won't teach you how to be rich.\"",
   ] },
+  // DRAFT
+  { type: "choice", q: "What is 2+2?", answers: ["Fish", "That's 4", "Quick maths", "Four, minus 1"], correct: 2, fakeout: "4 minus 1 that's 3" },
+  // DRAFT
+  { type: "click", q: "Click the duck.", hotspot: "duck", bomb: 8 },
+  // DRAFT
+  { type: "choice", q: "What does the fox say?", answers: ["Ring-ding-ding-ding", "Wa-pa-pa-pow", "Hatee-hatee-hatee-ho", "Yes"], correct: 3, fakeout: "Nobody knows. Still wrong." },
+  // DRAFT
+  { type: "wait", q: "Don't click anything.", seconds: 6, answers: ["Never gonna give you up", "Never gonna let you down", "Never gonna run around", "And desert you"], fakeout: "You clicked. You've been rickrolled." },
+  // DRAFT
+  { type: "choice", q: "Dat boi is...", answers: ["Here come", "A frog", "On a unicycle", "Oh shit waddup"], correct: 0, fakeout: "Oh shit waddup" },
+  // DRAFT
+  { type: "type", q: "Type the Konami code", accept: ["uuddlrlrba", "uuddlrlrbastart", "u u d d l r l r b a", "up up down down left right left right b a", "up up down down left right left right ba", "\u2191\u2191\u2193\u2193\u2190\u2192\u2190\u2192ba"], fakeout: "30 lives wasted." },
+  // DRAFT
+  { type: "choice", q: "I am your...", answers: ["Dad", "Father", "Mother", "Nephew"], correct: 0, fakeout: "No. That's not true. That's impossible!" },
+  // DRAFT
+  { type: "type", q: "Press F to...", accept: ["pay respects", "pay my respects", "pay respect", "pay your respects"], fakeout: "F" },
+  // DRAFT
+  { type: "choice", q: "How many members are in King Gizzard?", answers: ["5", "6", "7", "Yes"], correct: 3, fakeout: "Even the Lizard Wizard lost count." },
+  // DRAFT
+  { type: "custom", q: "Click the Lizard Wizard", fakeout: "Not a Lizard Wizard.",
+    setup(stage, game) {
+      const need = new Set(["\u{1F98E}", "\u{1F9D9}"]); // lizard + wizard
+      ["\u{1F40D}", "\u{1F98E}", "\u{1F40A}", "\u{1F9D9}"].forEach((e, i) => {
+        const a = art(stage.el, "", e, "", { left: 25 + i * 130 + "px", top: "120px", width: "110px", height: "110px", cursor: "pointer" });
+        a.onclick = () => { if (!need.has(e)) return game.lose("Not a Lizard Wizard."); need.delete(e); a.style.opacity = .3; need.size || game.win(); };
+      });
+    } },
+  // DRAFT
+  { type: "custom", q: "Please release 5 albums this year",
+    setup(stage, game) {
+      let n = 0; const cnt = art(stage.el, "", "\u{1F4BF} 0/5", "", { left: 0, top: "90px", width: "550px", fontSize: "56px" });
+      const b = Object.assign(document.createElement("button"), { className: "btn", textContent: "Release album" }); b.style.width = "220px"; b.style.left = "165px"; stage.el.append(b);
+      b.onclick = () => { cnt.textContent = `\u{1F4BF} ${++n}/5`; n >= 5 && game.win(); };
+      game.timer(6, () => game.lose(`Only ${n} albums. Lazy.`));
+    } },
+  // DRAFT: final boss
+  { type: "choice", q: "Whose birthday is it?", answers: ["Garfield", "Whomst've", "The Lizard Wizard", "Evan"], correct: 3, bomb: 10, fakeout: "Wrong. Evan's feelings are hurt." },
 ];
