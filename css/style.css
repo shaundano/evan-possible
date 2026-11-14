@@ -25,4 +25,9 @@ html, body { margin: 0; height: 100%; background: #111; overflow: hidden; font-f
 .withpic .pic { grid-column: 1; grid-row: 2 / span 8; width: 100%; max-height: 300px; object-fit: contain; margin: 0; }
 #stage .withpic .ans { grid-column: 2; width: auto; margin: 4px 0; font-size: 14px; padding: 6px 8px; }
 #stage .withpic.dense .ans { font-size: 12px; padding: 4px 6px; margin: 3px 0; }
+.art { position: absolute; display: flex; align-items: center; justify-content: center; font-size: 90px; line-height: 1; }
+.art img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
+.garfield { font-size: 150px; }
+.mouth { background: #222; border-radius: 50%; }
+.pipe { cursor: grab; touch-action: none; z-index: 2; }
 .msg { white-space: pre-line; }
