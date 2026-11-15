@@ -83,7 +83,7 @@ export const levels = [
       const confetti = () => { for (let i = 0; i < 50; i++) { const c = document.createElement("i"); c.className = "confetti";
         c.style.cssText = `left:${Math.random() * 100}%;background:hsl(${Math.random() * 360},90%,55%);animation-delay:${Math.random() * .5}s`; root.append(c); } };
       const stop = () => { clearTimeout(idle); removeEventListener("keydown", press); };
-      const arm = () => { clearTimeout(idle); idle = setTimeout(() => { stop(); game.lose("Too slow! No beats for 7 seconds."); }, IDLE); };
+      const arm = () => { clearTimeout(idle); idle = setTimeout(() => { stop(); game.lose(); }, IDLE); };
       function press(e) {
         if (!root.isConnected) return stop(); // level was skipped
         const k = e.key === " " ? " " : e.key.toLowerCase();
@@ -109,7 +109,7 @@ export const levels = [
   { type: "custom", q: "Hey it's me your old property manager Tom. It's gonna be $150 for bedbug removal.", answers: ["No", "No", "No", "No"],
     setup(stage, game) { // the boxes do nothing; after 7s a bug crosses, click it to squash
       const bug = art(stage.el, "bedbug.png", "\u{1FAB2}", "", { left: "-80px", top: "300px", width: "70px", height: "60px", cursor: "pointer", display: "none", zIndex: 5, transition: "left 5s linear", mixBlendMode: "multiply" });
-      game.timer(7, () => { bug.style.display = "block"; void bug.offsetWidth; bug.style.left = "560px"; game.timer(5.2, () => game.lose("The bedbug got away. $150.")); });
+      game.timer(7, () => { bug.style.display = "block"; void bug.offsetWidth; bug.style.left = "560px"; game.timer(5.2, () => game.lose()); });
       bug.onclick = () => { const k = stage.el.getBoundingClientRect().width / 550, x = (bug.getBoundingClientRect().left - stage.el.getBoundingClientRect().left) / k;
         bug.style.transition = "none"; bug.style.left = x + "px"; bug.style.transform = "rotate(180deg)"; bug.onclick = null; game.sound("crunch");
         const blood = art(stage.el, "", "", "", { left: x - 10 + "px", top: "345px", width: "90px", height: "30px", zIndex: 4 });
@@ -123,16 +123,16 @@ export const levels = [
     "\"I think the issue with young people these days is they think they can get a degree and be rich, but school won't teach you how to be rich.\"",
   ] },
   // DRAFT
-  { type: "choice", q: "What is 2+2?", answers: ["6, 7", "21", "5", "Quick maths"], correct: 3, fakeout: "4 minus 1 that's 3" },
+  { type: "choice", q: "What is 2+2?", answers: ["6, 7", "21", "5", "Quick maths"], correct: 3 },
   // DRAFT
-  { type: "choice", q: "I am your...", answers: ["Dad", "Father", "Mother", "Nephew"], correct: 0, fakeout: "No. That's not true. That's impossible!" },
+  { type: "choice", q: "I am your...", answers: ["Dad", "Father", "Mother", "Nephew"], correct: 0 },
   // DRAFT
   { type: "custom", q: "Please release 5 albums this year",
     setup(stage, game) {
       let n = 0; const cnt = art(stage.el, "", "\u{1F4BF} 0/5", "", { left: 0, top: "90px", width: "550px", fontSize: "56px" });
       const b = Object.assign(document.createElement("button"), { className: "btn", textContent: "Release album" }); b.style.width = "220px"; b.style.left = "165px"; stage.el.append(b);
       b.onclick = () => { cnt.textContent = `\u{1F4BF} ${++n}/5`; n >= 5 && game.win(); };
-      game.timer(6, () => game.lose(`Only ${n} albums. Lazy.`));
+      game.timer(6, () => game.lose());
     } },
   { type: "choice", q: "What restaurant is this?", image: "assets/levels/dagwoods.jpg", answers: ["Dag's", "Dag's", "Dag's", "I don't know"], correct: 3 },
   { type: "custom", q: "", // crawl: slow while offscreen, then 50x the moment it is in view; click it
@@ -149,7 +149,7 @@ export const levels = [
         if (y < 368 && !seen) seen = now; // text peeks in: let it be read for 2s, then 50x
         if (!fast && seen && now - seen > 2000) { fast = true; v *= 50; m.playbackRate = 3; }
         y -= v * dt; t.style.top = y + "px";
-        y < -90 ? game.lose("It crawled away.") : raf = requestAnimationFrame(step); };
+        y < -90 ? game.lose() : raf = requestAnimationFrame(step); };
       raf = requestAnimationFrame(step);
     } },
   { type: "custom", q: "Name all the LCC houses", bomb: 60,
@@ -162,7 +162,7 @@ export const levels = [
     } },
   { type: "choice", q: "Which Vibrant Reset song has the most plays on SoundCloud?", answers: ["Dragonhead", "Do I Wanna Know cover", "Do You Miss Me Too", "Junkie"], correct: 1 },
   // DRAFT: final boss
-  { type: "choice", q: "Whose birthday is it?", answers: ["Garfield", "Whomst've", "The Lizard Wizard", "Evan"], correct: 3, bomb: 10, fakeout: "Wrong. Evan's feelings are hurt." },
+  { type: "choice", q: "Whose birthday is it?", answers: ["Garfield", "Whomst've", "The Lizard Wizard", "Evan"], correct: 3, bomb: 10 },
 ];
 
 // END SCREEN (author: replace these two): message under "HAPPY BIRTHDAY EVAN", and an optional image path like "assets/levels/end.jpg" (or "")

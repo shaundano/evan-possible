@@ -150,7 +150,7 @@ function load() {
   bomb.textContent = "";
   if (lv.bomb) { // bomb: N counts down in the HUD, lose at 0
     let n = lv.bomb;
-    const tick = () => { bomb.textContent = `\u{1F4A3} ${n}`; if (!n--) return game.lose("The bomb went off!"); game.timer(1, tick); };
+    const tick = () => { bomb.textContent = `\u{1F4A3} ${n}`; if (!n--) return game.lose(); game.timer(1, tick); };
     tick();
   }
   lv.sound ? bgm.pause() : bgmOn && bgm.play().catch(() => {});
