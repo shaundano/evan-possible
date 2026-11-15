@@ -168,6 +168,9 @@ title.innerHTML = "<h1>THE EVAN-POSSIBLE<b>QUIZ</b></h1>";
 const pk = el("", title, "a birthday gift for Evan", "p"), intro = el("title intro", stage), bg = el("begin", intro, "Begin", "button");
 const go = el("ans l r btn", title, "Play", "button"); title.insertBefore(go, pk);
 title.hidden = true; // white screen with only Begin; fart, then the menu and music
-bg.onclick = () => { bg.disabled = true; const f = sound("fart2"); f.onended = () => { intro.hidden = true; title.hidden = false; bgmOn = true; bgm.play().catch(() => {}); }; setTimeout(() => f.onended?.(), 5000); };
+const fartA = Object.assign(new Audio("assets/sounds/fart2.mp3"), { preload: "auto" }); // preloaded so the click farts instantly
+const menu = () => { intro.hidden = true; title.hidden = false; title.classList.add("fade"); bgmOn = true; bgm.volume = 0; bgm.play().catch(() => {});
+  let v = 0; const r = setInterval(() => { bgm.volume = Math.min(.25, v += .01); v >= .25 && clearInterval(r); }, 40); }; // music fades in under the menu
+bg.onclick = () => { bg.disabled = true; fartA.play().catch(() => {}); setTimeout(menu, 2200); };
 go.onclick = () => { title.hidden = true; bgmOn = true; bgm.play().catch(() => {}); start(); };
 if (q > 0) { intro.hidden = true; title.hidden = true; start(Math.min(q, levels.length) - 1); }
