@@ -109,10 +109,9 @@ html, body { margin: 0; height: 100%; background: #111; overflow: hidden; font-f
 @font-face { font-family: StarJedi; src: url(../assets/fonts/starjedi.ttf); }
 .skips button:disabled { pointer-events: none; }
 .nope { position: absolute; right: 0; bottom: 40px; z-index: 20; padding: 8px 20px; font-size: 24px; color: #ff1a1a; background: repeating-linear-gradient(-45deg, #f2e002 0 14px, #111 14px 28px); text-shadow: -2px -2px 0 #111, 2px -2px 0 #111, -2px 2px 0 #111, 2px 2px 0 #111; transform: rotate(-4deg); pointer-events: none; }
-.bub .pic { left: 200px; top: 42px; width: 150px; height: 108px; }
-.bub .grid { top: 156px; grid-auto-rows: 96px; }
-.bubble { position: absolute; left: 296px; top: 44px; z-index: 4; padding: 3px 12px; font-size: 18px; color: #000; background: #fff; border: 3px solid #000; border-radius: 14px; }
-.bubble::after { content: ""; position: absolute; left: 12px; bottom: -13px; border: 7px solid transparent; border-top: 11px solid #000; border-bottom: 0; }
 .ans.imgans { padding: 0; overflow: hidden; } .ans.imgans img { width: 100%; height: 100%; object-fit: cover; object-position: center 20%; display: block; }
 .pics .grid { left: 21px; top: 130px; grid-template-columns: repeat(4, 124px); grid-auto-rows: 190px; gap: 8px; }
 .pics .ans::before, .pics .ans::after { display: none; }
+.qright .q { left: 272px; top: 10px; width: 270px; height: 150px; }
+.qright .pic { left: 92px; top: 14px; width: 170px; height: 128px; }
+.qright .grid { top: 176px; grid-auto-rows: 86px; }

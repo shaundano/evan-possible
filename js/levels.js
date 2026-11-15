@@ -30,7 +30,7 @@ const RAM = Object.assign(new Audio("assets/levels/ram-ranch.mp3"), { preload: "
 const RANKING = ["Blade Runner 2049", "Ducktales the Movie", "Spaceballs", "The Gambler"];
 
 export const levels = [
-  { type: "choice", q: "What year was Deloitte founded?", answers: ["1902", "1845", "1919", "1873"], correct: 1 },
+  { type: "choice", q: "What year was Deloitte founded?", answers: ["1902", "1919", "1845", "1873"], correct: 2 },
   { type: "choice", q: "Which Shaggs song is this?", sound: "levels/shaggs-who-are-parents.mp3", correct: 1,
     answers: ["Philosophy of the World", "Who Are Parents?", "My Pal Foot Foot", "It's Halloween"] },
   { type: "custom", q: "Put the pipe in old Garfield's mouth",
@@ -169,20 +169,22 @@ export const levels = [
         if (i < 0 || got.has(i)) return; got.add(i); slots[i].textContent = H[i]; input.value = ""; got.size === 8 && game.win(); };
     } },
   { type: "choice", q: "Which Vibrant Reset song has the most plays on SoundCloud?", answers: ["Dragonhead", "Do I Wanna Know cover", "Do You Miss Me Too", "Junkie"], correct: 1 },
-  { type: "choice", q: "HALT. Who are you voting for in the 2028 election?", image: "assets/levels/octopus.jpg", pictop: true, bubble: "Vote Octopus!", correct: 2, answers: ["Democrats", "Republicans", "Octopus Party", "I'm not voting"] },
+  { type: "choice", q: "HALT. Who are you voting for in the 2028 election?", image: "assets/levels/octopus.jpg", qright: true, correct: 2, answers: ["Democrats", "Republicans", "Octopus Party", "I'm not voting"] },
   { type: "choice", q: "Which one of these men is the Rebbe?", answers: ["img:assets/levels/man-b.jpg", "img:assets/levels/man-c.jpg", "img:assets/levels/man-a.jpg", "img:assets/levels/man-d.jpg"], correct: 2 },
   { type: "custom", q: "How big is Pete?", // hand cursor; a red line marks the cursor height; click in the top 15% of the scroll
     setup(stage, game) {
       const A = stage.el, SH = 352, SW = 92, SX = 440, ST = 8, mk = (tag) => A.appendChild(document.createElement(tag));
-      const scroll = mk("img"); scroll.src = "assets/levels/scroll.png"; scroll.style.cssText = `position:absolute;left:${SX}px;top:${ST}px;width:${SW}px;height:${SH}px;mix-blend-mode:multiply;pointer-events:none`;
-      const line = mk("div"); line.style.cssText = "position:absolute;height:3px;background:#ff1a1a;pointer-events:none;display:none;z-index:3";
-      const hand = mk("img"); hand.src = "assets/levels/hand.jpg"; hand.style.cssText = "position:absolute;width:96px;height:62px;mix-blend-mode:multiply;pointer-events:none;display:none;z-index:4";
-      A.style.cursor = "none"; A.style.zIndex = 3; game.cleanup(() => { A.style.cursor = ""; A.style.zIndex = ""; });
+      const scroll = mk("img"); scroll.src = "assets/levels/scroll2.png"; scroll.style.cssText = `position:absolute;left:${SX}px;top:${ST}px;width:${SW}px;height:${SH}px;pointer-events:none`;
+      const line = mk("div"); line.style.cssText = "position:absolute;height:3px;background:#ff1a1a;pointer-events:none;display:none";
+      const hand = mk("img"); hand.src = "assets/levels/hand.jpg"; hand.style.cssText = "position:absolute;width:96px;height:62px;mix-blend-mode:multiply;pointer-events:none;display:none";
+      const P = A.parentElement; P.style.cursor = "none"; // listen on the whole play area so the hand can slide under the question text
+      game.cleanup(() => { P.style.cursor = ""; P.removeEventListener("pointermove", mv); P.removeEventListener("click", ck); });
       let y = null; const pos = e => { const r = A.getBoundingClientRect(), k = r.width / 550; return [(e.clientX - r.left) / k, (e.clientY - r.top) / k]; };
-      A.onpointermove = e => { let x; [x, y] = pos(e);
+      const mv = e => { let x; [x, y] = pos(e);
         hand.style.cssText += `;display:block;left:${x - 95}px;top:${y - 6}px`; // fingertip on the cursor
         line.style.cssText += `;display:block;left:${x}px;top:${y - 1}px;width:${Math.max(0, SX - x)}px`; };
-      A.onclick = e => { const [, cy] = pos(e); cy >= ST && cy <= ST + SH * .15 ? game.win() : game.lose(); };
+      const ck = e => { const [, cy] = pos(e); cy >= ST && cy <= ST + SH * .15 ? game.win() : game.lose(); };
+      P.addEventListener("pointermove", mv); P.addEventListener("click", ck);
     } },
   { type: "custom", q: "How many particles are there in the universe that we can observe?", // calculator: digits plus a MILLION key; answer is 10 then 9 millions
     setup(stage, game) {
@@ -197,8 +199,8 @@ export const levels = [
     } },
   // DRAFT: final boss
   { type: "choice", q: "Whose birthday is it?", answers: ["Garfield", "Whomst've", "The Lizard Wizard", "Evan"], correct: 3, bomb: 10 },
-  { type: "choice", q: "What was the location of the answer in question 1?", answers: ["This one", "This one", "This one", "This one"], correct: 1 },
-  // FINAL BOSS: bullet hell. Mouse/arrows steer the Camry (auto-fires up); 20 hits (5 dmg each) drop The Wrangler's 100 HP; getting hit costs a life but the fight goes on
+  { type: "choice", q: "What was the location of the answer in question 1?", answers: ["This one", "This one", "This one", "This one"], correct: 2 },
+  // FINAL BOSS: bullet hell. Mouse/arrows steer the Camry (auto-fires up); hold SPACE to fire (2 dmg per hit) to drop The Wrangler's 100 HP; getting hit costs a life but the fight goes on
   { type: "custom", noskip: true, q: "",
     setup(stage, game) {
       const W = 550, H = 400, cv = Object.assign(document.createElement("canvas"), { width: W, height: H }), c = cv.getContext("2d");
@@ -209,7 +211,7 @@ export const levels = [
       const P = { x: W / 2, y: 340 }, keys = {}, B = [], M = []; // enemy bullets, my bullets
       let tx = P.x, ty = P.y, t = 0, last = performance.now(), raf, inv = 0, spin = 0, cd = 0, mcd = 0, hp = 100, flash = 0, done = false;
       cv.onpointermove = e => { const r = cv.getBoundingClientRect(), k = r.width / W; tx = (e.clientX - r.left) / k; ty = (e.clientY - r.top) / k; };
-      const kd = e => keys[e.key] = true, ku = e => keys[e.key] = false; addEventListener("keydown", kd); addEventListener("keyup", ku);
+      const kd = e => { keys[e.key] = true; if (e.key === " ") e.preventDefault(); }, ku = e => keys[e.key] = false; addEventListener("keydown", kd); addEventListener("keyup", ku);
       game.cleanup(() => { removeEventListener("keydown", kd); removeEventListener("keyup", ku); cancelAnimationFrame(raf); });
       const shot = (x, y, a, v, e, r = 8) => B.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, e, r });
       const boss = () => ({ x: W / 2 + 170 * Math.sin(t * .7), y: 126 });
@@ -224,12 +226,12 @@ export const levels = [
         const v = 260 * dt; if (keys.ArrowLeft || keys.a) tx -= v; if (keys.ArrowRight || keys.d) tx += v; if (keys.ArrowUp || keys.w) ty -= v; if (keys.ArrowDown || keys.s) ty += v;
         tx = Math.max(30, Math.min(W - 30, tx)); ty = Math.max(220, Math.min(H - 40, ty));
         P.x += (tx - P.x) * Math.min(1, dt * 14); P.y += (ty - P.y) * Math.min(1, dt * 14);
-        if (!done) { if (t > 1.5) fire(dt); mcd -= dt; if (mcd <= 0) { mcd = .2; M.push({ x: P.x, y: P.y - 12 }); } }
+        if (!done) { if (t > 1.5) fire(dt); mcd -= dt; if (mcd <= 0 && keys[" "]) { mcd = .13; M.push({ x: P.x, y: P.y - 12 }); } }
         B.forEach(o => { o.x += o.vx * dt; o.y += o.vy * dt; }); M.forEach(o => o.y -= 420 * dt);
         for (let i = B.length - 1; i >= 0; i--) if (B[i].x < -20 || B[i].x > W + 20 || B[i].y > H + 20 || B[i].y < -20) B.splice(i, 1);
         const b = boss();
         for (let i = M.length - 1; i >= 0; i--) { const m = M[i];
-          if (!done && Math.abs(m.x - b.x) < 38 && m.y < 196 && m.y > 56) { M.splice(i, 1); hp -= 5; flash = .08; if (hp <= 0) { done = true; B.length = 0; setTimeout(game.win, 2000); } }
+          if (!done && Math.abs(m.x - b.x) < 38 && m.y < 196 && m.y > 56) { M.splice(i, 1); hp -= 2; flash = .08; if (hp <= 0) { done = true; B.length = 0; setTimeout(game.win, 2000); } }
           else if (m.y < -10) M.splice(i, 1); }
         if (!done && inv <= 0 && B.some(o => Math.hypot(o.x - P.x, o.y - P.y) < o.r + 4)) { inv = 1.3; game.hit(); if (game.dead) return; }
         const g = c.createLinearGradient(0, 0, 0, H); g.addColorStop(0, "#ff9a4a"); g.addColorStop(.6, "#ffd9a0"); g.addColorStop(1, "#c98a4a"); c.fillStyle = g; c.fillRect(0, 0, W, H);
@@ -241,6 +243,7 @@ export const levels = [
         c.fillStyle = "#e33"; c.beginPath(); c.arc(P.x, P.y, 2.5, 0, 7); c.fill(); // hitbox
         c.fillStyle = "#000"; c.fillRect(110, 36, 330, 14); c.fillStyle = "#ff1a1a"; c.fillRect(112, 38, 326 * Math.max(0, hp / 100), 10);
         c.fillStyle = "#fff"; c.font = "16px Akbar"; c.fillText(done ? "YEEHAW!" : "THE WRANGLER", W / 2, 24);
+        if (!done && t < 8) { c.fillStyle = "#000"; c.font = "18px Akbar"; c.fillText("HOLD SPACE TO FIRE", W / 2, 372); }
         raf = requestAnimationFrame(step);
       }
       raf = requestAnimationFrame(step);

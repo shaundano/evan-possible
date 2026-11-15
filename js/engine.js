@@ -124,7 +124,7 @@ function endScreen() {
   for (let i = 0; i < 70; i++) el("confetti", over, "", "i").style.cssText = `left:${Math.random() * 100}%;background:hsl(${Math.random() * 360},90%,55%);animation-delay:${Math.random() * 3}s`;
   el("h", over, "HAPPY BIRTHDAY").append(el("b", over, "EVAN", "b"));
   if (END_IMAGE) el("pic", over, "", "img").src = END_IMAGE;
-  const cat = el("cat", over, "", "img"); let f = 0; const cats = ["cat1b", "cat2", "cat1b", "cat3"]; cat.src = "assets/img/cat1b.png"; const ci = setInterval(() => over.isConnected && !over.hidden ? cat.src = `assets/img/${cats[f++ % 4]}.png` : clearInterval(ci), 250);
+  const cat = el("cat", over, "", "img"); let f = 0; const cats = ["cat1d", "cat2", "cat1d", "cat3"]; cat.src = "assets/img/cat1d.png"; const ci = setInterval(() => over.isConnected && !over.hidden ? cat.src = `assets/img/${cats[f++ % 4]}.png` : clearInterval(ci), 250);
   el("note", over, END_MESSAGE);
   el("btn", over, "Play again", "button").onclick = () => { overSnd?.pause(); over.hidden = true; hud.style.visibility = "hidden"; title.hidden = false; };
   el("credits", over, 'Music: Kevin MacLeod (CC BY 4.0), "Local Forecast - Elevator"; beatbox: Pepouni (CC BY-SA 3.0) & stilgar (PD); inspired by The Impossible Quiz by Splapp-me-do');
@@ -139,11 +139,10 @@ function load() {
   if ([13].includes(s.i) && !s.got.has(s.i)) { s.got.add(s.i); s.skips++; }
   skips.replaceChildren(); for (let k = 0; k < 1; k++) { const b = el(k < s.skips ? "on" : "", skips, "", "button"); if (k < s.skips) b.onclick = () => lv.noskip ? nope() : cur?.skip(); else { b.disabled = true; b.tabIndex = -1; } }
   refit.length = 0; play.replaceChildren(area); area.replaceChildren(); play.onclick = null; play.className = "play";
-  play.classList.toggle("withpic", !!lv.image && !lv.pictop); play.classList.toggle("pictop", !!lv.pictop); // image on the left, answers on the right
+  play.classList.toggle("withpic", !!lv.image && !lv.pictop && !lv.qright); play.classList.toggle("pictop", !!lv.pictop); // image on the left, answers on the right
   const q = el("q", play), qt = el("qt", q, lv.q);
   fitText(q, qt, lv.pictop ? 26 : lv.q.length > 70 ? 34 : 48, 16);
-  if (lv.bubble) el("bubble", play, lv.bubble); // speech bubble over the picture
-  play.classList.toggle("bub", !!lv.bubble);
+  play.classList.toggle("qright", !!lv.qright); // picture left, question to its right
   if (lv.image) { const im = el("pic", play, "", "img"); im.src = lv.image; im.onerror = () => im.remove(); }
   let done = false;
   const ids = [], fns = []; // pending timers (cleared when the level ends) and cleanup hooks (run before the next load)
