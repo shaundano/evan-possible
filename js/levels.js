@@ -195,12 +195,14 @@ export const levels = [
     } },
   // DRAFT: final boss
   { type: "choice", q: "Whose birthday is it?", answers: ["Garfield", "Whomst've", "The Lizard Wizard", "Evan"], correct: 3, bomb: 10 },
+  { type: "choice", q: "What was the location of the answer in question 1?", answers: ["This one", "This one", "This one", "This one"], correct: 1 },
   // FINAL BOSS: bullet hell. Mouse/arrows steer the Camry (auto-fires up); 20 hits (5 dmg each) drop The Wrangler's 100 HP; getting hit costs a life but the fight goes on
   { type: "custom", noskip: true, q: "",
     setup(stage, game) {
       const W = 550, H = 400, cv = Object.assign(document.createElement("canvas"), { width: W, height: H }), c = cv.getContext("2d");
       Object.assign(cv.style, { position: "absolute", left: 0, top: "-32px", zIndex: 0, cursor: "none" }); stage.el.append(cv);
       const img = s => Object.assign(new Image(), { src: "assets/levels/" + s }), WR = img("wrangler.png"), CAM = img("camry.png");
+      game.cashSkips(); // unused skips become extra lives for this fight
       game.bgm.volume = 0; RAM.currentTime = 0; RAM.play().catch(() => {}); game.cleanup(() => RAM.pause());
       const P = { x: W / 2, y: 340 }, keys = {}, B = [], M = []; // enemy bullets, my bullets
       let tx = P.x, ty = P.y, t = 0, last = performance.now(), raf, inv = 0, spin = 0, cd = 0, mcd = 0, hp = 100, flash = 0, done = false;

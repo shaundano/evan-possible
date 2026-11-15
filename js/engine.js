@@ -149,6 +149,7 @@ function load() {
   const ids = [], fns = []; // pending timers (cleared when the level ends) and cleanup hooks (run before the next load)
   const end = f => (...a) => { if (!done) { done = true; ids.forEach(clearTimeout); f(...a); } };
   const game = { win: end(() => { sound("correct"); next(); }), lose: end((msg = "Wrong!", all) => die(msg, all)),
+    cashSkips() { s.lives += s.skips; s.skips = 0; lives.querySelector(".n").textContent = s.lives; skips.querySelectorAll("button").forEach(b => { b.className = ""; b.disabled = true; b.onclick = null; }); },
     hit() { if (done) return; s.lives--; lives.querySelector(".n").textContent = s.lives; // lose a life, level keeps going
       if (s.lives > 0) return sound("life-lost"); done = true; game.dead = true; ids.forEach(clearTimeout); gameOver(); },
     sound, bgm, cleanup: f => fns.push(f), teardown: () => fns.splice(0).forEach(f => f()),
