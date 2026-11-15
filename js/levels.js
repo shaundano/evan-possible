@@ -106,12 +106,15 @@ export const levels = [
     "\"If I leave here with anybody liking me, I failed. I'm not here to be your friend—if you want a friend, go get a f*cking dog. I'm here to drag your sorry ass across the goal line no matter what it takes.\"",
     "\"Sleep is for broke people. You can rest when you're dead, or when your bank account has enough zeros to buy the hospital.\"",
   ] },
-  { type: "custom", q: "Hey it's me your old property manager Tom. It's gonna be $150 for bedbug removal.",
-    setup(stage, game) {
-      const bug = art(stage.el, "", "\u{1FAB2}", "", { left: "-60px", top: "250px", width: "50px", height: "50px", fontSize: "40px", cursor: "pointer", display: "none", transition: "left 5s linear" });
-      ["No", "No", "No", "No"].forEach((a, i) => { const b = art(stage.el, "", a, "", { left: 45 + i * 120 + "px", top: "160px", width: "90px", height: "50px", fontSize: "30px", background: "#f8caff", border: "6px solid #281efb", boxSizing: "border-box", cursor: "pointer" }); b.onclick = () => {}; });
+  { type: "custom", q: "Hey it's me your old property manager Tom. It's gonna be $150 for bedbug removal.", answers: ["No", "No", "No", "No"],
+    setup(stage, game) { // the boxes do nothing; after 7s a bug crosses, click it to squash
+      const bug = art(stage.el, "bedbug.png", "\u{1FAB2}", "", { left: "-80px", top: "300px", width: "70px", height: "60px", cursor: "pointer", display: "none", zIndex: 5, transition: "left 5s linear", mixBlendMode: "multiply" });
       game.timer(7, () => { bug.style.display = "block"; void bug.offsetWidth; bug.style.left = "560px"; game.timer(5.2, () => game.lose("The bedbug got away. $150.")); });
-      bug.onclick = () => { bug.style.transition = "none"; bug.style.left = bug.getBoundingClientRect().left / (stage.el.getBoundingClientRect().width / 550) - stage.el.getBoundingClientRect().left / (stage.el.getBoundingClientRect().width / 550) + "px"; bug.textContent = "\u{1FA78}\u{1F480}"; bug.style.width = "100px"; bug.onclick = null; setTimeout(game.win, 2000); };
+      bug.onclick = () => { const k = stage.el.getBoundingClientRect().width / 550, x = (bug.getBoundingClientRect().left - stage.el.getBoundingClientRect().left) / k;
+        bug.style.transition = "none"; bug.style.left = x + "px"; bug.style.transform = "rotate(180deg)"; bug.onclick = null; game.sound("crunch");
+        const blood = art(stage.el, "", "", "", { left: x - 10 + "px", top: "345px", width: "90px", height: "30px", zIndex: 4 });
+        blood.innerHTML = '<svg viewBox="0 0 90 30"><path d="M5 12C15 2 30 6 45 3c15-2 30 4 40 10-6 6-4 12-14 13-8 1-10-3-18-1-10 3-20 3-30 0C14 24 2 20 5 12Z" fill="#b00000"/><circle cx="12" cy="26" r="3" fill="#b00000"/><circle cx="76" cy="27" r="2.5" fill="#b00000"/><circle cx="48" cy="28" r="2" fill="#8a0000"/></svg>';
+        setTimeout(game.win, 2000); };
     } },
   { type: "choice", q: "Which is a real Robert Luxenberg quote?", image: "assets/levels/luxenberg.jpg", pictop: true, correct: 1, answers: [
     "\"Evan, I'm on the bean diet\"",
@@ -124,15 +127,6 @@ export const levels = [
   // DRAFT
   { type: "choice", q: "I am your...", answers: ["Dad", "Father", "Mother", "Nephew"], correct: 0, fakeout: "No. That's not true. That's impossible!" },
   // DRAFT
-  { type: "custom", q: "Click the Lizard Wizard", fakeout: "Not a Lizard Wizard.",
-    setup(stage, game) {
-      const need = new Set(["\u{1F98E}", "\u{1F9D9}"]); // lizard + wizard
-      ["\u{1F40D}", "\u{1F98E}", "\u{1F40A}", "\u{1F9D9}"].forEach((e, i) => {
-        const a = art(stage.el, "", e, "", { left: 25 + i * 130 + "px", top: "120px", width: "110px", height: "110px", cursor: "pointer" });
-        a.onclick = () => { if (!need.has(e)) return game.lose("Not a Lizard Wizard."); need.delete(e); a.style.opacity = .3; need.size || game.win(); };
-      });
-    } },
-  // DRAFT
   { type: "custom", q: "Please release 5 albums this year",
     setup(stage, game) {
       let n = 0; const cnt = art(stage.el, "", "\u{1F4BF} 0/5", "", { left: 0, top: "90px", width: "550px", fontSize: "56px" });
@@ -140,18 +134,21 @@ export const levels = [
       b.onclick = () => { cnt.textContent = `\u{1F4BF} ${++n}/5`; n >= 5 && game.win(); };
       game.timer(6, () => game.lose(`Only ${n} albums. Lazy.`));
     } },
-  { type: "choice", q: "What restaurant is this?", image: "assets/levels/dagwoods.jpg", answers: ["Dag's", "Dag's", "Dag's", "I don't know"], correct: [0, 1, 2] },
-  { type: "custom", q: "A long time ago in a galaxy far, far away...", // crawl: slow until 1/3 on screen, then tape-speeds-up; click it before it leaves
+  { type: "choice", q: "What restaurant is this?", image: "assets/levels/dagwoods.jpg", answers: ["Dag's", "Dag's", "Dag's", "I don't know"], correct: 3 },
+  { type: "custom", q: "", // crawl: slow while offscreen, then 50x the moment it is in view; click it
     setup(stage, game) {
-      const t = art(stage.el, "", "Click Me", "", { left: 0, width: "550px", top: "400px", fontSize: "60px", color: "#ffe81f", background: "none", cursor: "pointer", whiteSpace: "nowrap", transform: "perspective(300px) rotateX(35deg)" });
-      const m = game.sound("levels/starwars.mp3"); m.loop = true; game.cleanup(() => m.pause());
-      let y = 400, v = 13, last = performance.now(), raf;
+      document.fonts.load("64px StarJedi");
+      const sky = art(stage.el, "", "", "", { left: 0, top: 0, width: "550px", height: "400px", zIndex: 0, background: "#000" });
+      for (let i = 0; i < 90; i++) Object.assign(sky.appendChild(document.createElement("i")).style, { position: "absolute", left: Math.random() * 100 + "%", top: Math.random() * 100 + "%", width: 1 + Math.random() * 2 + "px", height: 1 + Math.random() * 2 + "px", background: "#fff", borderRadius: "50%", opacity: .4 + Math.random() * .6 });
+      const t = art(stage.el, "", "Click Me", "", { left: 0, width: "550px", top: "420px", zIndex: 2, fontFamily: "StarJedi, Akbar", fontSize: "64px", color: "#ffe81f", background: "none", cursor: "pointer", whiteSpace: "nowrap", transform: "perspective(260px) rotateX(55deg) skewX(-12deg)" });
+      const m = game.sound("levels/starwars.mp3"); game.cleanup(() => m.pause());
+      let y = 560, v = 14, fast = false, last = performance.now(), raf;
       t.onclick = () => { cancelAnimationFrame(raf); game.win(); };
       game.cleanup(() => cancelAnimationFrame(raf));
       const step = now => { const dt = (now - last) / 1000; last = now;
-        if (y < 280) v *= 1 + 1.6 * dt; // entered the screen: speed up
-        m.playbackRate = Math.min(4, v / 13); y -= v * dt; t.style.top = y + "px";
-        y < -70 ? game.lose("It crawled away.") : raf = requestAnimationFrame(step); };
+        if (!fast && y < 395) { fast = true; v *= 50; m.playbackRate = 3; } // first hint of text on screen: 50x
+        y -= v * dt; t.style.top = y + "px";
+        y < -90 ? game.lose("It crawled away.") : raf = requestAnimationFrame(step); };
       raf = requestAnimationFrame(step);
     } },
   { type: "custom", q: "Name all the LCC houses", bomb: 60,

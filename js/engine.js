@@ -75,7 +75,7 @@ const types = {
     play.onclick = () => game.lose();
     game.timer(lv.seconds, game.win);
   },
-  custom: (lv, st, game) => lv.setup(st, game),
+  custom: (lv, st, game) => { if (lv.answers) boxes(lv.answers, () => {}); lv.setup(st, game); },
 };
 
 // full-stage message: a button, or (no label) auto-continues after 1.6s / on click
