@@ -105,3 +105,4 @@ html, body { margin: 0; height: 100%; background: #111; overflow: hidden; font-f
 .over.end .cat { height: 130px; mix-blend-mode: screen; }
 .title.fade { animation: fadein .8s; } @keyframes fadein { from { opacity: 0; } }
 .begin { transition: opacity .35s; } .begin.out { opacity: 0; pointer-events: none; }
+.begin.out { animation: beginout .15s forwards; } @keyframes beginout { to { opacity: 0; } }

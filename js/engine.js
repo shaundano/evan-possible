@@ -122,7 +122,7 @@ function endScreen() {
   if (END_IMAGE) el("pic", over, "", "img").src = END_IMAGE;
   const cat = el("cat", over, "", "img"); let f = 0; cat.src = "assets/img/cat1.png"; const ci = setInterval(() => over.isConnected && !over.hidden ? cat.src = `assets/img/cat${[1, 2, 1, 3][f++ % 4]}.png` : clearInterval(ci), 250);
   el("note", over, END_MESSAGE);
-  el("btn", over, "Play again", "button").onclick = () => { overSnd?.pause(); over.hidden = true; title.hidden = false; };
+  el("btn", over, "Play again", "button").onclick = () => { overSnd?.pause(); over.hidden = true; hud.style.visibility = "hidden"; title.hidden = false; };
   el("credits", over, 'Music: Kevin MacLeod (CC BY 4.0), "Local Forecast - Elevator"; beatbox: Pepouni (CC BY-SA 3.0) & stilgar (PD); inspired by The Impossible Quiz by Splapp-me-do');
 }
 
@@ -159,12 +159,13 @@ function load() {
   types[lv.type](lv, { el: area, sprite }, game);
 }
 
-function start(i = 0) { s = { i, lives: 3, skips: 0, got: new Set() }; load(); }
+function start(i = 0) { hud.style.visibility = ""; s = { i, lives: 3, skips: 0, got: new Set() }; load(); }
 
 // title card; Play is the first gesture, so music (and the first clip) can start
 await document.fonts.load("46px Akbar");
 const q = +new URLSearchParams(location.search).get("q"); // ?q=N debug jump skips the title
 title.innerHTML = "<h1>THE EVAN-POSSIBLE<b>QUIZ</b></h1>";
+hud.style.visibility = "hidden"; // no HUD behind the menu
 const pk = el("", title, "a birthday gift for Evan", "p"), intro = el("title intro", stage), bg = el("begin", intro, "Begin", "button");
 const go = el("ans l r btn", title, "Play", "button"); title.insertBefore(go, pk);
 title.hidden = true; // white screen with only Begin; fart, then the menu and music
