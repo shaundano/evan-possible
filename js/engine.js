@@ -116,12 +116,13 @@ function gameOver() { // splat; click anywhere to retry
 
 // birthday end screen: confetti, victory sound, author message/image, Play Again returns to the title card
 function endScreen() {
-  clearTimeout(tm); bgmOn = false; bgm.pause(); sound("victory"); over.replaceChildren(); over.hidden = false; over.className = "over end";
+  clearTimeout(tm); bgmOn = false; bgm.pause(); overSnd = Object.assign(sound("mom-cat"), { loop: true }); over.replaceChildren(); over.hidden = false; over.className = "over end";
   for (let i = 0; i < 70; i++) el("confetti", over, "", "i").style.cssText = `left:${Math.random() * 100}%;background:hsl(${Math.random() * 360},90%,55%);animation-delay:${Math.random() * 3}s`;
   el("h", over, "HAPPY BIRTHDAY").append(el("b", over, "EVAN", "b"));
   if (END_IMAGE) el("pic", over, "", "img").src = END_IMAGE;
+  const cat = el("cat", over, "", "img"); let f = 0; cat.src = "assets/img/cat1.png"; const ci = setInterval(() => over.isConnected && !over.hidden ? cat.src = `assets/img/cat${[1, 2, 1, 3][f++ % 4]}.png` : clearInterval(ci), 250);
   el("note", over, END_MESSAGE);
-  el("btn", over, "Play again", "button").onclick = () => { over.hidden = true; title.hidden = false; };
+  el("btn", over, "Play again", "button").onclick = () => { overSnd?.pause(); over.hidden = true; title.hidden = false; };
   el("credits", over, 'Music: Kevin MacLeod (CC BY 4.0), "Local Forecast - Elevator"; beatbox: Pepouni (CC BY-SA 3.0) & stilgar (PD); inspired by The Impossible Quiz by Splapp-me-do');
 }
 
