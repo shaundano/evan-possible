@@ -8,6 +8,15 @@
 </head>
 <body>
 <div id="stage"></div>
-<script type="module" src="js/engine.js"></script>
+<script>
+const go = () => import("./js/engine.js"), ok = () => document.cookie.includes("evan_pw=1");
+if (ok()) go(); else {
+  const f = document.createElement("form"); f.style.cssText = "position:fixed;inset:0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;font:20px sans-serif;z-index:99";
+  f.innerHTML = '<div>Password</div><input type="password" autofocus style="font:20px sans-serif;padding:6px;text-align:center"><button style="font:18px sans-serif;padding:6px 18px">Enter</button>';
+  document.body.append(f); const i = f.querySelector("input"); i.focus();
+  f.onsubmit = e => { e.preventDefault(); if (i.value.trim().toLowerCase() != "birthday") { i.value = ""; i.style.outline = "2px solid red"; return; }
+    document.cookie = "evan_pw=1; max-age=31536000; path=/; SameSite=Lax"; f.remove(); go(); };
+}
+</script>
 </body>
 </html>
