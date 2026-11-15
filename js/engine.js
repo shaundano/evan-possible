@@ -168,6 +168,6 @@ title.innerHTML = "<h1>THE EVAN-POSSIBLE<b>QUIZ</b></h1>";
 const pk = el("", title, "a birthday gift for Evan", "p"), intro = el("title intro", stage), bg = el("begin", intro, "Begin", "button");
 const go = el("ans l r btn", title, "Play", "button"); title.insertBefore(go, pk);
 title.hidden = true; // white screen with only Begin; fart, then the menu and music
-bg.onclick = () => { bg.disabled = true; const f = sound("fart"); f.onended = () => { intro.hidden = true; title.hidden = false; bgmOn = true; bgm.play().catch(() => {}); }; setTimeout(() => f.onended?.(), 1600); };
+bg.onclick = () => { bg.disabled = true; const f = sound("fart"); f.onended = () => { intro.hidden = true; title.hidden = false; bgmOn = true; bgm.play().catch(() => {}); }; setTimeout(() => f.onended?.(), 5000); };
 go.onclick = () => { title.hidden = true; bgmOn = true; bgm.play().catch(() => {}); start(); };
 if (q > 0) { intro.hidden = true; title.hidden = true; start(Math.min(q, levels.length) - 1); }

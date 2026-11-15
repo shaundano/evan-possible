@@ -55,7 +55,7 @@ export const levels = [
       for (let r = 0; r < 3; r++) for (let c = 0; c < 11; c++) div("seat", cin, { left: 78 + c * 44 + r % 2 * 22 + "px", top: 258 + r * 34 + "px" });
       div("curtain", cin, { left: 0, width: "90px" }); div("curtain", cin, { left: "494px", width: "56px" }); div("screen", cin); div("valance", cin);
       const slots = films.map((_, i) => { const d = div("slot", cin, { left: X(i) + "px", top: "148px" }); d.textContent = i + 1; return d; });
-      const where = films.map(() => -1), bgm = new Audio("assets/levels/elevator-music.mp3");
+      const where = films.map(() => -1), bgm = new Audio("assets/levels/starwars.mp3");
       game.cleanup(() => { bgm.pause(); game.bgm.play().catch(() => {}); }); // elevator music until the level is torn down
       bgm.loop = true; bgm.volume = .5; bgm.play().catch(() => {}); game.bgm.pause(); // swap the theme for elevator music
       const submit = Object.assign(document.createElement("button"), { className: "btn", textContent: "Submit", disabled: true }); cin.append(submit);
@@ -144,7 +144,7 @@ export const levels = [
   { type: "custom", q: "A long time ago in a galaxy far, far away...", // crawl: slow until 1/3 on screen, then tape-speeds-up; click it before it leaves
     setup(stage, game) {
       const t = art(stage.el, "", "Click Me", "", { left: 0, width: "550px", top: "400px", fontSize: "60px", color: "#ffe81f", background: "none", cursor: "pointer", whiteSpace: "nowrap", transform: "perspective(300px) rotateX(35deg)" });
-      const m = game.sound("levels/elevator-music.mp3"); m.loop = true; game.cleanup(() => m.pause());
+      const m = game.sound("levels/starwars.mp3"); m.loop = true; game.cleanup(() => m.pause());
       let y = 400, v = 13, last = performance.now(), raf;
       t.onclick = () => { cancelAnimationFrame(raf); game.win(); };
       game.cleanup(() => cancelAnimationFrame(raf));
