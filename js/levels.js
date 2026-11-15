@@ -174,7 +174,7 @@ export const levels = [
   { type: "custom", q: "How big is Pete?", // hand cursor; a red line marks the cursor height; click in the top 15% of the scroll
     setup(stage, game) {
       const A = stage.el, SH = 352, SW = 92, SX = 440, ST = 8, mk = (tag) => A.appendChild(document.createElement(tag));
-      const scroll = mk("img"); scroll.src = "assets/levels/scroll2.png"; scroll.style.cssText = `position:absolute;left:${SX}px;top:${ST}px;width:${SW}px;height:${SH}px;pointer-events:none`;
+      const scroll = mk("img"); scroll.src = "assets/levels/scroll3.png"; scroll.style.cssText = `position:absolute;left:${SX}px;top:${ST}px;width:${SW}px;height:${SH}px;pointer-events:none`;
       const line = mk("div"); line.style.cssText = "position:absolute;height:3px;background:#ff1a1a;pointer-events:none;display:none";
       const hand = mk("img"); hand.src = "assets/levels/hand.jpg"; hand.style.cssText = "position:absolute;width:96px;height:62px;mix-blend-mode:multiply;pointer-events:none;display:none";
       const P = A.parentElement; P.style.cursor = "none"; // listen on the whole play area so the hand can slide under the question text
