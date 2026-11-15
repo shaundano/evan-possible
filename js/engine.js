@@ -153,7 +153,7 @@ function load() {
     const tick = () => { bomb.textContent = `\u{1F4A3} ${n}`; if (!n--) return game.lose(); game.timer(1, tick); };
     tick();
   }
-  bgm.volume = .25; lv.sound ? bgm.pause() : bgmOn && bgm.play().catch(() => addEventListener("pointerdown", () => bgmOn && bgm.play(), { once: true })); // retry on next click if blocked
+  bgm.volume = .25; lv.sound && !lv.keepBgm ? bgm.pause() : bgmOn && bgm.play().catch(() => addEventListener("pointerdown", () => bgmOn && bgm.play(), { once: true })); // retry on next click if blocked
   lvSnd = lv.sound ? sound(lv.sound, true) : null;
   if (lv.sound) { const rp = el("replay", play, "\u25B6 Replay", "button"); rp.onclick = e => { e.stopPropagation(); lvSnd.pause(); lvSnd = sound(lv.sound); }; }
   types[lv.type](lv, { el: area, sprite }, game);

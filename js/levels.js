@@ -98,7 +98,7 @@ export const levels = [
   { type: "choice", q: "Oil, what is it?", answers: ["makes french fries tasty", "related to Iran probably", "Oi, let's go to Mandy's", "gives me acne"], correct: 2 },
   { type: "choice", q: "Oldest breakfast place in Montreal?", answers: ["Chez Nick", "Greenspot", "Beauty's", "La Binerie"], correct: 0 },
   { type: "choice", q: "Why is Eeyore sad", answers: ["He has to pooh", "Shrinkflation", "His bones are his money", "He has a nail in his anus"], correct: 3 },
-  { type: "type", q: "Spell this word: (spoken)", sound: "levels/whomst-ve.mp3", accept: ["whomst've", "whomst'd've", "whomstve"] },
+  { type: "type", q: "Spell this word: (spoken)", sound: "levels/whomst-ve2.mp3", keepBgm: true, accept: ["whomst've", "whomst'd've", "whomstve"] },
   { type: "choice", q: "What's he doing", image: "assets/levels/evan-bench.jpg", correct: 1,
     answers: ["Contemplating the meaning of life", "\"I should start a podcast\"", "Posing for a photo", "\"I don't think the waiter who poured my wine was Jewish\""] },
   { type: "choice", q: "Which is a real Tony Robbins quote?", correct: 1, answers: [
@@ -109,11 +109,11 @@ export const levels = [
   ] },
   { type: "custom", q: "Hey it's me your old property manager Tom. It's gonna be $150 for bedbug removal.", answers: ["No", "No", "No", "No"],
     setup(stage, game) { // the boxes do nothing; after 7s a bug crosses, click it to squash
-      const bug = art(stage.el, "bedbug2.png", "\u{1FAB2}", "", { left: "-90px", top: "285px", width: "80px", height: "80px", cursor: "pointer", display: "none", zIndex: 5, transition: "left 5s linear, transform .2s", transform: "scaleX(-1)" });
+      const bug = art(stage.el, "bedbug2.png", "\u{1FAB2}", "", { left: "-20px", top: "330px", width: "8px", height: "8px", cursor: "pointer", display: "none", zIndex: 5, transition: "left 5s linear", transform: "scaleX(-1)" });
       game.timer(7, () => { bug.style.display = "block"; void bug.offsetWidth; bug.style.left = "560px"; game.timer(5.2, () => game.lose()); });
       bug.onclick = () => { const k = stage.el.getBoundingClientRect().width / 550, x = (bug.getBoundingClientRect().left - stage.el.getBoundingClientRect().left) / k;
-        bug.style.transition = "transform .2s"; bug.style.left = x + "px"; bug.style.transform = "scaleX(-1) scaleY(-1)"; bug.onclick = null; game.sound("squish");
-        const blood = art(stage.el, "", "", "", { left: x - 10 + "px", top: "345px", width: "90px", height: "30px", zIndex: 4 });
+        bug.style.transition = "none"; bug.style.left = x + "px"; bug.style.transform = "scaleX(-1) scaleY(-1)"; bug.onclick = null; game.sound("squish");
+        const blood = art(stage.el, "", "", "", { left: x - 8 + "px", top: "338px", width: "24px", height: "8px", zIndex: 4 });
         blood.innerHTML = '<svg viewBox="0 0 90 30"><path d="M5 12C15 2 30 6 45 3c15-2 30 4 40 10-6 6-4 12-14 13-8 1-10-3-18-1-10 3-20 3-30 0C14 24 2 20 5 12Z" fill="#b00000"/><circle cx="12" cy="26" r="3" fill="#b00000"/><circle cx="76" cy="27" r="2.5" fill="#b00000"/><circle cx="48" cy="28" r="2" fill="#8a0000"/></svg>';
         setTimeout(game.win, 2000); };
     } },
