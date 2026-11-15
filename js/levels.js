@@ -55,7 +55,7 @@ export const levels = [
       for (let r = 0; r < 3; r++) for (let c = 0; c < 11; c++) div("seat", cin, { left: 78 + c * 44 + r % 2 * 22 + "px", top: 258 + r * 34 + "px" });
       div("curtain", cin, { left: 0, width: "90px" }); div("curtain", cin, { left: "494px", width: "56px" }); div("screen", cin); div("valance", cin);
       const slots = films.map((_, i) => { const d = div("slot", cin, { left: X(i) + "px", top: "148px" }); d.textContent = i + 1; return d; });
-      const where = films.map(() => -1), bgm = new Audio("assets/levels/starwars.mp3");
+      const where = films.map(() => -1), bgm = new Audio("assets/levels/elevator-music.mp3");
       game.cleanup(() => { bgm.pause(); game.bgm.play().catch(() => {}); }); // elevator music until the level is torn down
       bgm.loop = true; bgm.volume = .5; bgm.play().catch(() => {}); game.bgm.pause(); // swap the theme for elevator music
       const submit = Object.assign(document.createElement("button"), { className: "btn", textContent: "Submit", disabled: true }); cin.append(submit);
