@@ -133,7 +133,7 @@ function load() {
   qnum.lastChild.textContent = `${s.i + 1}.`;
   lives.querySelector(".n").textContent = s.lives;
   if ([9, 19, 24].includes(s.i) && !s.got.has(s.i)) { s.got.add(s.i); s.skips++; }
-  skips.replaceChildren(); for (let k = 0; k < 3; k++) { const b = el(k < s.skips ? "on" : "", skips, "", "button"); b.onclick = () => cur?.skip(); b.disabled = k >= s.skips; }
+  skips.replaceChildren(); for (let k = 0; k < 3; k++) { const b = el(k < s.skips ? "on" : "", skips, "", "button"); if (k < s.skips) b.onclick = () => cur?.skip(); else { b.disabled = true; b.tabIndex = -1; } }
   refit.length = 0; play.replaceChildren(area); area.replaceChildren(); play.onclick = null; play.className = "play";
   play.classList.toggle("withpic", !!lv.image && !lv.pictop); play.classList.toggle("pictop", !!lv.pictop); // image on the left, answers on the right
   const q = el("q", play), qt = el("qt", q, lv.q);
