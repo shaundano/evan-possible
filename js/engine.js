@@ -183,4 +183,5 @@ const menu = () => { intro.hidden = true; title.hidden = false; title.classList.
   let v = 0; const r = setInterval(() => { bgm.volume = Math.min(.25, v += .01); v >= .25 && clearInterval(r); }, 40); }; // music fades in under the menu
 bg.onclick = () => { bg.disabled = true; bg.classList.add("out"); fartA.play().catch(() => {}); setTimeout(menu, 2200); };
 go.onclick = () => { title.hidden = true; bgm.currentTime = 0; bgmOn = true; bgm.play().catch(() => {}); start(); };
+if (new URLSearchParams(location.search).has("end")) { intro.hidden = true; title.hidden = true; endScreen(); } // ?end debug: straight to the victory screen
 if (q > 0) { intro.hidden = true; title.hidden = true; start(Math.min(q, levels.length) - 1); }
