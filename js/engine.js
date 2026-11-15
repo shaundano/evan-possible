@@ -156,16 +156,18 @@ function load() {
   if (lv.image) { const im = el("pic", play, "", "img"); im.src = lv.image; im.onerror = () => im.remove(); }
   let done = false;
   const ids = [], fns = []; // pending timers (cleared when the level ends) and cleanup hooks (run before the next load)
-  const end = f => (...a) => { if (!done) { done = true; ids.forEach(clearTimeout); f(...a); } };
+  let clk; // looping bomb-clock tick, stopped when the level ends
+  const end = f => (...a) => { if (!done) { done = true; clk?.pause(); ids.forEach(clearTimeout); f(...a); } };
   const game = { win: end(() => { sound("correct"); next(); }), lose: end((msg = "Wrong!", all) => die(msg, all)),
     cashSkips() { s.lives += s.skips; s.skips = 0; lives.querySelector(".n").textContent = s.lives; skips.querySelectorAll("button").forEach(b => { b.className = ""; b.disabled = true; b.onclick = null; }); },
     hit() { if (done) return; s.lives--; lives.querySelector(".n").textContent = s.lives; // lose a life, level keeps going
-      if (s.lives > 0) return sound("life-lost"); done = true; game.dead = true; ids.forEach(clearTimeout); gameOver(); },
+      if (s.lives > 0) return sound("life-lost"); done = true; clk?.pause(); game.dead = true; ids.forEach(clearTimeout); gameOver(); },
     sound, bgm, cleanup: f => fns.push(f), teardown: () => fns.splice(0).forEach(f => f()),
     timer(sec, fn) { ids.push(setTimeout(() => done || fn(), sec * 1000)); },
     skip() { if (s.skips > 0 && !done) { s.skips--; end(next)(); } } };
   cur = game;
   bomb.textContent = "";
+  if (lv.bomb || lv.tick) { clk = sound("clock", true); clk.loop = true; fns.push(() => clk.pause()); }
   if (lv.bomb) { // bomb: N counts down in the HUD, lose at 0
     let n = lv.bomb;
     const tick = () => { bomb.textContent = `\u{1F4A3} ${n}`; if (!n--) return game.lose(undefined, true); game.timer(1, tick); };

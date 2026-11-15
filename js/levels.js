@@ -131,7 +131,7 @@ export const levels = [
   { type: "choice", q: "What is 2+2?", answers: ["6, 7", "21", "5", "Quick maths"], correct: 3 },
   // DRAFT
   { type: "chain", q: "I am your...", steps: [[["Father's", "Mother's", "Son's", "Dad"], 0], [["Sister's", "Uncle's", "Brother's", "Cousin's"], 2], [["Niece's", "Nephew's", "Aunt's", "Grandpa's"], 1], [["Dog's", "Boss's", "Twin's", "Cousin's"], 3], [["Dad", "Current roommate", "Former roommate", "Landlord"], 2]] },
-  { type: "custom", q: "Please release 5 albums this year", // mash RELEASE: 50 clicks beat the 365-day bomb; every 10 clicks reveals a 2017 Gizzard album
+  { type: "custom", tick: true, q: "Please release 5 albums this year", // mash RELEASE: 50 clicks beat the 365-day bomb; every 10 clicks reveals a 2017 Gizzard album
     setup(stage, game) {
       const A = stage.el, NEED = 50, EVERY = 10, ALBUMS = ["album-fmb.jpg", "album-motu.jpg", "album-sketches.jpg", "album-polygon.jpg", "album-gumboot.jpg"]; // 2017 release order; album-sketches.jpg = Sketches of Brunswick East (add the file)
       let n = 0, days = 365, over = false;
