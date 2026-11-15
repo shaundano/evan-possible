@@ -131,13 +131,19 @@ export const levels = [
   { type: "choice", q: "What is 2+2?", answers: ["6, 7", "21", "5", "Quick maths"], correct: 3 },
   // DRAFT
   { type: "choice", q: "I am your...", answers: ["Dad", "Father", "Mother", "Nephew"], correct: 0 },
-  // DRAFT
-  { type: "custom", q: "Please release 5 albums this year",
+  { type: "custom", q: "Please release 5 albums this year", // mash RELEASE: 50 clicks beat the 365-day bomb; every 10 clicks reveals a 2017 Gizzard album
     setup(stage, game) {
-      let n = 0; const cnt = art(stage.el, "", "\u{1F4BF} 0/5", "", { left: 0, top: "90px", width: "550px", fontSize: "56px" });
-      const b = Object.assign(document.createElement("button"), { className: "btn", textContent: "Release album" }); b.style.width = "220px"; b.style.left = "165px"; stage.el.append(b);
-      b.onclick = () => { cnt.textContent = `\u{1F4BF} ${++n}/5`; n >= 5 && game.win(); };
-      game.timer(6, () => game.lose());
+      const A = stage.el, NEED = 50, EVERY = 10, ALBUMS = ["album-fmb.jpg", "album-motu.jpg", "album-sketches.jpg", "album-polygon.jpg", "album-gumboot.jpg"]; // 2017 release order; album-sketches.jpg = Sketches of Brunswick East (add the file)
+      let n = 0, days = 365, over = false;
+      const txt = (css, s) => { const d = Object.assign(document.createElement("div"), { textContent: s }); Object.assign(d.style, { position: "absolute", left: 0, width: "550px", textAlign: "center", ...css }); A.append(d); return d; };
+      const bombT = txt({ top: "98px", fontSize: "30px" }, "\u{1F4A3} 365"), prog = txt({ top: "296px", fontSize: "22px" }, "0 / " + NEED);
+      const slots = ALBUMS.map((f, i) => art(A, "", "?", "", { left: 21 + i * 104 + "px", top: "138px", width: "96px", height: "96px", fontSize: "48px", border: "4px solid #281efb", background: "#f8caff", boxSizing: "border-box", color: "#281efb", opacity: .55 }));
+      const b = Object.assign(document.createElement("button"), { className: "btn", textContent: "RELEASE" }); Object.assign(b.style, { left: "165px", top: "244px", width: "220px", height: "46px", fontSize: "30px" }); A.append(b);
+      const tick = setInterval(() => { if (over) return; bombT.textContent = "\u{1F4A3} " + --days; if (days <= 0) { over = true; clearInterval(tick); game.lose(undefined, true); } }, 38); // ~14s for 365 days
+      game.cleanup(() => clearInterval(tick));
+      b.onclick = () => { if (over) return; n++; prog.textContent = n + " / " + NEED;
+        if (n % EVERY === 0) { const k = n / EVERY - 1, s = slots[k]; game.sound("correct"); s.style.opacity = 1; s.textContent = ""; const im = Object.assign(new Image(), { src: "assets/levels/" + ALBUMS[k] }); Object.assign(im.style, { width: "100%", height: "100%", objectFit: "cover" }); im.onerror = () => { im.remove(); s.textContent = "\u{1F4BF}"; }; s.append(im); }
+        if (n >= NEED) { over = true; clearInterval(tick); setTimeout(game.win, 1200); } };
     } },
   { type: "choice", q: "What restaurant is this?", image: "assets/levels/dagwoods.jpg", answers: ["Dag's", "Dag's", "Dag's", "I don't know"], correct: 3 },
   { type: "custom", noskip: true, q: "", // crawl: slow while offscreen, then 50x the moment it is in view; click it
