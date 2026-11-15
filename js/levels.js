@@ -254,5 +254,5 @@ export const levels = [
 ];
 
 // END SCREEN (author: replace these two): message under "HAPPY BIRTHDAY EVAN", and an optional image path like "assets/levels/end.jpg" (or "")
-export const END_MESSAGE = "Placeholder: your birthday message goes here.";
+export const END_MESSAGE = ""; // the Obama clip (assets/sounds/obama.mp3) plays here instead of text
 export const END_IMAGE = "";
