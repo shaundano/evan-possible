@@ -168,6 +168,19 @@ export const levels = [
   { type: "choice", q: "Which Vibrant Reset song has the most plays on SoundCloud?", answers: ["Dragonhead", "Do I Wanna Know cover", "Do You Miss Me Too", "Junkie"], correct: 1 },
   { type: "choice", q: "HALT. Who are you voting for in the 2028 election?", image: "assets/levels/octopus.jpg", pictop: true, bubble: "Vote Octopus!", correct: 2, answers: ["Democrats", "Republicans", "Octopus Party", "I'm not voting"] },
   { type: "choice", q: "Which one of these men is the Rebbe?", answers: ["img:assets/levels/man-b.jpg", "img:assets/levels/man-c.jpg", "img:assets/levels/man-a.jpg", "img:assets/levels/man-d.jpg"], correct: 2 },
+  { type: "custom", q: "How big is Pete?", // hand cursor; a red line marks the cursor height; click in the top 15% of the scroll
+    setup(stage, game) {
+      const A = stage.el, SH = 352, SW = 92, SX = 440, ST = 8, mk = (tag) => A.appendChild(document.createElement(tag));
+      const scroll = mk("img"); scroll.src = "assets/levels/scroll.png"; scroll.style.cssText = `position:absolute;left:${SX}px;top:${ST}px;width:${SW}px;height:${SH}px;mix-blend-mode:multiply;pointer-events:none`;
+      const line = mk("div"); line.style.cssText = "position:absolute;height:3px;background:#ff1a1a;pointer-events:none;display:none;z-index:3";
+      const hand = mk("img"); hand.src = "assets/levels/hand.jpg"; hand.style.cssText = "position:absolute;width:96px;height:62px;mix-blend-mode:multiply;pointer-events:none;display:none;z-index:4";
+      A.style.cursor = "none"; A.style.zIndex = 3; game.cleanup(() => { A.style.cursor = ""; A.style.zIndex = ""; });
+      let y = null; const pos = e => { const r = A.getBoundingClientRect(), k = r.width / 550; return [(e.clientX - r.left) / k, (e.clientY - r.top) / k]; };
+      A.onpointermove = e => { let x; [x, y] = pos(e);
+        hand.style.cssText += `;display:block;left:${x - 95}px;top:${y - 6}px`; // fingertip on the cursor
+        line.style.cssText += `;display:block;left:${x}px;top:${y - 1}px;width:${Math.max(0, SX - x)}px`; };
+      A.onclick = e => { const [, cy] = pos(e); cy >= ST && cy <= ST + SH * .15 ? game.win() : game.lose(); };
+    } },
   // DRAFT: final boss
   { type: "choice", q: "Whose birthday is it?", answers: ["Garfield", "Whomst've", "The Lizard Wizard", "Evan"], correct: 3, bomb: 10 },
   // FINAL BOSS: bullet hell. Mouse/arrows steer the Camry (auto-fires up); 20 hits (5 dmg each) drop The Wrangler's 100 HP; getting hit costs a life but the fight goes on
