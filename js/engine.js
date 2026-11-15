@@ -93,6 +93,7 @@ function screen(msg, label, fn, cls = "") {
 // play assets/sounds/<name>(.mp3), or assets/<path> if name has a "/"; silently ignored if missing.
 // keep=true: if autoplay is blocked (no gesture yet), retry on the first click/key
 let held, bgmOn = false, overSnd, obama, obamaT, capT, cap, quiet = false; // quiet: this level deliberately silences the theme
+["pointerdown", "keydown"].forEach(ev => addEventListener(ev, () => { if (bgmOn && !quiet && bgm.paused) bgm.play().catch(() => {}); })); // first gesture after a ?q jump or blocked autoplay
 setInterval(() => { if (bgmOn && !quiet && bgm.paused) bgm.play().catch(() => {}); }, 1000); // watchdog: theme must always be playing
 const sound = (name, keep) => { try { const a = new Audio(`assets/${name.includes("/") ? "" : "sounds/"}${name}${name.includes(".") ? "" : ".mp3"}`);
   a.preload = "auto"; a.play().catch(e => { if (keep && e.name === "NotAllowedError") held = a; }); return a; } catch {} };
@@ -186,4 +187,4 @@ const menu = () => { intro.hidden = true; title.hidden = false; title.classList.
 bg.onclick = () => { bg.disabled = true; bg.classList.add("out"); fartA.play().catch(() => {}); setTimeout(menu, 2200); };
 go.onclick = () => { title.hidden = true; bgm.currentTime = 0; bgmOn = true; bgm.play().catch(() => {}); start(); };
 if (new URLSearchParams(location.search).has("end")) { intro.hidden = true; title.hidden = true; endScreen(); } // ?end debug: straight to the victory screen
-if (q > 0) { intro.hidden = true; title.hidden = true; start(Math.min(q, levels.length) - 1); }
+if (q > 0) { intro.hidden = true; title.hidden = true; bgmOn = true; start(Math.min(q, levels.length) - 1); } // ?q jump: theme starts on the first click/key
