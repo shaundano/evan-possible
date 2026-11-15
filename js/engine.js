@@ -97,7 +97,7 @@ const sound = (name, keep) => { try { const a = new Audio(`assets/${name.include
 
 // background music: loops quietly, starts on the first click (browser autoplay rules)
 const bgm = Object.assign(new Audio("assets/sounds/bgm.mp3"), { loop: true, volume: .25 });
-addEventListener("pointerdown", () => bgm.play().catch(() => {}), { once: true });
+
 
 const next = () => { s.i++; load(); };
 
@@ -171,6 +171,6 @@ title.hidden = true; // white screen with only Begin; fart, then the menu and mu
 const fartA = Object.assign(new Audio("assets/sounds/fart3.mp3"), { preload: "auto" }); // preloaded so the click farts instantly
 const menu = () => { intro.hidden = true; title.hidden = false; title.classList.add("fade"); bgmOn = true; bgm.volume = 0; bgm.play().catch(() => {});
   let v = 0; const r = setInterval(() => { bgm.volume = Math.min(.25, v += .01); v >= .25 && clearInterval(r); }, 40); }; // music fades in under the menu
-bg.onclick = () => { bg.disabled = true; fartA.play().catch(() => {}); setTimeout(menu, 2200); };
+bg.onclick = () => { bg.disabled = true; bg.classList.add("out"); fartA.play().catch(() => {}); setTimeout(menu, 2200); };
 go.onclick = () => { title.hidden = true; bgmOn = true; bgm.play().catch(() => {}); start(); };
 if (q > 0) { intro.hidden = true; title.hidden = true; start(Math.min(q, levels.length) - 1); }
