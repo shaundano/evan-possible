@@ -140,6 +140,29 @@ export const levels = [
       b.onclick = () => { cnt.textContent = `\u{1F4BF} ${++n}/5`; n >= 5 && game.win(); };
       game.timer(6, () => game.lose(`Only ${n} albums. Lazy.`));
     } },
+  { type: "choice", q: "What restaurant is this?", image: "assets/levels/dagwoods.jpg", answers: ["Dag's", "Dag's", "Dag's", "I don't know"], correct: [0, 1, 2] },
+  { type: "custom", q: "A long time ago in a galaxy far, far away...", // crawl: slow until 1/3 on screen, then tape-speeds-up; click it before it leaves
+    setup(stage, game) {
+      const t = art(stage.el, "", "Click Me", "", { left: 0, width: "550px", top: "400px", fontSize: "60px", color: "#ffe81f", background: "none", cursor: "pointer", whiteSpace: "nowrap", transform: "perspective(300px) rotateX(35deg)" });
+      const m = game.sound("levels/elevator-music.mp3"); m.loop = true; game.cleanup(() => m.pause());
+      let y = 400, v = 13, last = performance.now(), raf;
+      t.onclick = () => { cancelAnimationFrame(raf); game.win(); };
+      game.cleanup(() => cancelAnimationFrame(raf));
+      const step = now => { const dt = (now - last) / 1000; last = now;
+        if (y < 280) v *= 1 + 1.6 * dt; // entered the screen: speed up
+        m.playbackRate = Math.min(4, v / 13); y -= v * dt; t.style.top = y + "px";
+        y < -70 ? game.lose("It crawled away.") : raf = requestAnimationFrame(step); };
+      raf = requestAnimationFrame(step);
+    } },
+  { type: "custom", q: "Name all the LCC houses", bomb: 60,
+    setup(stage, game) {
+      const H = ["beveridge", "claxton", "drummond", "french", "harper", "heward", "russel", "woods"], got = new Set();
+      const input = Object.assign(document.createElement("input"), { className: "input", autocomplete: "off" }); Object.assign(input.style, { left: "20px", width: "230px", top: "170px" }); stage.el.append(input); input.focus();
+      const slots = H.map((h, i) => art(stage.el, "", "", "", { left: 290 + (i % 2) * 130 + "px", top: 90 + (i >> 1) * 62 + "px", width: "120px", height: "50px", border: "4px solid #281efb", background: "#f8caff", boxSizing: "border-box", fontSize: "20px" }));
+      input.oninput = () => { const v = input.value.trim().toLowerCase().replace(/^russell$/, "russel"), i = H.indexOf(v);
+        if (i < 0 || got.has(i)) return; got.add(i); slots[i].textContent = H[i]; input.value = ""; got.size === 8 && game.win(); };
+    } },
+  { type: "choice", q: "Which Vibrant Reset song has the most plays on SoundCloud?", answers: ["Dragonhead", "Do I Wanna Know cover", "Do You Miss Me Too", "Junkie"], correct: 1 },
   // DRAFT: final boss
   { type: "choice", q: "Whose birthday is it?", answers: ["Garfield", "Whomst've", "The Lizard Wizard", "Evan"], correct: 3, bomb: 10, fakeout: "Wrong. Evan's feelings are hurt." },
 ];
