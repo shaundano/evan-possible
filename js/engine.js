@@ -159,7 +159,7 @@ function load() {
   types[lv.type](lv, { el: area, sprite }, game);
 }
 
-function start(i = 0) { hud.style.visibility = ""; s = { i, lives: 3, skips: 0, got: new Set() }; load(); }
+function start(i = 0) { hud.style.visibility = ""; bgm.currentTime = 0; s = { i, lives: 3, skips: 0, got: new Set() }; load(); }
 
 // title card; Play is the first gesture, so music (and the first clip) can start
 await document.fonts.load("46px Akbar");
@@ -173,5 +173,5 @@ const fartA = Object.assign(new Audio("assets/sounds/fart3.mp3"), { preload: "au
 const menu = () => { intro.hidden = true; title.hidden = false; title.classList.add("fade"); bgmOn = true; bgm.volume = 0; bgm.play().catch(() => {});
   let v = 0; const r = setInterval(() => { bgm.volume = Math.min(.25, v += .01); v >= .25 && clearInterval(r); }, 40); }; // music fades in under the menu
 bg.onclick = () => { bg.disabled = true; bg.classList.add("out"); fartA.play().catch(() => {}); setTimeout(menu, 2200); };
-go.onclick = () => { title.hidden = true; bgmOn = true; bgm.play().catch(() => {}); start(); };
+go.onclick = () => { title.hidden = true; bgm.currentTime = 0; bgmOn = true; bgm.play().catch(() => {}); start(); };
 if (q > 0) { intro.hidden = true; title.hidden = true; start(Math.min(q, levels.length) - 1); }

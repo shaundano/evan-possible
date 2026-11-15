@@ -25,6 +25,7 @@ const drag = (e, area, drop) => e.onpointerdown = ev => {
 const inside = (a, b) => { const p = a.getBoundingClientRect(), m = b.getBoundingClientRect(), x = p.x + p.width / 2, y = p.y + p.height / 2; return x > m.left && x < m.right && y > m.top && y < m.bottom; };
 
 // Rotten Tomatoes critic scores (checked 2026-11-14): Blade Runner 2049 88%, DuckTales the Movie 65%, Spaceballs 53%, The Gambler 43%. Highest first.
+const SW = Object.assign(new Audio("assets/levels/starwars.mp3"), { preload: "auto" }); // preloaded so the crawl music starts instantly
 const RANKING = ["Blade Runner 2049", "Ducktales the Movie", "Spaceballs", "The Gambler"];
 
 export const levels = [
@@ -141,7 +142,7 @@ export const levels = [
       const sky = art(stage.el, "", "", "", { left: 0, top: "-32px", width: "550px", height: "400px", zIndex: 0, background: "#000" });
       for (let i = 0; i < 90; i++) Object.assign(sky.appendChild(document.createElement("i")).style, { position: "absolute", left: Math.random() * 100 + "%", top: Math.random() * 100 + "%", width: 1 + Math.random() * 2 + "px", height: 1 + Math.random() * 2 + "px", background: "#fff", borderRadius: "50%", opacity: .4 + Math.random() * .6 });
       const t = art(stage.el, "", "Click Me", "", { left: 0, width: "550px", top: "420px", zIndex: 2, fontFamily: "StarJedi, Akbar", fontSize: "64px", color: "#ffe81f", background: "none", cursor: "pointer", whiteSpace: "nowrap", transform: "perspective(260px) rotateX(55deg) skewX(-12deg)" });
-      const m = game.sound("levels/starwars.mp3"); game.cleanup(() => m.pause());
+      const m = SW; game.bgm.pause(); m.currentTime = 0; m.playbackRate = 1; m.play().catch(() => {}); game.cleanup(() => m.pause());
       let y = 518, v = 14, fast = false, seen = 0, last = performance.now(), raf;
       t.onclick = () => { cancelAnimationFrame(raf); game.win(); };
       game.cleanup(() => cancelAnimationFrame(raf));
