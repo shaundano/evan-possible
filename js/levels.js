@@ -145,7 +145,9 @@ export const levels = [
       const m = SW; game.bgm.volume = 0; // mute (not pause) the theme so it resumes cleanly
        m.currentTime = 0; m.playbackRate = 1; m.play().catch(() => {}); game.cleanup(() => m.pause());
       let y = 518, v = 14, fast = false, seen = 0, last = performance.now(), raf;
-      t.onclick = () => { cancelAnimationFrame(raf); game.win(); };
+      t.style.pointerEvents = "none"; t.style.lineHeight = 1; t.textContent = ""; // only the glyphs are clickable, not the full-width row
+      const word = Object.assign(document.createElement("span"), { textContent: "Click Me" }); word.style.cssText = "pointer-events:auto;display:inline-block"; t.append(word);
+      word.onclick = () => { cancelAnimationFrame(raf); game.win(); };
       game.cleanup(() => cancelAnimationFrame(raf));
       const step = now => { const dt = (now - last) / 1000; last = now;
         if (y < 368 && !seen) seen = now; // text peeks in: let it be read for 2s, then 50x
