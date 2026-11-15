@@ -99,11 +99,13 @@ const sound = (name, keep) => { try { const a = new Audio(`assets/${name.include
 const bgm = Object.assign(new Audio("assets/sounds/bgm.mp3"), { loop: true, volume: .25 });
 
 
+// "no skipping" tape banner
+const nope = () => { const b = el("nope", stage, "Sorry, no skipping!"); setTimeout(() => b.remove(), 1800); };
 const next = () => { s.i++; load(); };
 
 // wrong answer: last life goes straight to game over, else lose a life and show the modal over the question
-function die(msg) {
-  lives.querySelector(".n").textContent = --s.lives;
+function die(msg, all) {
+  s.lives = all ? 0 : s.lives - 1; lives.querySelector(".n").textContent = s.lives;
   if (!s.lives) return gameOver();
   sound("wrong"); screen(msg === "Wrong!" ? "-1 life!" : msg, "", load, "wrong");
 }
@@ -132,8 +134,8 @@ function load() {
   if (!lv) return endScreen();
   qnum.lastChild.textContent = `${s.i + 1}.`;
   lives.querySelector(".n").textContent = s.lives;
-  if ([9, 19, 24].includes(s.i) && !s.got.has(s.i)) { s.got.add(s.i); s.skips++; }
-  skips.replaceChildren(); for (let k = 0; k < 3; k++) { const b = el(k < s.skips ? "on" : "", skips, "", "button"); if (k < s.skips) b.onclick = () => cur?.skip(); else { b.disabled = true; b.tabIndex = -1; } }
+  if ([13].includes(s.i) && !s.got.has(s.i)) { s.got.add(s.i); s.skips++; }
+  skips.replaceChildren(); for (let k = 0; k < 1; k++) { const b = el(k < s.skips ? "on" : "", skips, "", "button"); if (k < s.skips) b.onclick = () => lv.noskip ? nope() : cur?.skip(); else { b.disabled = true; b.tabIndex = -1; } }
   refit.length = 0; play.replaceChildren(area); area.replaceChildren(); play.onclick = null; play.className = "play";
   play.classList.toggle("withpic", !!lv.image && !lv.pictop); play.classList.toggle("pictop", !!lv.pictop); // image on the left, answers on the right
   const q = el("q", play), qt = el("qt", q, lv.q);
@@ -142,7 +144,7 @@ function load() {
   let done = false;
   const ids = [], fns = []; // pending timers (cleared when the level ends) and cleanup hooks (run before the next load)
   const end = f => (...a) => { if (!done) { done = true; ids.forEach(clearTimeout); f(...a); } };
-  const game = { win: end(() => { sound("correct"); next(); }), lose: end((msg = lv.fakeout ?? "Wrong!") => die(msg)),
+  const game = { win: end(() => { sound("correct"); next(); }), lose: end((msg = "Wrong!", all) => die(msg, all)),
     sound, bgm, cleanup: f => fns.push(f), teardown: () => fns.splice(0).forEach(f => f()),
     timer(sec, fn) { ids.push(setTimeout(() => done || fn(), sec * 1000)); },
     skip() { if (s.skips > 0 && !done) { s.skips--; end(next)(); } } };
@@ -150,7 +152,7 @@ function load() {
   bomb.textContent = "";
   if (lv.bomb) { // bomb: N counts down in the HUD, lose at 0
     let n = lv.bomb;
-    const tick = () => { bomb.textContent = `\u{1F4A3} ${n}`; if (!n--) return game.lose(); game.timer(1, tick); };
+    const tick = () => { bomb.textContent = `\u{1F4A3} ${n}`; if (!n--) return game.lose(undefined, true); game.timer(1, tick); };
     tick();
   }
   bgm.volume = .25; lv.sound && !lv.keepBgm ? bgm.pause() : bgmOn && bgm.play().catch(() => addEventListener("pointerdown", () => bgmOn && bgm.play(), { once: true })); // retry on next click if blocked

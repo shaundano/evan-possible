@@ -48,7 +48,7 @@ export const levels = [
       });
     } },
   { type: "choice", q: "A bear walks into a bar and orders a grilled ...", answers: ["cheese", "steak", "couple & their dog", "lettuce"], correct: 0 },
-  { type: "custom", q: "Drag the movies into Rotten Tomatoes order, best first",
+  { type: "custom", noskip: true, q: "Drag the movies into Rotten Tomatoes order, best first",
     setup(stage, game) {
       const films = [["Spaceballs", "spaceballs", "#c33"], ["Blade Runner 2049", "blade-runner-2049", "#e80"], ["Ducktales the Movie", "ducktales", "#27c"], ["The Gambler", "the-gambler", "#555"]];
       const div = (cls, parent, css = {}) => { const d = Object.assign(document.createElement("div"), { className: cls }); Object.assign(d.style, css); parent.append(d); return d; };
@@ -136,7 +136,7 @@ export const levels = [
       game.timer(6, () => game.lose());
     } },
   { type: "choice", q: "What restaurant is this?", image: "assets/levels/dagwoods.jpg", answers: ["Dag's", "Dag's", "Dag's", "I don't know"], correct: 3 },
-  { type: "custom", q: "", // crawl: slow while offscreen, then 50x the moment it is in view; click it
+  { type: "custom", noskip: true, q: "", // crawl: slow while offscreen, then 50x the moment it is in view; click it
     setup(stage, game) {
       document.fonts.load("64px StarJedi");
       const sky = art(stage.el, "", "", "", { left: 0, top: "-32px", width: "550px", height: "400px", zIndex: 0, background: "#000" });
@@ -156,7 +156,7 @@ export const levels = [
         y < -90 ? game.lose() : raf = requestAnimationFrame(step); };
       raf = requestAnimationFrame(step);
     } },
-  { type: "custom", q: "Name all the LCC houses", bomb: 60,
+  { type: "custom", noskip: true, q: "Name all the LCC houses", bomb: 60,
     setup(stage, game) {
       const H = ["beveridge", "claxton", "drummond", "french", "harper", "heward", "russel", "woods"], got = new Set();
       const input = Object.assign(document.createElement("input"), { className: "input", autocomplete: "off" }); Object.assign(input.style, { left: "20px", width: "230px", top: "170px" }); stage.el.append(input); input.focus();

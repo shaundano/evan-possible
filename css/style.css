@@ -108,3 +108,4 @@ html, body { margin: 0; height: 100%; background: #111; overflow: hidden; font-f
 .begin.out { animation: beginout .15s forwards; } @keyframes beginout { to { opacity: 0; } }
 @font-face { font-family: StarJedi; src: url(../assets/fonts/starjedi.ttf); }
 .skips button:disabled { pointer-events: none; }
+.nope { position: absolute; right: 0; bottom: 40px; z-index: 20; padding: 8px 20px; font-size: 24px; color: #ff1a1a; background: repeating-linear-gradient(-45deg, #f2e002 0 14px, #111 14px 28px); text-shadow: -2px -2px 0 #111, 2px -2px 0 #111, -2px 2px 0 #111, 2px 2px 0 #111; transform: rotate(-4deg); pointer-events: none; }
