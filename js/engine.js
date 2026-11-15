@@ -34,8 +34,10 @@ const boxes = (answers, fn) => { // 2x2 grid; long answer sets get taller boxes,
   const grid = el("grid", play);
   play.classList.toggle("dense", answers.join("").length > 200);
   play.classList.toggle("many", answers.length > 4);
+  play.classList.toggle("pics", answers[0].startsWith("img:"));
   answers.forEach((a, i) => {
     const b = el("ans " + (play.classList.contains("withpic") ? "r" : i % 2 ? "r" : "l"), grid, "", "button");
+    if (a.startsWith("img:")) { b.classList.add("imgans"); el("", b, "", "img").src = a.slice(4); b.onclick = () => fn(i); return; } // picture answer
     const t = el("t", b, a); b.onclick = () => fn(i); fitAns(b, t); refit.push(() => fitAns(b, t));
   });
 };

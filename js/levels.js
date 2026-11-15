@@ -167,6 +167,7 @@ export const levels = [
     } },
   { type: "choice", q: "Which Vibrant Reset song has the most plays on SoundCloud?", answers: ["Dragonhead", "Do I Wanna Know cover", "Do You Miss Me Too", "Junkie"], correct: 1 },
   { type: "choice", q: "HALT. Who are you voting for in the 2028 election?", image: "assets/levels/octopus.jpg", pictop: true, bubble: "Vote Octopus!", correct: 2, answers: ["Democrats", "Republicans", "Octopus Party", "I'm not voting"] },
+  { type: "choice", q: "Which one of these men is the Rebbe?", answers: ["img:assets/levels/man-b.jpg", "img:assets/levels/man-c.jpg", "img:assets/levels/man-a.jpg", "img:assets/levels/man-d.jpg"], correct: 2 },
   // DRAFT: final boss
   { type: "choice", q: "Whose birthday is it?", answers: ["Garfield", "Whomst've", "The Lizard Wizard", "Evan"], correct: 3, bomb: 10 },
   // FINAL BOSS: bullet hell. Mouse/arrows steer the Camry (auto-fires up); 20 hits (5 dmg each) drop The Wrangler's 100 HP; getting hit costs a life but the fight goes on
