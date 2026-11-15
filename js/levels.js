@@ -138,15 +138,16 @@ export const levels = [
   { type: "custom", q: "", // crawl: slow while offscreen, then 50x the moment it is in view; click it
     setup(stage, game) {
       document.fonts.load("64px StarJedi");
-      const sky = art(stage.el, "", "", "", { left: 0, top: 0, width: "550px", height: "400px", zIndex: 0, background: "#000" });
+      const sky = art(stage.el, "", "", "", { left: 0, top: "-32px", width: "550px", height: "400px", zIndex: 0, background: "#000" });
       for (let i = 0; i < 90; i++) Object.assign(sky.appendChild(document.createElement("i")).style, { position: "absolute", left: Math.random() * 100 + "%", top: Math.random() * 100 + "%", width: 1 + Math.random() * 2 + "px", height: 1 + Math.random() * 2 + "px", background: "#fff", borderRadius: "50%", opacity: .4 + Math.random() * .6 });
       const t = art(stage.el, "", "Click Me", "", { left: 0, width: "550px", top: "420px", zIndex: 2, fontFamily: "StarJedi, Akbar", fontSize: "64px", color: "#ffe81f", background: "none", cursor: "pointer", whiteSpace: "nowrap", transform: "perspective(260px) rotateX(55deg) skewX(-12deg)" });
       const m = game.sound("levels/starwars.mp3"); game.cleanup(() => m.pause());
-      let y = 560, v = 14, fast = false, last = performance.now(), raf;
+      let y = 560, v = 14, fast = false, seen = 0, last = performance.now(), raf;
       t.onclick = () => { cancelAnimationFrame(raf); game.win(); };
       game.cleanup(() => cancelAnimationFrame(raf));
       const step = now => { const dt = (now - last) / 1000; last = now;
-        if (!fast && y < 395) { fast = true; v *= 50; m.playbackRate = 3; } // first hint of text on screen: 50x
+        if (y < 368 && !seen) seen = now; // text peeks in: let it be read for 2s, then 50x
+        if (!fast && seen && now - seen > 2000) { fast = true; v *= 50; m.playbackRate = 3; }
         y -= v * dt; t.style.top = y + "px";
         y < -90 ? game.lose("It crawled away.") : raf = requestAnimationFrame(step); };
       raf = requestAnimationFrame(step);
