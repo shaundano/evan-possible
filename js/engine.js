@@ -123,7 +123,8 @@ function gameOver() { // splat; click anywhere to retry
 function endScreen() {
   clearTimeout(tm); bgmOn = false; bgm.pause(); overSnd = Object.assign(sound("mom-cat2"), { loop: true, volume: .3 }); // theme lower; ducks further while the Obama clip (the birthday message) plays
   clearTimeout(obamaT); obamaT = setTimeout(() => { overSnd.volume = .12; obama = sound("obama"); obama.onended = () => overSnd.volume = .3;
-    clearInterval(capT); capT = setInterval(() => { const c = CAPTIONS.filter(x => x[0] <= obama.currentTime).pop(); cap.textContent = c && !obama.ended ? c[1] : ""; }, 80); }, 1200); // captions follow the clip over.replaceChildren(); over.hidden = false; over.className = "over end";
+    clearInterval(capT); capT = setInterval(() => { const c = CAPTIONS.filter(x => x[0] <= obama.currentTime).pop(); cap.textContent = c && !obama.ended ? c[1] : ""; }, 80); }, 1200); // captions follow the clip
+  over.replaceChildren(); over.hidden = false; over.className = "over end";
   for (let i = 0; i < 70; i++) el("confetti", over, "", "i").style.cssText = `left:${Math.random() * 100}%;background:hsl(${Math.random() * 360},90%,55%);animation-delay:${Math.random() * 3}s`;
   el("h", over, "HAPPY BIRTHDAY").append(el("b", over, "EVAN", "b"));
   if (END_IMAGE) el("pic", over, "", "img").src = END_IMAGE;
