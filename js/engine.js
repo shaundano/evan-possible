@@ -1,4 +1,4 @@
-import { levels, END_MESSAGE, END_IMAGE } from "./levels.js";
+import { levels, END_MESSAGE, END_IMAGE, CAPTIONS } from "./levels.js";
 
 const stage = document.getElementById("stage");
 const el = (cls, parent, text = "", tag = "div") => {
@@ -92,7 +92,7 @@ function screen(msg, label, fn, cls = "") {
 
 // play assets/sounds/<name>(.mp3), or assets/<path> if name has a "/"; silently ignored if missing.
 // keep=true: if autoplay is blocked (no gesture yet), retry on the first click/key
-let held, bgmOn = false, overSnd, obama, obamaT, quiet = false; // quiet: this level deliberately silences the theme
+let held, bgmOn = false, overSnd, obama, obamaT, capT, cap, quiet = false; // quiet: this level deliberately silences the theme
 setInterval(() => { if (bgmOn && !quiet && bgm.paused) bgm.play().catch(() => {}); }, 1000); // watchdog: theme must always be playing
 const sound = (name, keep) => { try { const a = new Audio(`assets/${name.includes("/") ? "" : "sounds/"}${name}${name.includes(".") ? "" : ".mp3"}`);
   a.preload = "auto"; a.play().catch(e => { if (keep && e.name === "NotAllowedError") held = a; }); return a; } catch {} };
@@ -122,13 +122,15 @@ function gameOver() { // splat; click anywhere to retry
 // birthday end screen: confetti, victory sound, author message/image, Play Again returns to the title card
 function endScreen() {
   clearTimeout(tm); bgmOn = false; bgm.pause(); overSnd = Object.assign(sound("mom-cat2"), { loop: true, volume: .3 }); // theme lower; ducks further while the Obama clip (the birthday message) plays
-  clearTimeout(obamaT); obamaT = setTimeout(() => { overSnd.volume = .12; obama = sound("obama"); obama.onended = () => overSnd.volume = .3; }, 1200); over.replaceChildren(); over.hidden = false; over.className = "over end";
+  clearTimeout(obamaT); obamaT = setTimeout(() => { overSnd.volume = .12; obama = sound("obama"); obama.onended = () => overSnd.volume = .3;
+    clearInterval(capT); capT = setInterval(() => { const c = CAPTIONS.filter(x => x[0] <= obama.currentTime).pop(); cap.textContent = c && !obama.ended ? c[1] : ""; }, 80); }, 1200); // captions follow the clip over.replaceChildren(); over.hidden = false; over.className = "over end";
   for (let i = 0; i < 70; i++) el("confetti", over, "", "i").style.cssText = `left:${Math.random() * 100}%;background:hsl(${Math.random() * 360},90%,55%);animation-delay:${Math.random() * 3}s`;
   el("h", over, "HAPPY BIRTHDAY").append(el("b", over, "EVAN", "b"));
   if (END_IMAGE) el("pic", over, "", "img").src = END_IMAGE;
   const cat = el("cat", over, "", "img"); let f = 0; const cats = ["cat1d", "cat2", "cat1d", "cat3"]; cat.src = "assets/img/cat1d.png"; const ci = setInterval(() => over.isConnected && !over.hidden ? cat.src = `assets/img/${cats[f++ % 4]}.png` : clearInterval(ci), 250);
   el("note", over, END_MESSAGE);
-  el("btn", over, "Play again", "button").onclick = () => { clearTimeout(obamaT); obama?.pause(); overSnd?.pause(); over.hidden = true; hud.style.visibility = "hidden"; title.hidden = false; };
+  cap = el("cap", over); // caption line above Play again
+  el("btn", over, "Play again", "button").onclick = () => { clearTimeout(obamaT); clearInterval(capT); obama?.pause(); overSnd?.pause(); over.hidden = true; hud.style.visibility = "hidden"; title.hidden = false; };
   el("credits", over, 'Music: Kevin MacLeod (CC BY 4.0), "Local Forecast - Elevator"; beatbox: Pepouni (CC BY-SA 3.0) & stilgar (PD); inspired by The Impossible Quiz by Splapp-me-do');
 }
 

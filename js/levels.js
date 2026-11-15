@@ -236,17 +236,16 @@ export const levels = [
         for (let i = M.length - 1; i >= 0; i--) { const m = M[i];
           if (!done && Math.abs(m.x - b.x) < 38 && m.y < 196 && m.y > 56) { M.splice(i, 1); hp -= 1; flash = .08; if (hp <= 0) { done = true; B.length = 0; game.sound("bomb"); boom(b); setTimeout(game.win, 2400); } }
           else if (m.y < -10) M.splice(i, 1); }
-        if (!done && inv <= 0 && B.some(o => Math.hypot(o.x - P.x, o.y - P.y) < o.r + 4)) { inv = 1.3; game.hit(); if (game.dead) return; }
+        if (!done && inv <= 0 && B.some(o => Math.hypot(Math.max(Math.abs(o.x - P.x) - 36, 0), Math.max(Math.abs(o.y - P.y) - 16, 0)) < o.r * .8)) /* whole Camry sprite (72x32) is the hurtbox */) { inv = 1.3; game.hit(); if (game.dead) return; }
         const g = c.createLinearGradient(0, 0, 0, H); g.addColorStop(0, "#ff9a4a"); g.addColorStop(.6, "#ffd9a0"); g.addColorStop(1, "#c98a4a"); c.fillStyle = g; c.fillRect(0, 0, W, H);
         c.fillStyle = "#a0642c"; c.fillRect(0, 290, W, 110);
         c.save(); if (flash > 0) c.filter = "brightness(2.5)"; c.globalAlpha = gone ? 0 : 1; c.drawImage(WR, b.x - 48 + (flash > 0 ? 3 : 0), 56, 96, 143); c.restore(); // The Wrangler
         c.fillStyle = "#ffe81f"; M.forEach(m => { c.beginPath(); c.roundRect(m.x - 2, m.y - 7, 4, 14, 2); c.fill(); });
         c.font = "20px serif"; c.textAlign = "center"; c.textBaseline = "middle"; B.forEach(o => c.fillText(o.e, o.x, o.y));
         c.save(); if (inv > 0 && Math.floor(inv * 20) % 2) c.globalAlpha = .35; c.drawImage(CAM, P.x - 36, P.y - 16, 72, 32); c.restore(); // the '97 Camry
-        c.fillStyle = "#e33"; c.beginPath(); c.arc(P.x, P.y, 2.5, 0, 7); c.fill(); // hitbox
-        c.fillStyle = "#000"; c.fillRect(110, 36, 330, 14); c.fillStyle = "#ff1a1a"; c.fillRect(112, 38, 326 * Math.max(0, hp / 100), 10);
+                c.fillStyle = "#000"; c.fillRect(110, 36, 330, 14); c.fillStyle = "#ff1a1a"; c.fillRect(112, 38, 326 * Math.max(0, hp / 100), 10);
         c.fillStyle = "#fff"; c.font = "16px Akbar"; c.fillText(done ? "YEEHAW!" : "THE WRANGLER", W / 2, 24);
-        if (!done && t < 8) { c.fillStyle = "#000"; c.font = "18px Akbar"; c.fillText("HOLD SPACE TO FIRE", W / 2, 372); }
+        if (!done && t < 8) { c.fillStyle = "#000"; c.font = "18px Akbar"; c.fillText("HOLD SPACE TO FIRE", 350, 346); }
         raf = requestAnimationFrame(step);
       }
       raf = requestAnimationFrame(step);
@@ -256,3 +255,5 @@ export const levels = [
 // END SCREEN (author: replace these two): message under "HAPPY BIRTHDAY EVAN", and an optional image path like "assets/levels/end.jpg" (or "")
 export const END_MESSAGE = ""; // the Obama clip (assets/sounds/obama.mp3) plays here instead of text
 export const END_IMAGE = "";
+
+export const CAPTIONS = [[0.0, "Hello, Evan. This is Obama"], [2.28, "speaking. My fellow American just"], [4.6, "wanted to wish you a"], [5.46, "happy birthday. You're a good"], [7.0, "kid. I have seen you"], [7.96, "grow up and meet every"], [9.1, "challenge with courage."], [11.7, "It's no surprise that you"], [13.94, "have found great friends in"], [15.16, "Toronto and a partner ready"], [16.88, "to take on life's thrills"], [18.3, "with you. It has been"], [20.32, "the privilege of my own"], [21.62, "life to be your friend."], [23.68, "Happy 28th birthday."], [25.26, "And remember, when you vape"], [26.6, "with your heart,"], [27.76, "anything is possible."], [29.18, ""]]; // [start seconds, text] for the Obama clip, ~5 words each
