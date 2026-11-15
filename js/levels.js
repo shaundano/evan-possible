@@ -166,6 +166,7 @@ export const levels = [
         if (i < 0 || got.has(i)) return; got.add(i); slots[i].textContent = H[i]; input.value = ""; got.size === 8 && game.win(); };
     } },
   { type: "choice", q: "Which Vibrant Reset song has the most plays on SoundCloud?", answers: ["Dragonhead", "Do I Wanna Know cover", "Do You Miss Me Too", "Junkie"], correct: 1 },
+  { type: "choice", q: "HALT. Who are you voting for in the 2028 election?", image: "assets/levels/octopus.jpg", pictop: true, bubble: "Vote Octopus!", correct: 2, answers: ["Democrats", "Republicans", "Octopus Party", "I'm not voting"] },
   // DRAFT: final boss
   { type: "choice", q: "Whose birthday is it?", answers: ["Garfield", "Whomst've", "The Lizard Wizard", "Evan"], correct: 3, bomb: 10 },
   // FINAL BOSS: bullet hell. Mouse/arrows steer a \'97 Camry; survive The Wrangler for DUR seconds

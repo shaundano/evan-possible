@@ -140,6 +140,8 @@ function load() {
   play.classList.toggle("withpic", !!lv.image && !lv.pictop); play.classList.toggle("pictop", !!lv.pictop); // image on the left, answers on the right
   const q = el("q", play), qt = el("qt", q, lv.q);
   fitText(q, qt, lv.pictop ? 26 : lv.q.length > 70 ? 34 : 48, 16);
+  if (lv.bubble) el("bubble", play, lv.bubble); // speech bubble over the picture
+  play.classList.toggle("bub", !!lv.bubble);
   if (lv.image) { const im = el("pic", play, "", "img"); im.src = lv.image; im.onerror = () => im.remove(); }
   let done = false;
   const ids = [], fns = []; // pending timers (cleared when the level ends) and cleanup hooks (run before the next load)
