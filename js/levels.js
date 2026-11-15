@@ -50,7 +50,7 @@ export const levels = [
       });
     } },
   { type: "choice", q: "A bear walks into a bar and orders a grilled ...", answers: ["cheese", "steak", "couple & their dog", "lettuce"], correct: 0 },
-  { type: "custom", noskip: true, q: "Drag the movies into Rotten Tomatoes order, best first",
+  { type: "custom", noskip: true, quiet: true, q: "Drag the movies into Rotten Tomatoes order, best first",
     setup(stage, game) {
       const films = [["Spaceballs", "spaceballs", "#c33"], ["Blade Runner 2049", "blade-runner-2049", "#e80"], ["Ducktales the Movie", "ducktales", "#27c"], ["The Gambler", "the-gambler", "#555"]];
       const div = (cls, parent, css = {}) => { const d = Object.assign(document.createElement("div"), { className: cls }); Object.assign(d.style, css); parent.append(d); return d; };
@@ -192,7 +192,7 @@ export const levels = [
       const A = stage.el; let num = "", mil = 0;
       const mk = (txt, x, y, w, h, fn, fs = 24) => { const b = Object.assign(document.createElement("button"), { className: "btn", textContent: txt, onclick: fn }); Object.assign(b.style, { left: x + "px", top: y + "px", width: w + "px", height: h + "px", fontSize: fs + "px" }); A.append(b); return b; };
       const disp = Object.assign(document.createElement("div"), { className: "calc" }); Object.assign(disp.style, { position: "absolute", left: "25px", top: "100px", width: "500px", height: "74px", boxSizing: "border-box", border: "6px solid #281efb", background: "#fff", color: "#000", padding: "4px 10px", textAlign: "right", overflow: "hidden", lineHeight: "1" }); A.append(disp);
-      const show = () => { const s = (num || "0") + " million".repeat(mil); disp.textContent = s; disp.style.fontSize = s.length > 60 ? "14px" : s.length > 30 ? "20px" : "34px"; }; show();
+      const show = () => { disp.textContent = (num || "0") + " million".repeat(mil); for (let f = 34; f >= 10; f--) { disp.style.fontSize = f + "px"; if (disp.scrollHeight <= disp.clientHeight) break; } }; show(); // biggest font that fits, so it only shrinks when it must
       [..."1234567890"].forEach((d, i) => mk(d, 30 + (i % 5) * 100, 184 + (i >> 2 > 1 ? 1 : i >= 5 ? 1 : 0) * 46, 92, 40, () => { if (num.length < 12 && !mil) num += d; show(); }, 26));
       mk("million", 30, 276, 200, 40, () => { if (num && mil < 20) mil++; show(); }, 26);
       mk("Clear", 240, 276, 120, 40, () => { num = ""; mil = 0; show(); }, 24);

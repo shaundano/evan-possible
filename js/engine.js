@@ -92,7 +92,8 @@ function screen(msg, label, fn, cls = "") {
 
 // play assets/sounds/<name>(.mp3), or assets/<path> if name has a "/"; silently ignored if missing.
 // keep=true: if autoplay is blocked (no gesture yet), retry on the first click/key
-let held, bgmOn = false, overSnd;
+let held, bgmOn = false, overSnd, quiet = false; // quiet: this level deliberately silences the theme
+setInterval(() => { if (bgmOn && !quiet && bgm.paused) bgm.play().catch(() => {}); }, 1000); // watchdog: theme must always be playing
 const sound = (name, keep) => { try { const a = new Audio(`assets/${name.includes("/") ? "" : "sounds/"}${name}${name.includes(".") ? "" : ".mp3"}`);
   a.preload = "auto"; a.play().catch(e => { if (keep && e.name === "NotAllowedError") held = a; }); return a; } catch {} };
 ["pointerdown", "keydown"].forEach(ev => addEventListener(ev, () => { held?.play().catch(() => {}); held = null; }));
@@ -137,7 +138,7 @@ function load() {
   qnum.lastChild.textContent = `${s.i + 1}.`;
   lives.querySelector(".n").textContent = s.lives;
   if ([13].includes(s.i) && !s.got.has(s.i)) { s.got.add(s.i); s.skips++; }
-  skips.replaceChildren(); for (let k = 0; k < 1; k++) { const b = el(k < s.skips ? "on" : "", skips, "", "button"); if (k < s.skips) b.onclick = () => lv.noskip ? nope() : cur?.skip(); else { b.disabled = true; b.tabIndex = -1; } }
+  skips.replaceChildren(); for (let k = 0; k < 1; k++) { const b = el(k < s.skips ? "on" : "", skips, "", "button"); b.onclick = k < s.skips ? () => lv.noskip ? nope() : cur?.skip() : () => lv.noskip && nope(); b.tabIndex = k < s.skips ? 0 : -1; } // grey arrows do nothing except show the no-skipping tape
   refit.length = 0; play.replaceChildren(area); area.replaceChildren(); play.onclick = null; play.className = "play";
   play.classList.toggle("withpic", !!lv.image && !lv.pictop && !lv.qright); play.classList.toggle("pictop", !!lv.pictop); play.classList.toggle("qright", !!lv.qright); // image on the left, answers on the right
   const q = el("q", play), qt = el("qt", q, lv.q);
@@ -160,7 +161,7 @@ function load() {
     const tick = () => { bomb.textContent = `\u{1F4A3} ${n}`; if (!n--) return game.lose(undefined, true); game.timer(1, tick); };
     tick();
   }
-  bgm.volume = .25; lv.sound && !lv.keepBgm ? bgm.pause() : bgmOn && bgm.play().catch(() => addEventListener("pointerdown", () => bgmOn && bgm.play(), { once: true })); // retry on next click if blocked
+  quiet = !!(lv.sound && !lv.keepBgm || lv.quiet); bgm.volume = .25; lv.sound && !lv.keepBgm ? bgm.pause() : bgmOn && bgm.play().catch(() => addEventListener("pointerdown", () => bgmOn && bgm.play(), { once: true })); // retry on next click if blocked
   lvSnd = lv.sound ? sound(lv.sound, true) : null;
   if (lv.sound) { const rp = el("replay", play, "\u25B6 Replay", "button"); rp.onclick = e => { e.stopPropagation(); lvSnd.pause(); lvSnd = sound(lv.sound); }; }
   types[lv.type](lv, { el: area, sprite }, game);
