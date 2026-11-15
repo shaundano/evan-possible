@@ -109,10 +109,10 @@ export const levels = [
   ] },
   { type: "custom", q: "Hey it's me your old property manager Tom. It's gonna be $150 for bedbug removal.", answers: ["No", "No", "No", "No"],
     setup(stage, game) { // the boxes do nothing; after 7s a bug crosses, click it to squash
-      const bug = art(stage.el, "bedbug.png", "\u{1FAB2}", "", { left: "-80px", top: "300px", width: "70px", height: "60px", cursor: "pointer", display: "none", zIndex: 5, transition: "left 5s linear", mixBlendMode: "multiply" });
+      const bug = art(stage.el, "bedbug2.png", "\u{1FAB2}", "", { left: "-90px", top: "285px", width: "80px", height: "80px", cursor: "pointer", display: "none", zIndex: 5, transition: "left 5s linear, transform .2s", transform: "scaleX(-1)" });
       game.timer(7, () => { bug.style.display = "block"; void bug.offsetWidth; bug.style.left = "560px"; game.timer(5.2, () => game.lose()); });
       bug.onclick = () => { const k = stage.el.getBoundingClientRect().width / 550, x = (bug.getBoundingClientRect().left - stage.el.getBoundingClientRect().left) / k;
-        bug.style.transition = "none"; bug.style.left = x + "px"; bug.style.transform = "rotate(180deg)"; bug.onclick = null; game.sound("crunch");
+        bug.style.transition = "transform .2s"; bug.style.left = x + "px"; bug.style.transform = "scaleX(-1) scaleY(-1)"; bug.onclick = null; game.sound("squish");
         const blood = art(stage.el, "", "", "", { left: x - 10 + "px", top: "345px", width: "90px", height: "30px", zIndex: 4 });
         blood.innerHTML = '<svg viewBox="0 0 90 30"><path d="M5 12C15 2 30 6 45 3c15-2 30 4 40 10-6 6-4 12-14 13-8 1-10-3-18-1-10 3-20 3-30 0C14 24 2 20 5 12Z" fill="#b00000"/><circle cx="12" cy="26" r="3" fill="#b00000"/><circle cx="76" cy="27" r="2.5" fill="#b00000"/><circle cx="48" cy="28" r="2" fill="#8a0000"/></svg>';
         setTimeout(game.win, 2000); };
