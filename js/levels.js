@@ -236,7 +236,7 @@ export const levels = [
         for (let i = M.length - 1; i >= 0; i--) { const m = M[i];
           if (!done && Math.abs(m.x - b.x) < 38 && m.y < 196 && m.y > 56) { M.splice(i, 1); hp -= 1; flash = .08; if (hp <= 0) { done = true; B.length = 0; game.sound("bomb"); boom(b); setTimeout(game.win, 2400); } }
           else if (m.y < -10) M.splice(i, 1); }
-        if (!done && inv <= 0 && B.some(o => ((o.x - P.x) / (28 + 3)) ** 2 + ((o.y - P.y) / (10 + 3)) ** 2 < 1) /* oval hurtbox hugging the car body (28x10 half-axes) plus a 3px bullet core */) { inv = 1.3; game.hit(); if (game.dead) return; }
+        if (!done && inv <= 0 && B.some(o => ((o.x - P.x) / (28 + 3)) ** 2 + ((o.y - P.y) / (10 + 3)) ** 2 < 1) /* oval hurtbox hugging the car body (28x10 half-axes) plus a 3px bullet core */) { inv = 3; game.hit(); if (game.dead) return; }
         const g = c.createLinearGradient(0, 0, 0, H); g.addColorStop(0, "#ff9a4a"); g.addColorStop(.6, "#ffd9a0"); g.addColorStop(1, "#c98a4a"); c.fillStyle = g; c.fillRect(0, 0, W, H);
         c.fillStyle = "#a0642c"; c.fillRect(0, 290, W, 110);
         c.save(); if (flash > 0) c.filter = "brightness(2.5)"; c.globalAlpha = gone ? 0 : 1; c.drawImage(WR, b.x - 48 + (flash > 0 ? 3 : 0), 56, 96, 143); c.restore(); // The Wrangler
