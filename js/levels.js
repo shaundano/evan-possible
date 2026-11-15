@@ -142,7 +142,7 @@ export const levels = [
       for (let i = 0; i < 90; i++) Object.assign(sky.appendChild(document.createElement("i")).style, { position: "absolute", left: Math.random() * 100 + "%", top: Math.random() * 100 + "%", width: 1 + Math.random() * 2 + "px", height: 1 + Math.random() * 2 + "px", background: "#fff", borderRadius: "50%", opacity: .4 + Math.random() * .6 });
       const t = art(stage.el, "", "Click Me", "", { left: 0, width: "550px", top: "420px", zIndex: 2, fontFamily: "StarJedi, Akbar", fontSize: "64px", color: "#ffe81f", background: "none", cursor: "pointer", whiteSpace: "nowrap", transform: "perspective(260px) rotateX(55deg) skewX(-12deg)" });
       const m = game.sound("levels/starwars.mp3"); game.cleanup(() => m.pause());
-      let y = 560, v = 14, fast = false, seen = 0, last = performance.now(), raf;
+      let y = 518, v = 14, fast = false, seen = 0, last = performance.now(), raf;
       t.onclick = () => { cancelAnimationFrame(raf); game.win(); };
       game.cleanup(() => cancelAnimationFrame(raf));
       const step = now => { const dt = (now - last) / 1000; last = now;
