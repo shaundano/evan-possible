@@ -103,7 +103,6 @@ const bgm = Object.assign(new Audio("assets/sounds/bgm.mp3"), { loop: true, volu
 
 
 // "no skipping" tape banner
-const nope = () => { const b = el("nope", stage, "Sorry, no skipping!"); setTimeout(() => b.remove(), 1800); };
 const next = () => { s.i++; load(); };
 
 // wrong answer: last life goes straight to game over, else lose a life and show the modal over the question
@@ -141,7 +140,8 @@ function load() {
   qnum.lastChild.textContent = `${s.i + 1}.`;
   lives.querySelector(".n").textContent = s.lives;
   if ([13].includes(s.i) && !s.got.has(s.i)) { s.got.add(s.i); s.skips++; }
-  skips.replaceChildren(); for (let k = 0; k < 1; k++) { const b = el(k < s.skips ? "on" : "", skips, "", "button"); b.onclick = k < s.skips ? () => lv.noskip ? nope() : cur?.skip() : () => lv.noskip && nope(); b.tabIndex = k < s.skips ? 0 : -1; } // grey arrows do nothing except show the no-skipping tape
+  stage.querySelector(".nope")?.remove(); if (lv.noskip && !lv.notape) el("nope", stage, "Sorry, no skipping!"); // tape sits on top of the skip arrow for the whole level
+  skips.replaceChildren(); for (let k = 0; k < 1; k++) { const b = el(k < s.skips ? "on" : "", skips, "", "button"); b.onclick = k < s.skips && !lv.noskip ? () => cur?.skip() : null; b.tabIndex = k < s.skips ? 0 : -1; } // grey arrows do nothing except show the no-skipping tape
   refit.length = 0; play.replaceChildren(area); area.replaceChildren(); play.onclick = null; play.className = "play";
   play.classList.toggle("withpic", !!lv.image && !lv.pictop && !lv.qright); play.classList.toggle("pictop", !!lv.pictop); play.classList.toggle("qright", !!lv.qright); // image on the left, answers on the right
   const q = el("q", play), qt = el("qt", q, lv.q);

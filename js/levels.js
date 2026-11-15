@@ -202,7 +202,7 @@ export const levels = [
   { type: "choice", q: "Whose birthday is it?", answers: ["Garfield", "Whomst've", "The Lizard Wizard", "Evan"], correct: 3, bomb: 10 },
   { type: "choice", q: "What was the location of the answer in question 1?", answers: ["This one", "This one", "This one", "This one"], correct: 2 },
   // FINAL BOSS: bullet hell. Mouse/arrows steer the Camry (auto-fires up); hold SPACE to fire (1 dmg per hit) to drop The Wrangler's 100 HP; getting hit costs a life but the fight goes on
-  { type: "custom", noskip: true, q: "",
+  { type: "custom", noskip: true, notape: true, q: "",
     setup(stage, game) {
       const A = stage.el, W = 550, H = 400, cv = Object.assign(document.createElement("canvas"), { width: W, height: H }), c = cv.getContext("2d");
       Object.assign(cv.style, { position: "absolute", left: 0, top: "-32px", zIndex: 0, cursor: "none" }); stage.el.append(cv);
