@@ -90,7 +90,7 @@ function screen(msg, label, fn, cls = "") {
 
 // play assets/sounds/<name>(.mp3), or assets/<path> if name has a "/"; silently ignored if missing.
 // keep=true: if autoplay is blocked (no gesture yet), retry on the first click/key
-let held;
+let held, bgmOn = false, overSnd;
 const sound = (name, keep) => { try { const a = new Audio(`assets/${name.includes("/") ? "" : "sounds/"}${name}${name.includes(".") ? "" : ".mp3"}`);
   a.preload = "auto"; a.play().catch(e => { if (keep && e.name === "NotAllowedError") held = a; }); return a; } catch {} };
 ["pointerdown", "keydown"].forEach(ev => addEventListener(ev, () => { held?.play().catch(() => {}); held = null; }));
@@ -109,14 +109,14 @@ function die(msg) {
 }
 
 function gameOver() { // splat; click anywhere to retry
-  sound("game-over"); clearTimeout(tm); over.replaceChildren(); over.hidden = false; over.className = "over gameover";
+  overSnd = sound("bomb"); clearTimeout(tm); over.replaceChildren(); over.hidden = false; over.className = "over gameover";
   el("", over, "", "img").src = "assets/img/game-over.svg";
-  over.onclick = () => { over.hidden = true; over.onclick = null; start(); };
+  over.onclick = () => { overSnd?.pause(); over.hidden = true; over.onclick = null; start(); };
 }
 
 // birthday end screen: confetti, victory sound, author message/image, Play Again returns to the title card
 function endScreen() {
-  clearTimeout(tm); bgm.pause(); sound("victory"); over.replaceChildren(); over.hidden = false; over.className = "over end";
+  clearTimeout(tm); bgmOn = false; bgm.pause(); sound("victory"); over.replaceChildren(); over.hidden = false; over.className = "over end";
   for (let i = 0; i < 70; i++) el("confetti", over, "", "i").style.cssText = `left:${Math.random() * 100}%;background:hsl(${Math.random() * 360},90%,55%);animation-delay:${Math.random() * 3}s`;
   el("h", over, "HAPPY BIRTHDAY").append(el("b", over, "EVAN", "b"));
   if (END_IMAGE) el("pic", over, "", "img").src = END_IMAGE;
@@ -131,7 +131,8 @@ function load() {
   if (!lv) return endScreen();
   qnum.lastChild.textContent = `${s.i + 1}.`;
   lives.querySelector(".n").textContent = s.lives;
-  skips.replaceChildren(); for (let k = 0; k < s.skips; k++) el("", skips, "", "button").onclick = () => cur?.skip();
+  if ([9, 19, 24].includes(s.i) && !s.got.has(s.i)) { s.got.add(s.i); s.skips++; }
+  skips.replaceChildren(); for (let k = 0; k < 3; k++) { const b = el(k < s.skips ? "on" : "", skips, "", "button"); b.onclick = () => cur?.skip(); b.disabled = k >= s.skips; }
   refit.length = 0; play.replaceChildren(area); area.replaceChildren(); play.onclick = null; play.className = "play";
   play.classList.toggle("withpic", !!lv.image && !lv.pictop); play.classList.toggle("pictop", !!lv.pictop); // image on the left, answers on the right
   const q = el("q", play), qt = el("qt", q, lv.q);
@@ -151,16 +152,18 @@ function load() {
     const tick = () => { bomb.textContent = `\u{1F4A3} ${n}`; if (!n--) return game.lose("The bomb went off!"); game.timer(1, tick); };
     tick();
   }
+  lv.sound ? bgm.pause() : bgmOn && bgm.play().catch(() => {});
   lvSnd = lv.sound ? sound(lv.sound, true) : null;
+  if (lv.sound) { const rp = el("replay", play, "\u25B6 Replay", "button"); rp.onclick = e => { e.stopPropagation(); lvSnd.pause(); lvSnd = sound(lv.sound); }; }
   types[lv.type](lv, { el: area, sprite }, game);
 }
 
-function start(i = 0) { s = { i, lives: 3, skips: 3 }; load(); }
+function start(i = 0) { s = { i, lives: 3, skips: 0, got: new Set() }; load(); }
 
 // title card; Play is the first gesture, so music (and the first clip) can start
 await document.fonts.load("46px Akbar");
 const q = +new URLSearchParams(location.search).get("q"); // ?q=N debug jump skips the title
 title.innerHTML = "<h1>THE EVAN-POSSIBLE<b>QUIZ</b></h1>";
-const go = el("ans l r btn", title, "Play", "button"), pk = el("", title, "a birthday gift for Evan", "p");
-go.onclick = () => { title.hidden = true; bgm.play().catch(() => {}); start(); };
+const go = el("begin", title, "Begin", "button"), pk = el("", title, "a birthday gift for Evan", "p");
+go.onclick = () => { sound("fart"); title.hidden = true; bgmOn = true; bgm.play().catch(() => {}); start(); };
 if (q > 0) { title.hidden = true; start(Math.min(q, levels.length) - 1); }

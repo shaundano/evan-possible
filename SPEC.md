@@ -1,6 +1,6 @@
 # The Evan-Possible Quiz — Spec
 
-A birthday gift for Evan: a 25-question browser game in the style of *The Impossible Quiz* (TIQ1, Splapp-me-do), full of meme answers and in-jokes.
+A birthday gift for Evan: a 28-question browser game in the style of *The Impossible Quiz* (TIQ1, Splapp-me-do), full of meme answers and in-jokes.
 
 **Deadline:** Monday 2026-11-16. Timeline is a guide; best effort.
 
@@ -8,10 +8,10 @@ A birthday gift for Evan: a 25-question browser game in the style of *The Imposs
 
 | Area | Decision |
 |---|---|
-| Length | 25 questions: ~15 multiple choice, ~10 "funky" (click / wait / type / custom) |
+| Length | 28 questions: ~15 multiple choice, ~13 "funky" (click / wait / type / custom) |
 | Reference game | The Impossible Quiz **1** |
-| Rules | Authentic: 3 lives, a few skips; wrong answer = -1 life + modal, retry same question; game over → back to Q1 |
-| Ending | Q25 = birthday "final boss"; win → end screen (content TBD by author) |
+| Rules | Authentic: 3 lives, skips earned at Q10, Q20, Q25; wrong answer = -1 life + modal, retry same question; game over → back to Q1 |
+| Ending | Q28 = birthday "final boss"; win → end screen (content TBD by author) |
 | Stack | Plain HTML + vanilla JS, DOM rendering, no build step |
 | Stage | Fixed 550×400, scaled to fit window |
 | Platform | Desktop only |

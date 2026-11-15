@@ -97,3 +97,8 @@ html, body { margin: 0; height: 100%; background: #111; overflow: hidden; font-f
 .over.end .note { font-size: 22px; line-height: 1.1; max-width: 440px; }
 .over.end .credits { position: absolute; bottom: 4px; left: 10px; right: 10px; font-size: 10px; line-height: 1.1; color: #281efb; word-spacing: .2em; text-transform: none; }
 .over.end .confetti { top: -14px; animation: fall 3s linear infinite; }
+.title .begin { width: 190px; height: 90px; border: 0; background: url(../assets/img/begin.svg) no-repeat; background-size: 100% 100%; font: 40px Akbar; color: #16300a; cursor: pointer; }
+.title .begin:hover { filter: brightness(1.1); transform: scale(1.04); }
+.replay { position: absolute; right: 6px; top: 4px; z-index: 3; font: 14px Akbar; background: #f8caff; border: 3px solid #281efb; cursor: pointer; }
+.skips button.on { background-image: url(../assets/img/skip.svg); }
+.skips button:disabled { cursor: default; filter: none; }

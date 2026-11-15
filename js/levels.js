@@ -70,9 +70,9 @@ export const levels = [
   { type: "custom", q: "Mash any key to Beatbox",
     setup(stage, game) {
       const GOAL = 15, IDLE = 7000, root = Object.assign(document.createElement("div"), { className: "beat" });
-      root.innerHTML = '<div class="board">BEATBOX 101</div><div class="guy"><img src="assets/img/school-child.svg" alt="school child"></div><div class="desk"></div><div class="count"></div>';
+      root.innerHTML = '<div class="board">BEATBOX 101</div><div class="guy"><img src="assets/img/school-child.svg" alt="school child"></div><div class="desk"></div>';
       stage.el.append(root);
-      const guy = root.querySelector(".guy"), count = root.querySelector(".count");
+      const guy = root.querySelector(".guy");
       let n = 0, idle;
       const names = ["a", "s", "d", "f", "1", "2", "3", "4", "5"], snd = k => "beatbox-" + (k === " " ? "space" : names[(k.charCodeAt(0) - 97) % names.length]); // letters cycle the set, space accents
       const beats = Object.fromEntries([..."abcdefghijklmnopqrstuvwxyz "].map(k => [k, new Audio(`assets/sounds/${snd(k)}.mp3`)]));
@@ -90,8 +90,7 @@ export const levels = [
         if (e.repeat || e.ctrlKey || e.metaKey || e.altKey || !/^[a-z ]$/.test(k)) return;
         e.preventDefault(); playBeat(k); arm();
         guy.classList.remove("hit"); void guy.offsetWidth; guy.classList.add("hit");
-        count.textContent = ++n;
-        if (n >= GOAL) { stop(); confetti(); game.sound("yay"); setTimeout(game.win, 1500); }
+        if (++n >= GOAL) { stop(); confetti(); game.sound("yay"); setTimeout(game.win, 1500); }
       }
       addEventListener("keydown", press); game.cleanup(stop); arm();
     } },
@@ -107,7 +106,13 @@ export const levels = [
     "\"If I leave here with anybody liking me, I failed. I'm not here to be your friend—if you want a friend, go get a f*cking dog. I'm here to drag your sorry ass across the goal line no matter what it takes.\"",
     "\"Sleep is for broke people. You can rest when you're dead, or when your bank account has enough zeros to buy the hospital.\"",
   ] },
-  { type: "choice", q: "Hey it's me your old property manager Tom. It's gonna be $150 for bedbug removal.", answers: ["No", "No", "No", "No"], correct: [0, 1, 2, 3] },
+  { type: "custom", q: "Hey it's me your old property manager Tom. It's gonna be $150 for bedbug removal.",
+    setup(stage, game) {
+      const bug = art(stage.el, "", "\u{1FAB2}", "", { left: "-60px", top: "250px", width: "50px", height: "50px", fontSize: "40px", cursor: "pointer", display: "none", transition: "left 5s linear" });
+      ["No", "No", "No", "No"].forEach((a, i) => { const b = art(stage.el, "", a, "", { left: 45 + i * 120 + "px", top: "160px", width: "90px", height: "50px", fontSize: "30px", background: "#f8caff", border: "6px solid #281efb", boxSizing: "border-box", cursor: "pointer" }); b.onclick = () => {}; });
+      game.timer(7, () => { bug.style.display = "block"; void bug.offsetWidth; bug.style.left = "560px"; game.timer(5.2, () => game.lose("The bedbug got away. $150.")); });
+      bug.onclick = () => { bug.style.transition = "none"; bug.style.left = bug.getBoundingClientRect().left / (stage.el.getBoundingClientRect().width / 550) - stage.el.getBoundingClientRect().left / (stage.el.getBoundingClientRect().width / 550) + "px"; bug.textContent = "\u{1FA78}\u{1F480}"; bug.style.width = "100px"; bug.onclick = null; setTimeout(game.win, 2000); };
+    } },
   { type: "choice", q: "Which is a real Robert Luxenberg quote?", image: "assets/levels/luxenberg.jpg", pictop: true, correct: 1, answers: [
     "\"Evan, I'm on the bean diet\"",
     "\"With the students, when we started thinking like them, it was privacy, a place to hang out so we did a lot of things we knew they wanted, but we also thought about the secondary market: their parents. So we’ve put in 90 security cameras.\"",
@@ -115,23 +120,9 @@ export const levels = [
     "\"I think the issue with young people these days is they think they can get a degree and be rich, but school won't teach you how to be rich.\"",
   ] },
   // DRAFT
-  { type: "choice", q: "What is 2+2?", answers: ["Fish", "That's 4", "Quick maths", "Four, minus 1"], correct: 2, fakeout: "4 minus 1 that's 3" },
-  // DRAFT
-  { type: "click", q: "Click the duck.", hotspot: "duck", bomb: 8 },
-  // DRAFT
-  { type: "choice", q: "What does the fox say?", answers: ["Ring-ding-ding-ding", "Wa-pa-pa-pow", "Hatee-hatee-hatee-ho", "Yes"], correct: 3, fakeout: "Nobody knows. Still wrong." },
-  // DRAFT
-  { type: "wait", q: "Don't click anything.", seconds: 6, answers: ["Never gonna give you up", "Never gonna let you down", "Never gonna run around", "And desert you"], fakeout: "You clicked. You've been rickrolled." },
-  // DRAFT
-  { type: "choice", q: "Dat boi is...", answers: ["Here come", "A frog", "On a unicycle", "Oh shit waddup"], correct: 0, fakeout: "Oh shit waddup" },
-  // DRAFT
-  { type: "type", q: "Type the Konami code", accept: ["uuddlrlrba", "uuddlrlrbastart", "u u d d l r l r b a", "up up down down left right left right b a", "up up down down left right left right ba", "\u2191\u2191\u2193\u2193\u2190\u2192\u2190\u2192ba"], fakeout: "30 lives wasted." },
+  { type: "choice", q: "What is 2+2?", answers: ["6, 7", "21", "5", "Quick maths"], correct: 3, fakeout: "4 minus 1 that's 3" },
   // DRAFT
   { type: "choice", q: "I am your...", answers: ["Dad", "Father", "Mother", "Nephew"], correct: 0, fakeout: "No. That's not true. That's impossible!" },
-  // DRAFT
-  { type: "type", q: "Press F to...", accept: ["pay respects", "pay my respects", "pay respect", "pay your respects"], fakeout: "F" },
-  // DRAFT
-  { type: "choice", q: "How many members are in King Gizzard?", answers: ["5", "6", "7", "Yes"], correct: 3, fakeout: "Even the Lizard Wizard lost count." },
   // DRAFT
   { type: "custom", q: "Click the Lizard Wizard", fakeout: "Not a Lizard Wizard.",
     setup(stage, game) {
