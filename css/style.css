@@ -95,7 +95,7 @@ html, body { margin: 0; height: 100%; background: #111; overflow: hidden; font-f
 .over.end .h b { display: block; font-size: 72px; font-weight: normal; }
 .over.end .pic { max-height: 90px; }
 .over.end .note { font-size: 22px; line-height: 1.1; max-width: 440px; }
-.over.end .credits { position: absolute; bottom: 4px; left: 10px; right: 10px; font-size: 10px; line-height: 1.1; color: #aaa; word-spacing: .2em; text-transform: none; }
+.over.end .credits { position: absolute; bottom: 4px; left: 10px; right: 10px; font-size: 6px; line-height: 1.1; color: #aaa; word-spacing: .2em; text-transform: none; }
 .over.end .confetti { top: -14px; animation: fall 3s linear infinite; }
 .title .begin { width: 190px; height: 90px; border: 0; background: url(../assets/img/begin.svg) no-repeat; background-size: 100% 100%; font: 40px Akbar; color: #16300a; cursor: pointer; }
 .title .begin:hover { filter: brightness(1.1); transform: scale(1.04); }
