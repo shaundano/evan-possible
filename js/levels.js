@@ -111,11 +111,13 @@ export const levels = [
   ] },
   { type: "custom", q: "Hey it's me your old property manager Tom. It's gonna be $150 for bedbug removal.", answers: ["No", "No", "No", "No"],
     setup(stage, game) { // the boxes do nothing; after 7s a bug crosses, click it to squash
-      const bug = art(stage.el, "bedbug2.png", "\u{1FAB2}", "", { left: "-20px", top: "330px", width: "8px", height: "8px", cursor: "pointer", display: "none", zIndex: 5, transition: "left 5s linear", transform: "scaleX(-1)" });
-      game.timer(7, () => { bug.style.display = "block"; void bug.offsetWidth; bug.style.left = "560px"; game.timer(5.2, () => game.lose()); });
-      bug.onclick = () => { const k = stage.el.getBoundingClientRect().width / 550, x = (bug.getBoundingClientRect().left - stage.el.getBoundingClientRect().left) / k;
-        bug.style.transition = "none"; bug.style.left = x + "px"; bug.style.transform = "scaleX(-1) scaleY(-1)"; bug.onclick = null; game.sound("squish");
-        const blood = art(stage.el, "", "", "", { left: x - 8 + "px", top: "338px", width: "24px", height: "8px", zIndex: 4 });
+      let x = -30, raf, alive = true;
+      const bug = art(stage.el, "bedbug2.png", "\u{1FAB2}", "", { left: x + "px", top: "326px", width: "28px", height: "28px", cursor: "pointer", display: "none", zIndex: 5, transform: "scaleX(-1)" });
+      game.cleanup(() => cancelAnimationFrame(raf));
+      game.timer(7, () => { bug.style.display = "flex"; let last = performance.now(); // crosses at 110px/s; escaping costs a life
+        const walk = now => { if (!alive) return; x += 110 * (now - last) / 1000; last = now; bug.style.left = x + "px"; x > 560 ? game.lose() : raf = requestAnimationFrame(walk); }; raf = requestAnimationFrame(walk); });
+      bug.onclick = () => { alive = false; cancelAnimationFrame(raf); bug.style.transform = "scaleX(-1) scaleY(-1)"; bug.onclick = null; game.sound("squish");
+        const blood = art(stage.el, "", "", "", { left: x - 14 + "px", top: "348px", width: "56px", height: "18px", zIndex: 4 });
         blood.innerHTML = '<svg viewBox="0 0 90 30"><path d="M5 12C15 2 30 6 45 3c15-2 30 4 40 10-6 6-4 12-14 13-8 1-10-3-18-1-10 3-20 3-30 0C14 24 2 20 5 12Z" fill="#b00000"/><circle cx="12" cy="26" r="3" fill="#b00000"/><circle cx="76" cy="27" r="2.5" fill="#b00000"/><circle cx="48" cy="28" r="2" fill="#8a0000"/></svg>';
         setTimeout(game.win, 2000); };
     } },
