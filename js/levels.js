@@ -136,12 +136,12 @@ export const levels = [
       const A = stage.el, NEED = 50, EVERY = 10, ALBUMS = ["album-fmb.jpg", "album-motu.jpg", "album-sketches.jpg", "album-polygon.jpg", "album-gumboot.jpg"]; // 2017 release order; album-sketches.jpg = Sketches of Brunswick East (add the file)
       let n = 0, days = 365, over = false;
       const txt = (css, s) => { const d = Object.assign(document.createElement("div"), { textContent: s }); Object.assign(d.style, { position: "absolute", left: 0, width: "550px", textAlign: "center", ...css }); A.append(d); return d; };
-      const bombT = txt({ top: "98px", fontSize: "30px" }, "\u{1F4A3} 365"), prog = txt({ top: "296px", fontSize: "22px" }, "0 / " + NEED);
+      const bombT = txt({ top: "98px", fontSize: "30px" }, "\u{1F4A3} 365"), prog = txt({ top: "296px", fontSize: "22px" }, "MASH IT!");
       const slots = ALBUMS.map((f, i) => art(A, "", "?", "", { left: 21 + i * 104 + "px", top: "138px", width: "96px", height: "96px", fontSize: "48px", border: "4px solid #281efb", background: "#f8caff", boxSizing: "border-box", color: "#281efb", opacity: .55 }));
       const b = Object.assign(document.createElement("button"), { className: "btn", textContent: "RELEASE" }); Object.assign(b.style, { left: "165px", top: "244px", width: "220px", height: "46px", fontSize: "30px" }); A.append(b);
       const tick = setInterval(() => { if (over) return; bombT.textContent = "\u{1F4A3} " + --days; if (days <= 0) { over = true; clearInterval(tick); game.lose(undefined, true); } }, 38); // ~14s for 365 days
       game.cleanup(() => clearInterval(tick));
-      b.onclick = () => { if (over) return; n++; prog.textContent = n + " / " + NEED;
+      b.onclick = () => { if (over) return; n++; 
         if (n % EVERY === 0) { const k = n / EVERY - 1, s = slots[k]; game.sound("correct"); s.style.opacity = 1; s.textContent = ""; const im = Object.assign(new Image(), { src: "assets/levels/" + ALBUMS[k] }); Object.assign(im.style, { width: "100%", height: "100%", objectFit: "cover" }); im.onerror = () => { im.remove(); s.textContent = "\u{1F4BF}"; }; s.append(im); }
         if (n >= NEED) { over = true; clearInterval(tick); setTimeout(game.win, 1200); } };
     } },
