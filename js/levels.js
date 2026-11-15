@@ -30,6 +30,7 @@ const RAM = Object.assign(new Audio("assets/levels/ram-ranch.mp3"), { preload: "
 const RANKING = ["Blade Runner 2049", "Ducktales the Movie", "Spaceballs", "The Gambler"];
 
 export const levels = [
+  { type: "choice", q: "What year was Deloitte founded?", answers: ["1902", "1845", "1919", "1873"], correct: 1 },
   { type: "choice", q: "Which Shaggs song is this?", sound: "levels/shaggs-who-are-parents.mp3", correct: 1,
     answers: ["Philosophy of the World", "Who Are Parents?", "My Pal Foot Foot", "It's Halloween"] },
   { type: "custom", q: "Put the pipe in old Garfield's mouth",
