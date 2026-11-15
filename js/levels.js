@@ -26,6 +26,7 @@ const inside = (a, b) => { const p = a.getBoundingClientRect(), m = b.getBoundin
 
 // Rotten Tomatoes critic scores (checked 2026-11-14): Blade Runner 2049 88%, DuckTales the Movie 65%, Spaceballs 53%, The Gambler 43%. Highest first.
 const SW = Object.assign(new Audio("assets/levels/starwars.mp3"), { preload: "auto" }); // preloaded so the crawl music starts instantly
+const RAM = Object.assign(new Audio("assets/levels/ram-ranch.mp3"), { preload: "auto" }); // final-boss music, preloaded
 const RANKING = ["Blade Runner 2049", "Ducktales the Movie", "Spaceballs", "The Gambler"];
 
 export const levels = [
@@ -167,6 +168,61 @@ export const levels = [
   { type: "choice", q: "Which Vibrant Reset song has the most plays on SoundCloud?", answers: ["Dragonhead", "Do I Wanna Know cover", "Do You Miss Me Too", "Junkie"], correct: 1 },
   // DRAFT: final boss
   { type: "choice", q: "Whose birthday is it?", answers: ["Garfield", "Whomst've", "The Lizard Wizard", "Evan"], correct: 3, bomb: 10 },
+  // FINAL BOSS: bullet hell. Mouse/arrows steer a \'97 Camry; survive The Wrangler for DUR seconds
+  { type: "custom", noskip: true, q: "",
+    setup(stage, game) {
+      const W = 550, H = 400, DUR = 46, cv = Object.assign(document.createElement("canvas"), { width: W, height: H }), c = cv.getContext("2d");
+      Object.assign(cv.style, { position: "absolute", left: 0, top: "-32px", zIndex: 0, cursor: "none" }); stage.el.append(cv);
+      game.bgm.volume = 0; RAM.currentTime = 0; RAM.play().catch(() => {}); game.cleanup(() => RAM.pause());
+      const P = { x: W / 2, y: 330 }, keys = {}, B = []; let tx = P.x, ty = P.y, t = 0, last = performance.now(), raf, hit = 0, spin = 0, cd = 0, done = false;
+      cv.onpointermove = e => { const r = cv.getBoundingClientRect(), k = r.width / W; tx = (e.clientX - r.left) / k; ty = (e.clientY - r.top) / k; };
+      const kd = e => keys[e.key] = true, ku = e => keys[e.key] = false; addEventListener("keydown", kd); addEventListener("keyup", ku);
+      game.cleanup(() => { removeEventListener("keydown", kd); removeEventListener("keyup", ku); cancelAnimationFrame(raf); });
+      const shot = (x, y, a, v, e, r = 8) => B.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, e, r });
+      const boss = () => ({ x: W / 2 + 170 * Math.sin(t * .7), y: 120 });
+      function fire(dt) { // three patterns cycle every 9s, speeding up as the Wrangler tires
+        const b = boss(), ph = Math.floor(t / 9) % 3, f = 1 + t / DUR * .5; cd -= dt;
+        if (ph === 0 && cd <= 0) { cd = .85 / f; const a = Math.atan2(P.y - b.y, P.x - b.x); [-.25, 0, .25].forEach(o => shot(b.x, b.y + 30, a + o, 150 * f, "\u{1F40E}")); } // horseshoe-ish aimed spread
+        if (ph === 1 && cd <= 0) { cd = .11 / f; spin += .55; shot(b.x, b.y + 20, spin, 105 * f, "\u{1F40F}"); shot(b.x, b.y + 20, spin + Math.PI, 105 * f, "\u{1F40F}"); } // spiral of rams
+        if (ph === 2 && cd <= 0) { cd = .17 / f; shot(Math.random() * W, -10, Math.PI / 2, (130 + Math.random() * 70) * f, "\u{1F335}"); } // cactus rain
+      }
+      const man = (b) => { // shirtless, mustachioed cowboy
+        c.save(); c.translate(b.x, b.y);
+        c.fillStyle = "#1f4fa0"; c.fillRect(-20, 30, 40, 38); c.fillStyle = "#6b3f1d"; c.fillRect(-23, 62, 20, 12); c.fillRect(3, 62, 20, 12); // jeans, boots
+        c.fillStyle = "#f0b27a"; c.fillRect(-26, -8, 52, 42); c.strokeStyle = "#b9773f"; c.lineWidth = 2; c.beginPath(); c.moveTo(0, -4); c.lineTo(0, 26); c.moveTo(-22, 6); c.quadraticCurveTo(-10, 16, 0, 8); c.quadraticCurveTo(10, 16, 22, 6); c.stroke(); // torso, abs, pecs
+        const sw = Math.sin(t * 6) * 10; c.fillStyle = "#f0b27a"; c.fillRect(-42, -6 + sw, 16, 14); c.fillRect(26, -6 - sw, 16, 14); // arms
+        c.fillStyle = "#5b3410"; c.fillRect(-22, 28, 44, 7); c.fillStyle = "#ffd700"; c.fillRect(-7, 26, 14, 11); // belt + buckle
+        c.fillStyle = "#f0b27a"; c.beginPath(); c.arc(0, -22, 17, 0, 7); c.fill();
+        c.fillStyle = "#3b2410"; c.fillRect(-11, -18, 22, 5); c.fillRect(-9, -26, 5, 4); c.fillRect(4, -26, 5, 4); // mustache + eyes
+        c.fillStyle = "#7a4a1e"; c.beginPath(); c.ellipse(0, -35, 36, 7, 0, 0, 7); c.fill(); c.fillRect(-17, -58, 34, 24); // hat
+        c.restore();
+      }
+      const car = () => { c.save(); c.translate(P.x, P.y); if (hit > 0 && Math.floor(hit * 20) % 2) c.globalAlpha = .4;
+        c.fillStyle = "#222"; [[-13, -13], [9, -13], [-13, 8], [9, 8]].forEach(([x, y]) => c.fillRect(x, y, 5, 10)); // wheels
+        c.fillStyle = "#d9c9a0"; c.beginPath(); c.roundRect(-10, -19, 20, 38, 6); c.fill(); // champagne '97 Camry
+        c.fillStyle = "#35506a"; c.fillRect(-8, -9, 16, 6); c.fillRect(-8, 6, 16, 5); c.fillStyle = "#fff"; c.fillRect(-9, -19, 4, 3); c.fillRect(5, -19, 4, 3);
+        c.fillStyle = "#e33"; c.beginPath(); c.arc(0, 0, 2.5, 0, 7); c.fill(); c.restore(); }; // red dot = hitbox
+      function step(now) {
+        const dt = Math.min(.05, (now - last) / 1000); last = now; t += dt;
+        const v = 260 * dt; if (keys.ArrowLeft || keys.a) tx -= v; if (keys.ArrowRight || keys.d) tx += v; if (keys.ArrowUp || keys.w) ty -= v; if (keys.ArrowDown || keys.s) ty += v;
+        tx = Math.max(14, Math.min(W - 14, tx)); ty = Math.max(200, Math.min(H - 30, ty));
+        P.x += (tx - P.x) * Math.min(1, dt * 14); P.y += (ty - P.y) * Math.min(1, dt * 14);
+        if (t > 1.5 && t < DUR) fire(dt);
+        B.forEach(o => { o.x += o.vx * dt; o.y += o.vy * dt; });
+        for (let i = B.length - 1; i >= 0; i--) if (B[i].x < -20 || B[i].x > W + 20 || B[i].y > H + 20 || B[i].y < -20) B.splice(i, 1);
+        if (!done && B.some(o => Math.hypot(o.x - P.x, o.y - P.y) < o.r + 4)) return game.lose();
+        if (t >= DUR && !done) { done = true; B.length = 0; setTimeout(game.win, 1800); }
+        const g = c.createLinearGradient(0, 0, 0, H); g.addColorStop(0, "#ff9a4a"); g.addColorStop(.6, "#ffd9a0"); g.addColorStop(1, "#c98a4a"); c.fillStyle = g; c.fillRect(0, 0, W, H); // sunset ranch
+        c.fillStyle = "#a0642c"; c.fillRect(0, 290, W, 110);
+        man(boss());
+        c.font = "20px serif"; c.textAlign = "center"; c.textBaseline = "middle"; B.forEach(o => c.fillText(o.e, o.x, o.y));
+        car();
+        c.fillStyle = "#000"; c.fillRect(110, 36, 330, 14); c.fillStyle = "#ff1a1a"; c.fillRect(112, 38, 326 * Math.max(0, 1 - t / DUR), 10);
+        c.fillStyle = "#fff"; c.font = "16px Akbar"; c.fillText(done ? "YEEHAW!" : "THE WRANGLER", W / 2, 24);
+        if (!done) raf = requestAnimationFrame(step); else raf = requestAnimationFrame(step);
+      }
+      raf = requestAnimationFrame(step);
+    } },
 ];
 
 // END SCREEN (author: replace these two): message under "HAPPY BIRTHDAY EVAN", and an optional image path like "assets/levels/end.jpg" (or "")
