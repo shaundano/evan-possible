@@ -56,6 +56,11 @@ function sprite(src, { x = 0, y = 0, w = 64, h = 64 } = {}) {
 // level types: (level, stage, game) => render into stage.el
 const types = {
   choice: (lv, st, game) => boxes(lv.answers, i => [].concat(lv.correct).includes(i) ? game.win() : game.lose()),
+  chain(lv, st, game) { // multi-step choice: each right pick extends the question, same level
+    let k = 0, t = lv.q.replace("...", " ");
+    const step = () => { play.querySelector(".grid")?.remove(); const [a, c] = lv.steps[k]; boxes(a, i => { if (i != c) return game.lose(); t += a[c] + " "; if (++k == lv.steps.length) return game.win(); const qt = play.querySelector(".qt"); qt.textContent = t + "..."; fitText(play.querySelector(".q"), qt, 34, 16); step(); }); };
+    step();
+  },
   type(lv, st, game) {
     const input = el("input", play, "", "input"), submit = () =>
       lv.accept.some(a => a.toLowerCase() === input.value.trim().toLowerCase()) ? game.win() : game.lose();
