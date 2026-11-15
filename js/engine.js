@@ -139,10 +139,9 @@ function load() {
   if ([13].includes(s.i) && !s.got.has(s.i)) { s.got.add(s.i); s.skips++; }
   skips.replaceChildren(); for (let k = 0; k < 1; k++) { const b = el(k < s.skips ? "on" : "", skips, "", "button"); if (k < s.skips) b.onclick = () => lv.noskip ? nope() : cur?.skip(); else { b.disabled = true; b.tabIndex = -1; } }
   refit.length = 0; play.replaceChildren(area); area.replaceChildren(); play.onclick = null; play.className = "play";
-  play.classList.toggle("withpic", !!lv.image && !lv.pictop && !lv.qright); play.classList.toggle("pictop", !!lv.pictop); // image on the left, answers on the right
+  play.classList.toggle("withpic", !!lv.image && !lv.pictop && !lv.qright); play.classList.toggle("pictop", !!lv.pictop); play.classList.toggle("qright", !!lv.qright); // image on the left, answers on the right
   const q = el("q", play), qt = el("qt", q, lv.q);
-  fitText(q, qt, lv.pictop ? 26 : lv.q.length > 70 ? 34 : 48, 16);
-  play.classList.toggle("qright", !!lv.qright); // picture left, question to its right
+  fitText(q, qt, lv.pictop ? 26 : lv.qright ? 30 : lv.q.length > 70 ? 34 : 48, 16);
   if (lv.image) { const im = el("pic", play, "", "img"); im.src = lv.image; im.onerror = () => im.remove(); }
   let done = false;
   const ids = [], fns = []; // pending timers (cleared when the level ends) and cleanup hooks (run before the next load)

@@ -182,8 +182,9 @@ export const levels = [
       let y = null; const pos = e => { const r = A.getBoundingClientRect(), k = r.width / 550; return [(e.clientX - r.left) / k, (e.clientY - r.top) / k]; };
       const mv = e => { let x; [x, y] = pos(e);
         hand.style.cssText += `;display:block;left:${x - 95}px;top:${y - 6}px`; // fingertip on the cursor
-        line.style.cssText += `;display:block;left:${x}px;top:${y - 1}px;width:${Math.max(0, SX - x)}px`; };
-      const ck = e => { const [, cy] = pos(e); cy >= ST && cy <= ST + SH * .15 ? game.win() : game.lose(); };
+        line.style.cssText += `;display:block;left:${x}px;top:${y - 1}px;width:${Math.max(0, SX + 42 - x)}px`; };
+      const born = performance.now(); // 1s guard: the click that answered the previous question must not count here
+      const ck = e => { if (performance.now() - born < 1000) return; const [, cy] = pos(e); cy >= ST && cy <= ST + SH * .15 ? game.win() : game.lose(); };
       P.addEventListener("pointermove", mv); P.addEventListener("click", ck);
     } },
   { type: "custom", q: "How many particles are there in the universe that we can observe?", // calculator: digits plus a MILLION key; answer is 10 then 9 millions
@@ -200,21 +201,23 @@ export const levels = [
   // DRAFT: final boss
   { type: "choice", q: "Whose birthday is it?", answers: ["Garfield", "Whomst've", "The Lizard Wizard", "Evan"], correct: 3, bomb: 10 },
   { type: "choice", q: "What was the location of the answer in question 1?", answers: ["This one", "This one", "This one", "This one"], correct: 2 },
-  // FINAL BOSS: bullet hell. Mouse/arrows steer the Camry (auto-fires up); hold SPACE to fire (2 dmg per hit) to drop The Wrangler's 100 HP; getting hit costs a life but the fight goes on
+  // FINAL BOSS: bullet hell. Mouse/arrows steer the Camry (auto-fires up); hold SPACE to fire (1 dmg per hit) to drop The Wrangler's 100 HP; getting hit costs a life but the fight goes on
   { type: "custom", noskip: true, q: "",
     setup(stage, game) {
-      const W = 550, H = 400, cv = Object.assign(document.createElement("canvas"), { width: W, height: H }), c = cv.getContext("2d");
+      const A = stage.el, W = 550, H = 400, cv = Object.assign(document.createElement("canvas"), { width: W, height: H }), c = cv.getContext("2d");
       Object.assign(cv.style, { position: "absolute", left: 0, top: "-32px", zIndex: 0, cursor: "none" }); stage.el.append(cv);
       const img = s => Object.assign(new Image(), { src: "assets/levels/" + s }), WR = img("wrangler.png"), CAM = img("camry.png");
       game.cashSkips(); // unused skips become extra lives for this fight
       game.bgm.volume = 0; RAM.currentTime = 0; RAM.play().catch(() => {}); game.cleanup(() => RAM.pause());
       const P = { x: W / 2, y: 340 }, keys = {}, B = [], M = []; // enemy bullets, my bullets
-      let tx = P.x, ty = P.y, t = 0, last = performance.now(), raf, inv = 0, spin = 0, cd = 0, mcd = 0, hp = 100, flash = 0, done = false;
+      let tx = P.x, ty = P.y, t = 0, gone = false, last = performance.now(), raf, inv = 0, spin = 0, cd = 0, mcd = 0, hp = 100, flash = 0, done = false;
       cv.onpointermove = e => { const r = cv.getBoundingClientRect(), k = r.width / W; tx = (e.clientX - r.left) / k; ty = (e.clientY - r.top) / k; };
       const kd = e => { keys[e.key] = true; if (e.key === " ") e.preventDefault(); }, ku = e => keys[e.key] = false; addEventListener("keydown", kd); addEventListener("keyup", ku);
       game.cleanup(() => { removeEventListener("keydown", kd); removeEventListener("keyup", ku); cancelAnimationFrame(raf); });
       const shot = (x, y, a, v, e, r = 8) => B.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, e, r });
-      const boss = () => ({ x: W / 2 + 170 * Math.sin(t * .7), y: 126 });
+      let bt = 0; // boss clock: stops when he dies
+      const boss = () => ({ x: W / 2 + 170 * Math.sin(bt * .7), y: 126 });
+      const boom = b => { const e = Object.assign(document.createElement("img"), { src: "assets/levels/explosion.gif?" + Date.now() }); Object.assign(e.style, { position: "absolute", height: "230px", left: b.x - 82 + "px", top: b.y - 32 - 115 + "px", zIndex: 6, pointerEvents: "none", mixBlendMode: "multiply" }); A.append(e); setTimeout(() => { gone = true; }, 900); }; // explosion over him, then he vanishes
       function fire(dt) { // three patterns cycle every 9s, speeding up as he weakens
         const b = boss(), ph = Math.floor(t / 9) % 3, f = 1 + (100 - hp) / 100 * .5; cd -= dt;
         if (ph === 0 && cd <= 0) { cd = .95 / f; const a = Math.atan2(P.y - b.y, P.x - b.x); [-.25, 0, .25].forEach(o => shot(b.x, b.y + 30, a + o, 150 * f, "\u{1F40E}")); }
@@ -222,7 +225,7 @@ export const levels = [
         if (ph === 2 && cd <= 0) { cd = .2 / f; shot(Math.random() * W, -10, Math.PI / 2, (130 + Math.random() * 70) * f, "\u{1F335}"); }
       }
       function step(now) {
-        const dt = Math.min(.05, (now - last) / 1000); last = now; t += dt; inv -= dt; flash -= dt;
+        const dt = Math.min(.05, (now - last) / 1000); last = now; t += dt; if (!done) bt += dt; inv -= dt; flash -= dt;
         const v = 260 * dt; if (keys.ArrowLeft || keys.a) tx -= v; if (keys.ArrowRight || keys.d) tx += v; if (keys.ArrowUp || keys.w) ty -= v; if (keys.ArrowDown || keys.s) ty += v;
         tx = Math.max(30, Math.min(W - 30, tx)); ty = Math.max(220, Math.min(H - 40, ty));
         P.x += (tx - P.x) * Math.min(1, dt * 14); P.y += (ty - P.y) * Math.min(1, dt * 14);
@@ -231,12 +234,12 @@ export const levels = [
         for (let i = B.length - 1; i >= 0; i--) if (B[i].x < -20 || B[i].x > W + 20 || B[i].y > H + 20 || B[i].y < -20) B.splice(i, 1);
         const b = boss();
         for (let i = M.length - 1; i >= 0; i--) { const m = M[i];
-          if (!done && Math.abs(m.x - b.x) < 38 && m.y < 196 && m.y > 56) { M.splice(i, 1); hp -= 2; flash = .08; if (hp <= 0) { done = true; B.length = 0; setTimeout(game.win, 2000); } }
+          if (!done && Math.abs(m.x - b.x) < 38 && m.y < 196 && m.y > 56) { M.splice(i, 1); hp -= 1; flash = .08; if (hp <= 0) { done = true; B.length = 0; game.sound("bomb"); boom(b); setTimeout(game.win, 2400); } }
           else if (m.y < -10) M.splice(i, 1); }
         if (!done && inv <= 0 && B.some(o => Math.hypot(o.x - P.x, o.y - P.y) < o.r + 4)) { inv = 1.3; game.hit(); if (game.dead) return; }
         const g = c.createLinearGradient(0, 0, 0, H); g.addColorStop(0, "#ff9a4a"); g.addColorStop(.6, "#ffd9a0"); g.addColorStop(1, "#c98a4a"); c.fillStyle = g; c.fillRect(0, 0, W, H);
         c.fillStyle = "#a0642c"; c.fillRect(0, 290, W, 110);
-        c.save(); if (flash > 0) c.filter = "brightness(2.5)"; c.globalAlpha = done ? .5 : 1; c.drawImage(WR, b.x - 48 + (flash > 0 ? 3 : 0), 56, 96, 143); c.restore(); // The Wrangler
+        c.save(); if (flash > 0) c.filter = "brightness(2.5)"; c.globalAlpha = gone ? 0 : 1; c.drawImage(WR, b.x - 48 + (flash > 0 ? 3 : 0), 56, 96, 143); c.restore(); // The Wrangler
         c.fillStyle = "#ffe81f"; M.forEach(m => { c.beginPath(); c.roundRect(m.x - 2, m.y - 7, 4, 14, 2); c.fill(); });
         c.font = "20px serif"; c.textAlign = "center"; c.textBaseline = "middle"; B.forEach(o => c.fillText(o.e, o.x, o.y));
         c.save(); if (inv > 0 && Math.floor(inv * 20) % 2) c.globalAlpha = .35; c.drawImage(CAM, P.x - 36, P.y - 16, 72, 32); c.restore(); // the '97 Camry
