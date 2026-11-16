@@ -1,4 +1,4 @@
-import { levels, END_MESSAGE, END_IMAGE, CAPTIONS } from "./levels.js?v=3";
+import { levels, END_MESSAGE, END_IMAGE, CAPTIONS } from "./levels.js?v=4";
 
 const stage = document.getElementById("stage");
 const el = (cls, parent, text = "", tag = "div") => {
@@ -186,12 +186,12 @@ await document.fonts.load("46px Akbar");
 const q = +new URLSearchParams(location.search).get("q"); // ?q=N debug jump skips the title
 title.innerHTML = "<h1>THE EVAN-POSSIBLE<b>QUIZ</b></h1>";
 hud.style.visibility = "hidden"; // no HUD behind the menu
-const pk = el("", title, "a birthday gift for Evan", "p"), intro = el("title intro", stage), bg = el("begin", intro, "Begin", "button");
+const pk = el("", title, "a birthday gift for Evan", "p"), intro = el("title intro", stage), introOff = () => document.body.classList.remove("introing"), bg = el("begin", intro, "Begin", "button"); document.body.classList.add("introing");
 const go = el("ans l r btn", title, "Play", "button"); title.insertBefore(go, pk);
 title.hidden = true; // white screen with only Begin; fart, then the menu and music
 const fartA = Object.assign(new Audio("assets/sounds/fart3.mp3"), { preload: "auto" }); // preloaded so the click farts instantly
-const menu = () => { intro.hidden = true; title.hidden = false; title.classList.add("fade"); }; // menu is silent; theme starts on Play
+const menu = () => { introOff(); intro.hidden = true; title.hidden = false; title.classList.add("fade"); }; // menu is silent; theme starts on Play
 bg.onclick = () => { bg.disabled = true; bg.classList.add("out"); fartA.play().catch(() => {}); setTimeout(menu, 2200); };
 go.onclick = () => { title.hidden = true; bgm.currentTime = 0; bgm.volume = .25; bgmOn = true; bgm.play().catch(() => {}); start(); };
-if (new URLSearchParams(location.search).has("end")) { intro.hidden = true; title.hidden = true; endScreen(); } // ?end debug: straight to the victory screen
-if (q > 0) { intro.hidden = true; title.hidden = true; bgmOn = true; start(Math.min(q, levels.length) - 1); } // ?q jump: theme starts on the first click/key
+if (new URLSearchParams(location.search).has("end")) { introOff(); intro.hidden = true; title.hidden = true; endScreen(); } // ?end debug: straight to the victory screen
+if (q > 0) { introOff(); intro.hidden = true; title.hidden = true; bgmOn = true; start(Math.min(q, levels.length) - 1); } // ?q jump: theme starts on the first click/key
