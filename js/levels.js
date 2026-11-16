@@ -31,8 +31,7 @@ const RANKING = ["Blade Runner 2049", "Ducktales the Movie", "Spaceballs", "The 
 
 export const levels = [
   { type: "choice", q: "What year was Deloitte founded?", answers: ["1902", "1919", "1845", "1873"], correct: 2 },
-  { type: "choice", q: "Which Shaggs song is this?", sound: "levels/shaggs-who-are-parents.mp3", correct: 1,
-    answers: ["Philosophy of the World", "Who Are Parents?", "My Pal Foot Foot", "It's Halloween"] },
+  { type: "choice", q: "Oldest breakfast place in Montreal?", answers: ["Chez Nick", "Greenspot", "Beauty's", "La Binerie"], correct: 0 },
   { type: "custom", q: "Put the pipe in old Garfield's mouth",
     setup(stage, game) {
       art(stage.el, "garfield.png", "", "garfield", { left: "275px", top: "100px", width: "250px", height: "222px" });
@@ -98,7 +97,8 @@ export const levels = [
       addEventListener("keydown", press); game.cleanup(stop); arm();
     } },
   { type: "choice", q: "Oil, what is it?", answers: ["makes french fries tasty", "related to Iran probably", "Oi, let's go to Mandy's", "gives me acne"], correct: 2 },
-  { type: "choice", q: "Oldest breakfast place in Montreal?", answers: ["Chez Nick", "Greenspot", "Beauty's", "La Binerie"], correct: 0 },
+  { type: "choice", q: "Which Shaggs song is this?", sound: "levels/shaggs-who-are-parents.mp3", correct: 1,
+    answers: ["Philosophy of the World", "Who Are Parents?", "My Pal Foot Foot", "It's Halloween"] },
   { type: "choice", q: "Why is Eeyore sad", answers: ["He has to pooh", "Shrinkflation", "His bones are his money", "He has a nail in his anus"], correct: 3 },
   { type: "type", q: "Spell this word: (spoken)", sound: "levels/whomst-ve2.mp3", keepBgm: true, accept: ["whomst've", "whomst'd've", "whomstve"] },
   { type: "choice", q: "What's he doing", image: "assets/levels/evan-bench.jpg", correct: 1,
