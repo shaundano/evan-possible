@@ -1,4 +1,4 @@
-import { levels, END_MESSAGE, END_IMAGE, CAPTIONS } from "./levels.js";
+import { levels, END_MESSAGE, END_IMAGE, CAPTIONS } from "./levels.js?v=3";
 
 const stage = document.getElementById("stage");
 const el = (cls, parent, text = "", tag = "div") => {
