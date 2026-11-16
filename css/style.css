@@ -118,4 +118,4 @@ html, body { margin: 0; height: 100%; background: #111; overflow: hidden; font-f
   background: repeating-linear-gradient(-45deg, #111 0 9px, #f2e002 9px 18px) top / 100% 9px no-repeat, repeating-linear-gradient(-45deg, #111 0 9px, #f2e002 9px 18px) bottom / 100% 9px no-repeat, #f2e002; transform: rotate(-4deg) skewX(-6deg); pointer-events: none; }
 .over.end .cap { height: 30px; width: 480px; white-space: nowrap; overflow: hidden; flex: none; font-size: 18px; line-height: 1; color: #ffe81f; text-align: center; max-width: 480px; text-transform: uppercase; }
 
-.introing { background: #111 url(../assets/img/intro-bg.jpg) center / cover no-repeat; } .introing #stage { background: transparent; } .introing .intro { background: transparent; }
+.introing { background: #111 url(../assets/img/intro-bg.jpg) center / 100% 100% no-repeat; } .introing #stage { background: transparent; } .introing .intro { background: transparent; }
