@@ -119,3 +119,4 @@ html, body { margin: 0; height: 100%; background: #111; overflow: hidden; font-f
 .over.end .cap { height: 30px; width: 480px; white-space: nowrap; overflow: hidden; flex: none; font-size: 18px; line-height: 1; color: #ffe81f; text-align: center; max-width: 480px; text-transform: uppercase; }
 
 .introing { background: #111 url(../assets/img/intro-bg.jpg) center / 100% 100% no-repeat; } .introing #stage { background: transparent; } .introing .intro { background: transparent; }
+.replay.hint { top: 34px; } .hintpic { position: absolute; left: 222px; top: 5px; width: 140px; height: 140px; z-index: 4; border: 3px solid #281efb; cursor: pointer; object-fit: cover; }

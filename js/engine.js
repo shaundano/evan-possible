@@ -1,4 +1,4 @@
-import { levels, END_MESSAGE, END_IMAGE, CAPTIONS } from "./levels.js?v=4";
+import { levels, END_MESSAGE, END_IMAGE, CAPTIONS } from "./levels.js?v=5";
 
 const stage = document.getElementById("stage");
 const el = (cls, parent, text = "", tag = "div") => {
@@ -176,6 +176,7 @@ function load() {
   quiet = !!(lv.sound && !lv.keepBgm || lv.quiet); bgm.volume = .25; lv.sound && !lv.keepBgm ? bgm.pause() : bgmOn && bgm.play().catch(() => addEventListener("pointerdown", () => bgmOn && bgm.play(), { once: true })); // retry on next click if blocked
   lvSnd = lv.sound ? sound(lv.sound, true) : null;
   if (lv.sound) { const rp = el("replay", play, "\u25B6 Replay", "button"); rp.onclick = e => { e.stopPropagation(); lvSnd.pause(); lvSnd = sound(lv.sound); }; }
+  if (lv.hint) { const hb = el("replay hint", play, "Hint", "button"), hi = el("hintpic", play, "", "img"); hi.src = lv.hint; hi.hidden = true; hb.onclick = hi.onclick = e => { e.stopPropagation(); hi.hidden = !hi.hidden; }; } // toggle: picture over the question
   types[lv.type](lv, { el: area, sprite }, game);
 }
 

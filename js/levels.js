@@ -100,7 +100,7 @@ export const levels = [
   { type: "choice", q: "Which Shaggs song is this?", sound: "levels/shaggs-who-are-parents.mp3", correct: 1,
     answers: ["Philosophy of the World", "Who Are Parents?", "My Pal Foot Foot", "It's Halloween"] },
   { type: "choice", q: "Why is Eeyore sad", answers: ["He has to pooh", "Shrinkflation", "His bones are his money", "He has a nail in his anus"], correct: 3 },
-  { type: "type", q: "Spell this word: (spoken)", sound: "levels/whomst-ve2.mp3", keepBgm: true, accept: ["whomst've", "whomst'd've", "whomstve"] },
+  { type: "type", q: "Spell this word: (spoken)", sound: "levels/whomst-ve2.mp3", hint: "assets/levels/whomst-hint.png", keepBgm: true, accept: ["whomst've", "whomst'd've", "whomstve"] },
   { type: "choice", q: "What's he doing", image: "assets/levels/evan-bench.jpg", correct: 1,
     answers: ["Contemplating the meaning of life", "\"I should start a podcast\"", "Posing for a photo", "\"I don't think the waiter who poured my wine was Jewish\""] },
   { type: "choice", q: "Which is a real Tony Robbins quote?", correct: 1, answers: [
